@@ -1,4 +1,11 @@
-import {View, Text, TouchableOpacity, ScrollView, Animated} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+  Image,
+} from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, SIZES, SVGBackground} from '../../../../constants/theme';
@@ -92,11 +99,22 @@ export default function CustomerDashboard({navigation}) {
       <View
         style={{
           flex: 1,
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: '#E7ECF8',
           borderTopRightRadius: 25,
           borderTopLeftRadius: 25,
           marginTop: 20,
         }}>
+        <View style={{position: 'absolute'}}>
+          <Image
+            source={require('../../../../assets/images/dashboard.png')}
+            resizeMode={'cover'}
+            style={{
+              height: SIZES.windowHeight / 1.2,
+              width: SIZES.windowWidth,
+            }}
+          />
+        </View>
+
         <ScrollView
           style={{paddingHorizontal: 20, flex: 1}}
           showsVerticalScrollIndicator={false}>

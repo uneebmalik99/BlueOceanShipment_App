@@ -1,6 +1,9 @@
 import {View, Text} from 'react-native';
 import React from 'react';
-import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
+import {
+  AnimatedTabBarNavigator,
+  DotSize,
+} from 'react-native-animated-nav-tab-bar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, SIZES} from '../constants/theme';
 import CustomerContainer from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerContainer';
@@ -18,7 +21,9 @@ export default function CustomerBottomTabs() {
             <Text
               style={{
                 fontSize: 14,
+                fontWeight: 'bold',
                 color: focused ? COLORS.primary : 'grey',
+                left: 3,
               }}>
               {route.name}
             </Text>
@@ -30,7 +35,7 @@ export default function CustomerBottomTabs() {
           if (route.name === 'Home') {
             iconName = 'home-variant';
           } else if (route.name === 'Container') {
-            iconName = 'truck-cargo-container';
+            iconName = 'apps-box';
           } else if (route.name === 'Vehicle') {
             iconName = 'car';
           } else if (route.name === 'Invoice') {
@@ -43,9 +48,10 @@ export default function CustomerBottomTabs() {
         },
         headerShown: false,
       })}
+      tabBarOptions={{}}
       appearance={{
         activeTabBackgrounds: 'rgba(25, 112, 221, 0.3)',
-        dotSize: 'medium',
+        // dotSize: 20,
         floating: true,
         tabBarBackground: '#D3D3D3',
         // whenActiveShow: 'both',

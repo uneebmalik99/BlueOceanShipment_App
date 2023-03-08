@@ -67,17 +67,38 @@ export default function Login({navigation}) {
         .then(response => response.json())
         .then(responseJson => {
           if (responseJson.status == 'Success') {
-            console.log(JSON.stringify(responseJson));
-            AsyncStorage.setItem('token', responseJson.data.token)
+            // console.log(JSON.stringify(responseJson));
+
+            const AsyncData = [
+              ['token', responseJson.data.token],
+              ['name', responseJson.data.data.name],
+              ['username', responseJson.data.data.username],
+              ['email', responseJson.data.data.email],
+              ['company_name', responseJson.data.data.company_name],
+              ['company_email', responseJson.data.data.company_email],
+              ['status', responseJson.data.data.status],
+              ['role_id', responseJson.data.data.role_id],
+            ];
+
+            // console.log(AsyncData[0]);
+            AsyncStorage.multiSet(AsyncData)
               .then(() => {
-                console.log('Token saved to AsyncStorage');
+                console.log('Data Saved Succefully');
               })
               .catch(error => {
-                console.warn(
-                  'Error while saving token to AsyncStorage:',
-                  error,
-                );
+                console.log('Error Saving Data');
               });
+
+            // AsyncStorage.setItem('token', responseJson.data.token)
+            //   .then(() => {
+            //     console.log('Token saved to AsyncStorage');
+            //   })
+            //   .catch(error => {
+            //     console.warn(
+            //       'Error while saving token to AsyncStorage:',
+            //       error,
+            //     );
+            //   });
             console.log('Login Success');
             setIsLoading(false);
             emailRef.current.clear();
