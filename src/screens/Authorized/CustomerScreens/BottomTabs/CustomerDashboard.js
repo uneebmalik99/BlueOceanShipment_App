@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {COLORS, SIZES, SVGBackground} from '../../../../constants/theme';
+import {COLORS, SIZES, SVGBackground, TEXT} from '../../../../constants/theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {SvgXml} from 'react-native-svg';
@@ -19,24 +19,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CustomerDashboard({navigation}) {
   const OpacityValue = useRef(new Animated.Value(0)).current;
-  // const [authToken, setAuthToken] = useState(null);
+  const [userName, serUserName] = useState(null);
 
-  // const getToken = async () => {
-  //   try {
-  //     const token = await AsyncStorage.getItem('token');
-  //     if (token !== null) {
-  //       setAuthToken(token);
-  //       console.log('Token retrieved from AsyncStorage:', token);
-  //       // Do something with the token, e.g. send it in a request header
-  //     }
-  //   } catch (error) {
-  //     console.warn('Error while retrieving token from AsyncStorage:', error);
-  //   }
-  // };
+  const getName = async () => {
+    try {
+      const username = await AsyncStorage.getItem('username');
+      if (username !== null) {
+        serUserName(username);
+        console.log('Name retrieved from AsyncStorage:', username);
+        // Do something with the token, e.g. send it in a request header
+      }
+    } catch (error) {
+      console.warn('Error while retrieving username from AsyncStorage:', error);
+    }
+  };
 
-  // useEffect(() => {
-  //   getToken();
-  // }, []);
+  useEffect(() => {
+    getName();
+  }, []);
 
   useEffect(() => {
     Animated.timing(OpacityValue, {
@@ -93,7 +93,19 @@ export default function CustomerDashboard({navigation}) {
         </TouchableOpacity>
       </View>
 
-      {/* view for dashboard icon and text */}
+      {/* welcome view (username and company name) */}
+      <View style={{paddingHorizontal: 20}}>
+        <View>
+          <Text style={{color: COLORS.white, fontSize: 20, fontWeight: 'bold'}}>
+            Welcome,
+          </Text>
+        </View>
+        <View>
+          <Text style={{color: COLORS.white, fontSize: 16}}>
+            {userName} to {TEXT.title}
+          </Text>
+        </View>
+      </View>
 
       {/* view containing dashboard items */}
       <View
@@ -108,10 +120,10 @@ export default function CustomerDashboard({navigation}) {
           <Image
             source={require('../../../../assets/images/dashboard.png')}
             resizeMode={'cover'}
-            style={{
-              height: SIZES.windowHeight / 1.2,
-              width: SIZES.windowWidth,
-            }}
+            // style={{
+            //   height: SIZES.windowHeight / 1,
+            //   width: SIZES.windowWidth,
+            // }}
           />
         </View>
 
