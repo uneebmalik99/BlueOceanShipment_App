@@ -14,6 +14,7 @@ import Customer from '../screens/Authorized/CustomerScreens/CustomerDrawer/Custo
 import CustomerBottomTabs from '../navigation/CustomerBottomTabs';
 import ContainerTracking from '../screens/Authorized/CustomerScreens/ContainerScreens/ContainerTracking';
 import VehicleSearch from '../screens/Authorized/CustomerScreens/CustomerDrawer/VehicleSearch';
+import Reporting from '../screens/Authorized/CustomerScreens/CustomerDrawer/Reporting';
 
 const DrawerNav = createDrawerNavigator();
 
@@ -96,6 +97,15 @@ export default function CustomerDrawer() {
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="car-sport-sharp" size={25} color={color} />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Reporting"
+        component={Reporting}
+        options={{
+          drawerIcon: ({color}) => (
+            <IconCommunity name="note-text-outline" size={25} color={color} />
           ),
         }}
       />

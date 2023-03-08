@@ -52,8 +52,6 @@ export default function VehicleSearch({navigation}) {
                 if (responseJson.status == 'Success') {
                   setIsLoading(false);
                   setVehicleInfo(responseJson);
-                  //   globalThis.vehicle = responseJson;
-                  console.log(globalThis.vehicle);
                   setIsData(true);
                 } else {
                   setIsLoading(false);
