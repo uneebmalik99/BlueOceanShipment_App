@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
-import {SIZES, COLORS, SVGBackground} from '../../../../constants/theme';
+import {
+  SIZES,
+  COLORS,
+  SVGBackground,
+  SVGVehicle,
+} from '../../../../constants/theme';
 import {SvgXml} from 'react-native-svg';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -264,6 +269,14 @@ export default function CustomerContainer({navigation}) {
           elevation: 3,
           alignItems: 'center',
         }}>
+        <View style={{position: 'absolute'}}>
+          <SvgXml
+            xml={SVGVehicle}
+            width={SIZES.windowWidth}
+            height={SIZES.windowHeight / 1.5}
+          />
+        </View>
+
         {isData == true ? (
           <FlatList
             data={globalThis.myVarr.data}

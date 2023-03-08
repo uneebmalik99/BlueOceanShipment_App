@@ -125,22 +125,7 @@ export default function CustomerVehicle({navigation}) {
                   Text2={item.shipper_name}
                 />
                 <InsideText Text1={'Lot No: '} Text2={item.lot} />
-                {/* <InsideText
-                  Text1={'Destination: '}
-                  Text2={item.destination_country}
-                /> */}
               </View>
-              {/* <View>
-                <Text style={{color: COLORS.white, fontSize: 14}}>
-                  Vin No: {item.vin}
-                </Text>
-                <Text style={{color: COLORS.white, fontSize: 14}}>
-                  "Shipper Name: "{item.shipper_name}
-                </Text>
-                <Text style={{color: COLORS.white, fontSize: 14}}>
-                  "Lot Number: "{item.lot}
-                </Text>
-              </View> */}
 
               <View>
                 <Image
