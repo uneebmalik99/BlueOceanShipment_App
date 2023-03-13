@@ -11,6 +11,8 @@ export default function DashboardItems({
   Title2,
   Color1,
   Color2,
+  Num1,
+  Num2,
 }) {
   return (
     <View
@@ -25,7 +27,7 @@ export default function DashboardItems({
           width: SIZES.windowWidth / 2.3,
           height: SIZES.windowHeight / 7,
           backgroundColor: COLORS.white,
-          borderRadius: SIZES.windowWidth / 14,
+          borderRadius: 10,
           shadowColor: COLORS.black,
           elevation: 5,
           alignItems: 'center',
@@ -52,6 +54,7 @@ export default function DashboardItems({
               }}
             />
           </View>
+          <Text style={{color: 'red', fontWeight: 'bold'}}>{Num1}</Text>
         </View>
       </TouchableOpacity>
 
@@ -60,7 +63,7 @@ export default function DashboardItems({
           width: SIZES.windowWidth / 2.3,
           height: SIZES.windowHeight / 7,
           backgroundColor: COLORS.white,
-          borderRadius: SIZES.windowWidth / 14,
+          borderRadius: 10,
           shadowColor: COLORS.black,
           elevation: 5,
           alignItems: 'center',
@@ -87,6 +90,7 @@ export default function DashboardItems({
               }}
             />
           </View>
+          <Text style={{color: 'red', fontWeight: 'bold'}}>{Num2}</Text>
         </View>
       </TouchableOpacity>
     </View>

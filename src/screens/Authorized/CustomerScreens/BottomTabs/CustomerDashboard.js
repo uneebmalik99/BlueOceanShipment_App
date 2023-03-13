@@ -5,6 +5,8 @@ import {
   ScrollView,
   Animated,
   Image,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,6 +22,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function CustomerDashboard({navigation}) {
   const OpacityValue = useRef(new Animated.Value(0)).current;
   const [userName, serUserName] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const _onRefresh = () => {
+    setRefreshing(true);
+    setIsRefreshing(!isRefreshing);
+  };
 
   const getName = async () => {
     try {
@@ -71,12 +81,14 @@ export default function CustomerDashboard({navigation}) {
             console.log('Fetching dashboard data...');
             const data = await response.json();
 
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
 
             if (data.status == 'Success') {
-              // globalThis.myVarr = data;
+              setDashboardData(data);
               console.log('Dashboard fetched successfully');
+              setRefreshing(false);
               console.log(data.message);
+              console.log(data.data.onhand_count);
               // setIsData(true);
               // globalThis.myVarr.data.map(item => console.log(item.id));
             } else {
@@ -93,7 +105,7 @@ export default function CustomerDashboard({navigation}) {
     };
 
     fetchData();
-  }, []);
+  }, [isRefreshing]);
 
   return (
     <Animated.View style={{flex: 1, opacity: OpacityValue}}>
@@ -176,10 +188,18 @@ export default function CustomerDashboard({navigation}) {
         </View>
 
         <ScrollView
-          style={{paddingHorizontal: 20, flex: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_onRefresh}
+              colors={['#1B7ADE']}
+            />
+          }
+          style={{flex: 1}}
           showsVerticalScrollIndicator={false}>
           {/* view containing all dashboard items */}
-          <View style={{flex: 1}}>
+
+          <View style={{flex: 1, paddingHorizontal: 20}}>
             {/* calling the DashboardItems component which contains two items in a row
             then passing the props which decides the title, icon, backgroundColor and onpress function */}
             <DashboardItems
@@ -202,6 +222,7 @@ export default function CustomerDashboard({navigation}) {
               Color2={COLORS.manifest}
               OnPress1={() => console.log('OnHand Pressed')}
               OnPress2={() => console.log('Manifest Pressed')}
+              Num1={dashboardData != null && dashboardData.data.onhand_count}
             />
 
             <DashboardItems
@@ -213,6 +234,8 @@ export default function CustomerDashboard({navigation}) {
               Color2={COLORS.arrived}
               OnPress1={() => console.log('Shipped Pressed')}
               OnPress2={() => console.log('Arrived Pressed')}
+              Num1={dashboardData != null && dashboardData.data.shipped_count}
+              Num2={dashboardData != null && dashboardData.data.arrived_count}
             />
 
             <DashboardItems
@@ -224,6 +247,7 @@ export default function CustomerDashboard({navigation}) {
               Color2={COLORS.accounting}
               OnPress1={() => console.log('Container Pressed')}
               OnPress2={() => console.log('Accounting Pressed')}
+              Num1={dashboardData != null && dashboardData.data.completed_total}
             />
           </View>
 
