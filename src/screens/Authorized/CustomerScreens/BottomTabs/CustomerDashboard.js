@@ -47,6 +47,54 @@ export default function CustomerDashboard({navigation}) {
     }).start();
   }, []);
 
+  // useEffect for fetching dashboard data from api
+  useEffect(() => {
+    const fetchData = async () => {
+      //  setIsLoading(true);
+
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            const response = await fetch(
+              'https://app.ecsapshipping.com/api/auth/dashboard/view',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + token,
+                },
+              },
+            );
+
+            console.log('Fetching dashboard data...');
+            const data = await response.json();
+
+            console.log(JSON.stringify(data));
+
+            if (data.status == 'Success') {
+              // globalThis.myVarr = data;
+              console.log('Dashboard fetched successfully');
+              console.log(data.message);
+              // setIsData(true);
+              // globalThis.myVarr.data.map(item => console.log(item.id));
+            } else {
+              console.log('Error fetching Dashboard');
+              //  setIsLoading(false);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Animated.View style={{flex: 1, opacity: OpacityValue}}>
       <View

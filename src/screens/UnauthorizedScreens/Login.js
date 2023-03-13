@@ -68,7 +68,7 @@ export default function Login({navigation}) {
         .then(responseJson => {
           if (responseJson.status == 'Success') {
             // console.log(JSON.stringify(responseJson));
-
+            console.log(responseJson.data.token);
             const AsyncData = [
               ['token', responseJson.data.token],
               ['name', responseJson.data.data.name],
