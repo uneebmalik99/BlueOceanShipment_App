@@ -6,6 +6,7 @@ import {
   TextInput,
   FlatList,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -23,11 +24,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CustomerContainer({navigation}) {
   const [isData, setIsData] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [shipment, setShipment] = useState(null);
+
+  const _onRefresh = () => {
+    setRefreshing(true);
+    setIsRefreshing(!isRefreshing);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      //  setIsLoading(true);
-
       try {
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
@@ -48,10 +55,14 @@ export default function CustomerContainer({navigation}) {
             const data = await response.json();
 
             if (data.status == 'Success') {
+              setShipment(data);
+
               globalThis.myVarr = data;
               console.log('Shippment fetched successfully');
               console.log(data.message);
               setIsData(true);
+              setRefreshing(false);
+              // console.log('Data in shipment is: ' + JSON.stringify(shipment));
               // globalThis.myVarr.data.map(item => console.log(item.id));
             } else {
               console.log('Error fetching shippment');
@@ -67,7 +78,7 @@ export default function CustomerContainer({navigation}) {
     };
 
     fetchData();
-  }, []);
+  }, [isRefreshing]);
 
   // render item function for vehicle FlatList
   function renderContainer({item}) {
@@ -277,9 +288,9 @@ export default function CustomerContainer({navigation}) {
           />
         </View>
 
-        {isData == true ? (
+        {shipment != null ? (
           <FlatList
-            data={globalThis.myVarr.data}
+            data={shipment.data}
             keyExtractor={item => item.id}
             contentContainerStyle={{
               paddingBottom: '30%',
@@ -287,6 +298,13 @@ export default function CustomerContainer({navigation}) {
             }}
             renderItem={renderContainer}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={_onRefresh}
+                colors={['#1B7ADE']}
+              />
+            }
           />
         ) : (
           <View
