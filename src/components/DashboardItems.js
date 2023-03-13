@@ -25,7 +25,7 @@ export default function DashboardItems({
       <TouchableOpacity
         style={{
           width: SIZES.windowWidth / 2.3,
-          height: SIZES.windowHeight / 7,
+          height: SIZES.windowHeight / 5,
           backgroundColor: COLORS.white,
           borderRadius: 10,
           shadowColor: COLORS.black,
@@ -35,7 +35,7 @@ export default function DashboardItems({
         }}
         onPress={OnPress1}>
         <View style={{alignItems: 'center'}}>
-          <Text style={{color: COLORS.primary}}>{Title1}</Text>
+          <Text style={{color: COLORS.primary, bottom: '8%'}}>{Title1}</Text>
           <View
             style={{
               height: 55,
@@ -49,19 +49,21 @@ export default function DashboardItems({
               source={Icon1}
               resizeMode="contain"
               style={{
-                height: 35,
-                width: 35,
+                height: 30,
+                width: 30,
               }}
             />
           </View>
-          <Text style={{color: 'red', fontWeight: 'bold'}}>{Num1}</Text>
+          <Text style={{color: 'red', fontWeight: 'bold', top: '8%'}}>
+            {Num1}
+          </Text>
         </View>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={{
           width: SIZES.windowWidth / 2.3,
-          height: SIZES.windowHeight / 7,
+          height: SIZES.windowHeight / 5,
           backgroundColor: COLORS.white,
           borderRadius: 10,
           shadowColor: COLORS.black,
@@ -71,7 +73,7 @@ export default function DashboardItems({
         }}
         onPress={OnPress2}>
         <View style={{alignItems: 'center'}}>
-          <Text style={{color: COLORS.primary}}>{Title2}</Text>
+          <Text style={{color: COLORS.primary, bottom: '8%'}}>{Title2}</Text>
           <View
             style={{
               height: 55,
@@ -85,12 +87,14 @@ export default function DashboardItems({
               source={Icon2}
               resizeMode="contain"
               style={{
-                height: 35,
-                width: 35,
+                height: 30,
+                width: 30,
               }}
             />
           </View>
-          <Text style={{color: 'red', fontWeight: 'bold'}}>{Num2}</Text>
+          <Text style={{color: 'red', fontWeight: 'bold', top: '8%'}}>
+            {Num2}
+          </Text>
         </View>
       </TouchableOpacity>
     </View>

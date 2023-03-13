@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  BackHandler,
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -60,8 +61,6 @@ export default function CustomerDashboard({navigation}) {
   // useEffect for fetching dashboard data from api
   useEffect(() => {
     const fetchData = async () => {
-      //  setIsLoading(true);
-
       try {
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
@@ -81,19 +80,13 @@ export default function CustomerDashboard({navigation}) {
             console.log('Fetching dashboard data...');
             const data = await response.json();
 
-            // console.log(JSON.stringify(data));
-
             if (data.status == 'Success') {
               setDashboardData(data);
               console.log('Dashboard fetched successfully');
               setRefreshing(false);
               console.log(data.message);
-              console.log(data.data.onhand_count);
-              // setIsData(true);
-              // globalThis.myVarr.data.map(item => console.log(item.id));
             } else {
               console.log('Error fetching Dashboard');
-              //  setIsLoading(false);
             }
           } catch (error) {
             console.error(error);
@@ -106,6 +99,22 @@ export default function CustomerDashboard({navigation}) {
 
     fetchData();
   }, [isRefreshing]);
+
+  // useEffect for controling when the back button is pressed
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress,
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
+  const handleBackPress = () => {
+    BackHandler.exitApp();
+    return true;
+  };
 
   return (
     <Animated.View style={{flex: 1, opacity: OpacityValue}}>
@@ -196,6 +205,7 @@ export default function CustomerDashboard({navigation}) {
             />
           }
           style={{flex: 1}}
+          contentContainerStyle={{paddingBottom: '15%'}}
           showsVerticalScrollIndicator={false}>
           {/* view containing all dashboard items */}
 
@@ -213,42 +223,50 @@ export default function CustomerDashboard({navigation}) {
               OnPress2={() => console.log('OnTheWay Pressed')}
             />
 
-            <DashboardItems
-              Title1={'ON HAND'}
-              Title2={'MANIFEST'}
-              Icon1={require('../../../../assets/icons/onhand.png')}
-              Icon2={require('../../../../assets/icons/manifest.png')}
-              Color1={COLORS.onhand}
-              Color2={COLORS.manifest}
-              OnPress1={() => console.log('OnHand Pressed')}
-              OnPress2={() => console.log('Manifest Pressed')}
-              Num1={dashboardData != null && dashboardData.data.onhand_count}
-            />
+            <View style={{marginTop: '11%'}}>
+              <DashboardItems
+                Title1={'ON HAND'}
+                Title2={'MANIFEST'}
+                Icon1={require('../../../../assets/icons/onhand.png')}
+                Icon2={require('../../../../assets/icons/manifest.png')}
+                Color1={COLORS.onhand}
+                Color2={COLORS.manifest}
+                OnPress1={() => console.log('OnHand Pressed')}
+                OnPress2={() => console.log('Manifest Pressed')}
+                Num1={dashboardData != null && dashboardData.data.onhand_count}
+              />
+            </View>
 
-            <DashboardItems
-              Title1={'SHIPPED'}
-              Title2={'ARRIVED'}
-              Icon1={require('../../../../assets/icons/shipped.png')}
-              Icon2={require('../../../../assets/icons/arrived.png')}
-              Color1={COLORS.shipped}
-              Color2={COLORS.arrived}
-              OnPress1={() => console.log('Shipped Pressed')}
-              OnPress2={() => console.log('Arrived Pressed')}
-              Num1={dashboardData != null && dashboardData.data.shipped_count}
-              Num2={dashboardData != null && dashboardData.data.arrived_count}
-            />
+            <View style={{marginTop: '11%'}}>
+              <DashboardItems
+                Title1={'SHIPPED'}
+                Title2={'ARRIVED'}
+                Icon1={require('../../../../assets/icons/shipped.png')}
+                Icon2={require('../../../../assets/icons/arrived.png')}
+                Color1={COLORS.shipped}
+                Color2={COLORS.arrived}
+                OnPress1={() => console.log('Shipped Pressed')}
+                OnPress2={() => console.log('Arrived Pressed')}
+                Num1={dashboardData != null && dashboardData.data.shipped_count}
+                Num2={dashboardData != null && dashboardData.data.arrived_count}
+              />
+            </View>
 
-            <DashboardItems
-              Title1={'CONTAINER'}
-              Title2={'ACCOUNTING'}
-              Icon1={require('../../../../assets/icons/container.png')}
-              Icon2={require('../../../../assets/icons/accounting.png')}
-              Color1={COLORS.container}
-              Color2={COLORS.accounting}
-              OnPress1={() => console.log('Container Pressed')}
-              OnPress2={() => console.log('Accounting Pressed')}
-              Num1={dashboardData != null && dashboardData.data.completed_total}
-            />
+            <View style={{marginTop: '11%'}}>
+              <DashboardItems
+                Title1={'CONTAINER'}
+                Title2={'ACCOUNTING'}
+                Icon1={require('../../../../assets/icons/container.png')}
+                Icon2={require('../../../../assets/icons/accounting.png')}
+                Color1={COLORS.container}
+                Color2={COLORS.accounting}
+                OnPress1={() => console.log('Container Pressed')}
+                OnPress2={() => console.log('Accounting Pressed')}
+                Num1={
+                  dashboardData != null && dashboardData.data.completed_total
+                }
+              />
+            </View>
           </View>
 
           <View style={{paddingBottom: SIZES.windowHeight / 6}} />
