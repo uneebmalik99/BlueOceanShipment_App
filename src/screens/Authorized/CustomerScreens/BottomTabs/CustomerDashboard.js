@@ -37,8 +37,7 @@ export default function CustomerDashboard({navigation}) {
       const username = await AsyncStorage.getItem('username');
       if (username !== null) {
         serUserName(username);
-        console.log('Name retrieved from AsyncStorage:', username);
-        // Do something with the token, e.g. send it in a request header
+        // console.log('Name retrieved from AsyncStorage:', username);
       }
     } catch (error) {
       console.warn('Error while retrieving username from AsyncStorage:', error);
@@ -67,7 +66,7 @@ export default function CustomerDashboard({navigation}) {
           console.log('Token retrieved from AsyncStorage:', token);
           try {
             const response = await fetch(
-              'https://app.ecsapshipping.com/api/auth/dashboard/view',
+              'https://app.ecsapshipping.com/api/auth/dashboard/list',
               {
                 method: 'GET',
                 headers: {
@@ -101,19 +100,62 @@ export default function CustomerDashboard({navigation}) {
   }, [isRefreshing]);
 
   // useEffect for controling when the back button is pressed
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackPress,
-    );
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     handleBackPress,
+  //   );
+  //   return () => {
+  //     backHandler.remove();
+  //   };
+  // }, []);
 
   const handleBackPress = () => {
     BackHandler.exitApp();
     return true;
+  };
+
+  const HorizontalTab = ({title, OnPress, Number}) => {
+    return (
+      <TouchableOpacity
+        style={{
+          width: SIZES.windowWidth / 3.4,
+          height: SIZES.windowHeight / 8,
+          backgroundColor: COLORS.white,
+          borderRadius: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onPress={OnPress}>
+        <View style={{alignItems: 'center'}}>
+          <Text
+            style={{color: COLORS.primary, bottom: '4%', fontWeight: 'bold'}}>
+            {title}
+          </Text>
+          <View
+            style={{
+              height: 30,
+              width: 30,
+              borderRadius: 15,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: COLORS.pickedup,
+            }}>
+            <Image
+              source={require('../../../../assets/icons/pickedup.png')}
+              resizeMode="contain"
+              style={{
+                height: 30,
+                width: 30,
+              }}
+            />
+          </View>
+          <Text style={{color: COLORS.primary, fontWeight: 'bold', top: '4%'}}>
+            {Number}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -169,30 +211,95 @@ export default function CustomerDashboard({navigation}) {
             Welcome,
           </Text>
         </View>
-        <View>
-          <Text style={{color: COLORS.white, fontSize: 16}}>
-            {userName} to {TEXT.title}
-          </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+          <View>
+            <Text style={{color: COLORS.white, fontSize: 16}}>
+              {userName} to {TEXT.title}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => console.log('Sticky Notes')}>
+            <Image
+              source={require('../../../../assets/icons/sticky.png')}
+              style={{
+                height: 30,
+                width: 30,
+              }}
+            />
+          </TouchableOpacity>
         </View>
+      </View>
+
+      <View
+        style={{
+          height: SIZES.windowHeight / 6,
+          width: '100%',
+          backgroundColor: 'rgba(191, 229, 239, 0.7)',
+          borderTopRightRadius: 25,
+          borderTopLeftRadius: 25,
+          marginTop: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: 10,
+        }}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{flexDirection: 'row'}}
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexGrow: 1,
+            paddingRight: 10,
+          }}>
+          <View style={{marginRight: 10}}>
+            <HorizontalTab
+              title={'All Customers'}
+              OnPress={() => console.log('All Customers')}
+              Number={
+                dashboardData != null && dashboardData.data.TotalCustomers
+              }
+            />
+          </View>
+          <View style={{marginRight: 10}}>
+            <HorizontalTab
+              title={'All Vehicles'}
+              OnPress={() => console.log('All Vehicles')}
+              Number={dashboardData != null && dashboardData.data.TotalVehicles}
+            />
+          </View>
+          <View style={{marginRight: 10}}>
+            <HorizontalTab
+              title={'Shipments'}
+              OnPress={() => console.log('Shipments')}
+              Number={
+                dashboardData != null && dashboardData.data.completed_total
+              }
+            />
+          </View>
+          <View style={{marginRight: 10}}>
+            <HorizontalTab
+              title={'Invoices'}
+              OnPress={() => console.log('Invoices')}
+            />
+          </View>
+        </ScrollView>
       </View>
 
       {/* view containing dashboard items */}
       <View
         style={{
           flex: 1,
-          backgroundColor: '#E7ECF8',
-          borderTopRightRadius: 25,
-          borderTopLeftRadius: 25,
-          marginTop: 20,
+          backgroundColor: COLORS.white,
         }}>
         <View style={{position: 'absolute'}}>
           <Image
             source={require('../../../../assets/images/dashboard.png')}
             resizeMode={'cover'}
-            // style={{
-            //   height: SIZES.windowHeight / 1,
-            //   width: SIZES.windowWidth,
-            // }}
           />
         </View>
 
@@ -212,21 +319,25 @@ export default function CustomerDashboard({navigation}) {
           <View style={{flex: 1, paddingHorizontal: 20}}>
             {/* calling the DashboardItems component which contains two items in a row
             then passing the props which decides the title, icon, backgroundColor and onpress function */}
-            <DashboardItems
-              Title1={'PICKED UP'}
-              Title2={'ON THE WAY'}
-              Icon1={require('../../../../assets/icons/pickedup.png')}
-              Icon2={require('../../../../assets/icons/ontheway.png')}
-              Color1={COLORS.pickedup}
-              Color2={COLORS.ontheway}
-              OnPress1={() => console.log('PickedUp Pressed')}
-              OnPress2={() => console.log('OnTheWay Pressed')}
-            />
+            <View style={{marginTop: '5%'}}>
+              <DashboardItems
+                Title1={'NEW ORDER'}
+                Title2={'DISPATCHED'}
+                Icon1={require('../../../../assets/icons/pickedup.png')}
+                Icon2={require('../../../../assets/icons/ontheway.png')}
+                Color1={COLORS.pickedup}
+                Color2={COLORS.ontheway}
+                OnPress1={() => console.log('PickedUp Pressed')}
+                OnPress2={() => console.log('OnTheWay Pressed')}
+                Num1={dashboardData != null && dashboardData.data.NewOrders}
+                Num2={dashboardData != null && dashboardData.data.Dispatched}
+              />
+            </View>
 
-            <View style={{marginTop: '11%'}}>
+            <View style={{marginTop: '5%'}}>
               <DashboardItems
                 Title1={'ON HAND'}
-                Title2={'MANIFEST'}
+                Title2={'NO TITLES'}
                 Icon1={require('../../../../assets/icons/onhand.png')}
                 Icon2={require('../../../../assets/icons/manifest.png')}
                 Color1={COLORS.onhand}
@@ -234,37 +345,37 @@ export default function CustomerDashboard({navigation}) {
                 OnPress1={() => console.log('OnHand Pressed')}
                 OnPress2={() => console.log('Manifest Pressed')}
                 Num1={dashboardData != null && dashboardData.data.onhand_count}
+                Num2={dashboardData != null && dashboardData.data.no_titles}
               />
             </View>
 
-            <View style={{marginTop: '11%'}}>
+            <View style={{marginTop: '5%'}}>
               <DashboardItems
-                Title1={'SHIPPED'}
-                Title2={'ARRIVED'}
+                Title1={'TOWING'}
+                Title2={'BOOKED'}
                 Icon1={require('../../../../assets/icons/shipped.png')}
                 Icon2={require('../../../../assets/icons/arrived.png')}
                 Color1={COLORS.shipped}
                 Color2={COLORS.arrived}
                 OnPress1={() => console.log('Shipped Pressed')}
                 OnPress2={() => console.log('Arrived Pressed')}
-                Num1={dashboardData != null && dashboardData.data.shipped_count}
-                Num2={dashboardData != null && dashboardData.data.arrived_count}
+                // Num1={dashboardData != null && dashboardData.data.shipped_count}
+                Num2={dashboardData != null && dashboardData.data.booked_count}
               />
             </View>
 
-            <View style={{marginTop: '11%'}}>
+            <View style={{marginTop: '5%'}}>
               <DashboardItems
-                Title1={'CONTAINER'}
-                Title2={'ACCOUNTING'}
+                Title1={'SHPPED'}
+                Title2={'ARRIVED'}
                 Icon1={require('../../../../assets/icons/container.png')}
                 Icon2={require('../../../../assets/icons/accounting.png')}
                 Color1={COLORS.container}
                 Color2={COLORS.accounting}
                 OnPress1={() => console.log('Container Pressed')}
                 OnPress2={() => console.log('Accounting Pressed')}
-                Num1={
-                  dashboardData != null && dashboardData.data.completed_total
-                }
+                Num1={dashboardData != null && dashboardData.data.shipped_count}
+                Num2={dashboardData != null && dashboardData.data.arrived_total}
               />
             </View>
           </View>
