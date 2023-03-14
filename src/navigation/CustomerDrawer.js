@@ -15,6 +15,8 @@ import CustomerBottomTabs from '../navigation/CustomerBottomTabs';
 import ContainerTracking from '../screens/Authorized/CustomerScreens/ContainerScreens/ContainerTracking';
 import VehicleSearch from '../screens/Authorized/CustomerScreens/CustomerDrawer/VehicleSearch';
 import Reporting from '../screens/Authorized/CustomerScreens/CustomerDrawer/Reporting';
+import Rate from '../screens/Authorized/CustomerScreens/CustomerDrawer/ShippingRates';
+import RateTopTabs from '../navigation/RateTopTabs';
 
 const DrawerNav = createDrawerNavigator();
 
@@ -97,6 +99,15 @@ export default function CustomerDrawer() {
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="car-sport-sharp" size={25} color={color} />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Rate"
+        component={RateTopTabs}
+        options={{
+          drawerIcon: ({color}) => (
+            <Icon name="star-rate" size={25} color={color} />
           ),
         }}
       />
