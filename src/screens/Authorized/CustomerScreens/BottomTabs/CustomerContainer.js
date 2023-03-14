@@ -41,7 +41,7 @@ export default function CustomerContainer({navigation}) {
           console.log('Token retrieved from AsyncStorage:', token);
           try {
             const response = await fetch(
-              'https://app.ecsapshipping.com/api/auth/shipment/allshipments',
+              'https://app.ecsapshipping.com/api/auth/shipment/all/shipments',
               {
                 method: 'GET',
                 headers: {

@@ -26,6 +26,7 @@ export default function CustomerVehicle({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [vehicle, setVehicles] = useState(null);
+  const [isGridView, setIsGridView] = useState(false);
 
   const _onRefresh = () => {
     setRefreshing(true);
@@ -149,6 +150,84 @@ export default function CustomerVehicle({navigation}) {
     );
   }
 
+  // flatlist render function for grid items
+  function renderGridVehicle({item}) {
+    function InsideText({Text2}) {
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 13,
+                paddingLeft: 10,
+                textAlign: 'justify',
+              }}>
+              {Text2}
+            </Text>
+          </View>
+        </View>
+      );
+    }
+    return (
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <TouchableOpacity
+          style={{
+            height: SIZES.windowHeight / 8,
+            width: SIZES.windowWidth / 2.2,
+            marginTop: 10,
+            // paddingHorizontal: 10,
+          }}
+          onPress={() => navigation.navigate('VehicleDetails', {Data: item})}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
+            style={{
+              flex: 1,
+              borderRadius: 15,
+            }}>
+            {/* view for holding image and vehicle information */}
+            <View
+              style={{
+                paddingHorizontal: 10,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flex: 1,
+                flexDirection: 'row',
+              }}>
+              <View>
+                <View>
+                  <Text
+                    style={{
+                      color: COLORS.black,
+                      fontSize: 13,
+                      paddingLeft: 10,
+                      textAlign: 'justify',
+                    }}>
+                    {item.vin}
+                  </Text>
+                </View>
+                <InsideText Text2={item.shipper_name} />
+                <InsideText
+                  Text2={item.make + ' ' + item.model + ' ' + item.year}
+                />
+              </View>
+
+              <View>
+                <Image
+                  source={item.cover}
+                  resizeMode="contain"
+                  style={{height: 60, width: 100, borderRadius: 10}}
+                />
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   // main screen return funciton
   return (
     <View style={{flex: 1}}>
@@ -214,54 +293,6 @@ export default function CustomerVehicle({navigation}) {
               placeholderTextColor={'grey'}
             />
           </View>
-
-          {/* filter button view */}
-          <View
-            style={{
-              shadowColor: COLORS.black,
-              elevation: 10,
-              height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 8.5,
-              backgroundColor: COLORS.white,
-              borderRadius: 10,
-            }}>
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                flex: 1,
-              }}>
-              <MaterialCommunity
-                name="filter-variant"
-                size={20}
-                color={COLORS.black}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* sort button view */}
-          <View
-            style={{
-              shadowColor: COLORS.black,
-              elevation: 10,
-              height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 8.5,
-              backgroundColor: COLORS.white,
-              borderRadius: 10,
-            }}>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <MaterialCommunity
-                name="sort-bool-descending"
-                size={20}
-                color={COLORS.black}
-              />
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
 
@@ -274,7 +305,7 @@ export default function CustomerVehicle({navigation}) {
           borderTopRightRadius: 40,
           shadowColor: COLORS.black,
           elevation: 3,
-          alignItems: 'center',
+          // alignItems: 'center',
         }}>
         <View style={{position: 'absolute'}}>
           <SvgXml
@@ -284,7 +315,99 @@ export default function CustomerVehicle({navigation}) {
           />
         </View>
 
-        {vehicle != null ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            paddingTop: 10,
+          }}>
+          <View>
+            <Text style={{fontSize: 14, color: COLORS.primary}}>
+              All Vehicles
+            </Text>
+          </View>
+
+          <View style={{flexDirection: 'row'}}>
+            {/* filter button view */}
+            <View
+              style={{
+                shadowColor: COLORS.black,
+                elevation: 10,
+                height: SIZES.windowHeight / 18,
+                width: SIZES.windowWidth / 8.5,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+                right: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <MaterialCommunity
+                  name="filter-variant"
+                  size={20}
+                  color={COLORS.black}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* sort button view */}
+            <View
+              style={{
+                shadowColor: COLORS.black,
+                elevation: 10,
+                height: SIZES.windowHeight / 18,
+                width: SIZES.windowWidth / 8.5,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+                right: 5,
+              }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <MaterialCommunity
+                  name="sort-bool-descending"
+                  size={20}
+                  color={COLORS.black}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* list grid toggle button view */}
+            <View
+              style={{
+                shadowColor: COLORS.black,
+                elevation: 10,
+                height: SIZES.windowHeight / 18,
+                width: SIZES.windowWidth / 8.5,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => setIsGridView(!isGridView)}>
+                <MaterialCommunity
+                  name="view-grid"
+                  size={20}
+                  color={COLORS.primary}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {vehicle != null && isGridView == false && (
           <FlatList
             data={vehicle.data}
             keyExtractor={item => item.id}
@@ -302,7 +425,30 @@ export default function CustomerVehicle({navigation}) {
               />
             }
           />
-        ) : (
+        )}
+
+        {vehicle != null && isGridView == true && (
+          <FlatList
+            data={vehicle.data}
+            numColumns={2}
+            keyExtractor={item => item.id}
+            contentContainerStyle={{
+              paddingBottom: '30%',
+              paddingTop: 10,
+            }}
+            renderItem={renderGridVehicle}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={_onRefresh}
+                colors={['#1B7ADE']}
+              />
+            }
+          />
+        )}
+
+        {vehicle == null && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
