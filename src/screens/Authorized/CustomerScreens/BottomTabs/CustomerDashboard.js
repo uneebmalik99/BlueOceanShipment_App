@@ -200,6 +200,22 @@ export default function CustomerDashboard({navigation}) {
               right: '15%',
             }}
             onPress={() => console.log('Notification Pressed')}>
+            <View
+              style={{
+                height: 13,
+                width: 13,
+                borderRadius: 15,
+                borderWidth: 1,
+                borderColor: 'red',
+                backgroundColor: COLORS.white,
+                position: 'absolute',
+                bottom: '60%',
+                left: '60%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text style={{color: 'red', fontSize: 5}}>56</Text>
+            </View>
             <Icon name="bell" size={23} color={COLORS.white} />
           </TouchableOpacity>
 
