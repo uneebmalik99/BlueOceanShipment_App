@@ -129,7 +129,12 @@ export default function CustomerDashboard({navigation}) {
         onPress={OnPress}>
         <View style={{alignItems: 'center'}}>
           <Text
-            style={{color: COLORS.primary, bottom: '10%', fontWeight: 'bold'}}>
+            style={{
+              color: COLORS.primary,
+              bottom: '10%',
+              fontWeight: 'bold',
+              fontSize: 12,
+            }}>
             {title}
           </Text>
           <View

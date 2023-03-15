@@ -23,10 +23,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CustomerContainer({navigation}) {
-  const [isData, setIsData] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [shipment, setShipment] = useState(null);
+
+  var asset_url = 'https://app.ecsapshipping.com/public/';
 
   const _onRefresh = () => {
     setRefreshing(true);
@@ -56,14 +57,9 @@ export default function CustomerContainer({navigation}) {
 
             if (data.status == 'Success') {
               setShipment(data);
-
-              globalThis.myVarr = data;
               console.log('Shippment fetched successfully');
               console.log(data.message);
-              setIsData(true);
               setRefreshing(false);
-              // console.log('Data in shipment is: ' + JSON.stringify(shipment));
-              // globalThis.myVarr.data.map(item => console.log(item.id));
             } else {
               console.log('Error fetching shippment');
               //  setIsLoading(false);
@@ -82,6 +78,7 @@ export default function CustomerContainer({navigation}) {
 
   // render item function for vehicle FlatList
   function renderContainer({item}) {
+    // console.log(item.loading_image[0]);
     function InsideText({Text1, Text2}) {
       return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -130,7 +127,10 @@ export default function CustomerContainer({navigation}) {
               flexDirection: 'row',
             }}>
             <View>
-              <InsideText Text1={'Company Name: '} Text2={item.company_name} />
+              {/* <InsideText Text1={'Company Name: '} Text2={item.company_name} /> */}
+              <Text style={{color: COLORS.white, fontSize: 14}}>
+                {item.company_name}
+              </Text>
               <InsideText Text1={'Container No: '} Text2={item.container_no} />
               <InsideText Text1={'Booking No: '} Text2={item.booking_number} />
               <InsideText
@@ -139,13 +139,36 @@ export default function CustomerContainer({navigation}) {
               />
             </View>
 
-            {/* <View>
-              <Image
-                source={item.cover}
-                resizeMode="contain"
-                style={{height: 60, width: 100, borderRadius: 10}}
-              />
-            </View> */}
+            <View style={{position: 'absolute', right: '3%'}}>
+              {!item.loading_image || item.loading_image.length === 0 ? (
+                // <Image
+                //   source={{
+                //     uri: `https://code.recuweb.com/c/u/3a09f4cf991c32bd735fa06db67889e5/2018/08/wordpress-photo-gallery-plugins1.png`,
+                //   }}
+                //   resizeMode="contain"
+                //   style={{height: 50, width: 70, borderRadius: 10}}
+                // />
+                <View
+                  style={{
+                    height: 50,
+                    width: 70,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={{color: COLORS.black}}>No Image</Text>
+                </View>
+              ) : (
+                <Image
+                  source={{
+                    uri: asset_url + item.loading_image[0].name,
+                  }}
+                  resizeMode="cover"
+                  style={{height: 50, width: 70, borderRadius: 10}}
+                />
+              )}
+            </View>
           </View>
         </LinearGradient>
       </TouchableOpacity>

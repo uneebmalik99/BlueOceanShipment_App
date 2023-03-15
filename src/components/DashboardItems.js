@@ -36,7 +36,12 @@ export default function DashboardItems({
         onPress={OnPress1}>
         <View>
           <Text
-            style={{color: COLORS.primary, fontWeight: 'bold', bottom: '15%'}}>
+            style={{
+              color: COLORS.primary,
+              fontWeight: 'bold',
+              bottom: '15%',
+              fontSize: 12,
+            }}>
             {Title1}
           </Text>
           <Text style={{color: 'red', fontWeight: 'bold', top: '15%'}}>
@@ -82,7 +87,12 @@ export default function DashboardItems({
         onPress={OnPress2}>
         <View>
           <Text
-            style={{color: COLORS.primary, fontWeight: 'bold', bottom: '15%'}}>
+            style={{
+              color: COLORS.primary,
+              fontWeight: 'bold',
+              bottom: '15%',
+              fontSize: 12,
+            }}>
             {Title2}
           </Text>
           <Text style={{color: 'red', fontWeight: 'bold', top: '15%'}}>
