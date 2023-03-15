@@ -269,6 +269,7 @@ export default function CustomerDashboard({navigation}) {
         </View>
       </View>
 
+      {/* view for tab buttons, horizontal scroll */}
       <View
         style={{
           height: SIZES.windowHeight / 6,
