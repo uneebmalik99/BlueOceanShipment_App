@@ -17,8 +17,6 @@ export default function DashboardItems({
   return (
     <View
       style={{
-        // paddingTop: 30,
-        // height: SIZES.windowHeight / 6,
         flexDirection: 'row',
         justifyContent: 'space-between',
       }}>
@@ -31,46 +29,39 @@ export default function DashboardItems({
           shadowColor: COLORS.black,
           elevation: 5,
           alignItems: 'center',
-          justifyContent: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
         }}
         onPress={OnPress1}>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+        <View>
+          <Text
+            style={{color: COLORS.primary, fontWeight: 'bold', bottom: '15%'}}>
+            {Title1}
+          </Text>
+          <Text style={{color: 'red', fontWeight: 'bold', top: '15%'}}>
+            {Num1}
+          </Text>
+        </View>
+
+        <View>
           <View
             style={{
-              flexDirection: 'row',
+              height: 30,
+              width: 30,
+              borderRadius: 15,
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
+              backgroundColor: Color1,
             }}>
-            <View style={{right: '15%'}}>
-              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-                {Title1}
-              </Text>
-              <Text style={{color: 'red', fontWeight: 'bold'}}>{Num1}</Text>
-            </View>
-            <View style={{left: '15%'}}>
-              <View
-                style={{
-                  height: 55,
-                  width: 55,
-                  borderRadius: 55 / 2,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Color1,
-                }}>
-                <Image
-                  source={Icon1}
-                  resizeMode="contain"
-                  style={{
-                    height: 30,
-                    width: 30,
-                  }}
-                />
-              </View>
-            </View>
+            <Image
+              source={Icon1}
+              resizeMode="contain"
+              style={{
+                height: 20,
+                width: 20,
+              }}
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -84,46 +75,39 @@ export default function DashboardItems({
           shadowColor: COLORS.black,
           elevation: 5,
           alignItems: 'center',
-          justifyContent: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
         }}
         onPress={OnPress2}>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+        <View>
+          <Text
+            style={{color: COLORS.primary, fontWeight: 'bold', bottom: '15%'}}>
+            {Title2}
+          </Text>
+          <Text style={{color: 'red', fontWeight: 'bold', top: '15%'}}>
+            {Num2}
+          </Text>
+        </View>
+
+        <View>
           <View
             style={{
-              flexDirection: 'row',
+              height: 30,
+              width: 30,
+              borderRadius: 15,
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
+              backgroundColor: Color2,
             }}>
-            <View style={{right: '15%'}}>
-              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-                {Title2}
-              </Text>
-              <Text style={{color: 'red', fontWeight: 'bold'}}>{Num2}</Text>
-            </View>
-            <View style={{left: '15%'}}>
-              <View
-                style={{
-                  height: 55,
-                  width: 55,
-                  borderRadius: 55 / 2,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Color2,
-                }}>
-                <Image
-                  source={Icon2}
-                  resizeMode="contain"
-                  style={{
-                    height: 30,
-                    width: 30,
-                  }}
-                />
-              </View>
-            </View>
+            <Image
+              source={Icon2}
+              resizeMode="contain"
+              style={{
+                height: 20,
+                width: 20,
+              }}
+            />
           </View>
         </View>
       </TouchableOpacity>

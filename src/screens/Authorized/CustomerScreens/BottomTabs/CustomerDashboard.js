@@ -119,17 +119,17 @@ export default function CustomerDashboard({navigation}) {
     return (
       <TouchableOpacity
         style={{
-          width: SIZES.windowWidth / 3.4,
+          width: SIZES.windowWidth / 3.6,
           height: SIZES.windowHeight / 8,
           backgroundColor: COLORS.white,
-          borderRadius: 20,
+          borderRadius: 10,
           alignItems: 'center',
           justifyContent: 'center',
         }}
         onPress={OnPress}>
         <View style={{alignItems: 'center'}}>
           <Text
-            style={{color: COLORS.primary, bottom: '4%', fontWeight: 'bold'}}>
+            style={{color: COLORS.primary, bottom: '10%', fontWeight: 'bold'}}>
             {title}
           </Text>
           <View
@@ -150,7 +150,7 @@ export default function CustomerDashboard({navigation}) {
               }}
             />
           </View>
-          <Text style={{color: COLORS.primary, fontWeight: 'bold', top: '4%'}}>
+          <Text style={{color: COLORS.primary, fontWeight: 'bold', top: '10%'}}>
             {Number}
           </Text>
         </View>
@@ -190,18 +190,36 @@ export default function CustomerDashboard({navigation}) {
           <Text style={{color: COLORS.white, fontSize: 16}}>Dashboard</Text>
         </View>
 
-        <TouchableOpacity
-          style={{
-            height: 50,
-            width: 50,
-            borderRadius: 25,
-            backgroundColor: COLORS.white,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => navigation.navigate('CustomerProfile')}>
-          <FontAwesome name="user-alt" size={20} color={COLORS.primary} />
-        </TouchableOpacity>
+        <View style={{flexDirection: 'row'}}>
+          {/* notification button */}
+          <TouchableOpacity
+            style={{
+              borderRadius: 25,
+              alignItems: 'center',
+              justifyContent: 'center',
+              right: '15%',
+            }}
+            onPress={() => console.log('Notification Pressed')}>
+            <Icon name="bell" size={23} color={COLORS.white} />
+          </TouchableOpacity>
+
+          {/* user profile button */}
+          <TouchableOpacity
+            style={{
+              borderRadius: 25,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 1,
+              borderColor: COLORS.white,
+            }}
+            onPress={() => navigation.navigate('CustomerProfile')}>
+            <Image
+              source={require('../../../../assets/images/model.jpg')}
+              resizeMode="contain"
+              style={{height: 40, width: 40, borderRadius: 25}}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* welcome view (username and company name) */}
@@ -216,6 +234,7 @@ export default function CustomerDashboard({navigation}) {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            marginTop: 5,
           }}>
           <View>
             <Text style={{color: COLORS.white, fontSize: 16}}>
@@ -248,6 +267,13 @@ export default function CustomerDashboard({navigation}) {
         }}>
         <ScrollView
           horizontal={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_onRefresh}
+              colors={['#1B7ADE']}
+            />
+          }
           showsHorizontalScrollIndicator={false}
           style={{flexDirection: 'row'}}
           contentContainerStyle={{
@@ -304,15 +330,8 @@ export default function CustomerDashboard({navigation}) {
         </View>
 
         <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={_onRefresh}
-              colors={['#1B7ADE']}
-            />
-          }
           style={{flex: 1}}
-          contentContainerStyle={{paddingBottom: '15%'}}
+          contentContainerStyle={{paddingBottom: '3%'}}
           showsVerticalScrollIndicator={false}>
           {/* view containing all dashboard items */}
 
@@ -327,8 +346,8 @@ export default function CustomerDashboard({navigation}) {
                 Icon2={require('../../../../assets/icons/ontheway.png')}
                 Color1={COLORS.pickedup}
                 Color2={COLORS.ontheway}
-                OnPress1={() => console.log('PickedUp Pressed')}
-                OnPress2={() => console.log('OnTheWay Pressed')}
+                OnPress1={() => console.log('NEW ORDER Pressed')}
+                OnPress2={() => console.log('DISPATCHED Pressed')}
                 Num1={dashboardData != null && dashboardData.data.NewOrders}
                 Num2={dashboardData != null && dashboardData.data.Dispatched}
               />
@@ -342,8 +361,8 @@ export default function CustomerDashboard({navigation}) {
                 Icon2={require('../../../../assets/icons/manifest.png')}
                 Color1={COLORS.onhand}
                 Color2={COLORS.manifest}
-                OnPress1={() => console.log('OnHand Pressed')}
-                OnPress2={() => console.log('Manifest Pressed')}
+                OnPress1={() => console.log('ON HAND Pressed')}
+                OnPress2={() => console.log('NO TITLES Pressed')}
                 Num1={dashboardData != null && dashboardData.data.onhand_count}
                 Num2={dashboardData != null && dashboardData.data.no_titles}
               />
@@ -357,8 +376,8 @@ export default function CustomerDashboard({navigation}) {
                 Icon2={require('../../../../assets/icons/arrived.png')}
                 Color1={COLORS.shipped}
                 Color2={COLORS.arrived}
-                OnPress1={() => console.log('Shipped Pressed')}
-                OnPress2={() => console.log('Arrived Pressed')}
+                OnPress1={() => console.log('TOWING Pressed')}
+                OnPress2={() => console.log('BOOKED Pressed')}
                 // Num1={dashboardData != null && dashboardData.data.shipped_count}
                 Num2={dashboardData != null && dashboardData.data.booked_count}
               />
@@ -372,15 +391,15 @@ export default function CustomerDashboard({navigation}) {
                 Icon2={require('../../../../assets/icons/accounting.png')}
                 Color1={COLORS.container}
                 Color2={COLORS.accounting}
-                OnPress1={() => console.log('Container Pressed')}
-                OnPress2={() => console.log('Accounting Pressed')}
+                OnPress1={() => console.log('SHPPED Pressed')}
+                OnPress2={() => console.log('ARRIVED Pressed')}
                 Num1={dashboardData != null && dashboardData.data.shipped_count}
                 Num2={dashboardData != null && dashboardData.data.arrived_total}
               />
             </View>
           </View>
 
-          <View style={{paddingBottom: SIZES.windowHeight / 6}} />
+          <View style={{paddingBottom: SIZES.windowHeight / 7}} />
         </ScrollView>
       </View>
     </Animated.View>
