@@ -21,6 +21,7 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AnimatedLottieView from 'lottie-react-native';
 
 export default function CustomerVehicle({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
@@ -451,7 +452,12 @@ export default function CustomerVehicle({navigation}) {
         {vehicle == null && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <ActivityIndicator size={'large'} color={COLORS.primary} />
+            <AnimatedLottieView
+              source={require('../../../../assets/animations/loader.json')} // specify the path to your JSON file
+              autoPlay={true} // play the animation automatically
+              loop={true} // loop the animation continuously
+              style={{height: 30, width: 30}}
+            />
           </View>
         )}
       </View>
