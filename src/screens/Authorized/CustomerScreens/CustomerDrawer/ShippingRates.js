@@ -1,178 +1,166 @@
-import {View, Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {SIZES, COLORS} from '../../../../constants/theme';
 import Entypo from 'react-native-vector-icons/Entypo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Rate() {
+  const [shippingRates, setShippingRates] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            const response = await fetch(
+              'https://app.ecsapshipping.com/api/auth/rate/shipment',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + token,
+                },
+              },
+            );
+
+            console.log('Fetching Shipping Prices...');
+            const data = await response.json();
+
+            if (data.status == 'Success') {
+              setShippingRates(data);
+              console.log('Shipping Prices successfully');
+              console.log(data.message);
+              // console.log(data.data.shippment_rate);
+              // setRefreshing(false);
+            } else {
+              console.log('Error fetching shipping prices');
+              //  setIsLoading(false);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <View style={{flex: 1, backgroundColor: '#C3E7F8'}}>
       <View style={{alignItems: 'center', marginTop: 25}}>
         {/* first item in list */}
-        <TouchableOpacity
-          style={{
-            height: SIZES.windowHeight / 6,
-            width: SIZES.windowWidth / 1.1,
-            backgroundColor: COLORS.primary,
-            borderRadius: 20,
-            justifyContent: 'center',
-          }}>
-          <View
-            style={{
-              height: 25,
-              width: 25,
-              backgroundColor: COLORS.white,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 15,
-              position: 'absolute',
-              top: 10,
-              right: 10,
-            }}>
-            <Entypo name="check" size={20} color="green" />
-          </View>
-          <View
-            style={{
-              paddingHorizontal: 20,
-              justifyContent: 'center',
-            }}>
-            {/* Item 1 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={{width: '50%'}}>
-                <Text style={{color: COLORS.white}}>Container Size: 315</Text>
-              </View>
-              <View>
-                <Text style={{color: COLORS.white}}>Vehicles: 15</Text>
-              </View>
-            </View>
 
-            {/* Item 2 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={{width: '50%'}}>
-                <Text style={{color: COLORS.white}}>Loading Port: 15</Text>
-              </View>
-              <View>
-                <Text style={{color: COLORS.white}}>Shipping Line: 15</Text>
-              </View>
-            </View>
-
-            {/* Item 3 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={{width: '50%'}}>
-                <Text style={{color: COLORS.white}}>Destination: 15</Text>
-              </View>
+        {shippingRates != null &&
+          shippingRates.data.shippment_rate.map(item => {
+            return (
               <View
+                key={item.id}
                 style={{
-                  height: '60%',
-                  width: 80,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
+                  height: SIZES.windowHeight / 8,
+                  width: SIZES.windowWidth / 1.1,
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 20,
                   justifyContent: 'center',
-                  borderRadius: 10,
                 }}>
-                <Text style={{color: COLORS.black}}>500$</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
+                <View
+                  style={{
+                    height: 25,
+                    width: 25,
+                    backgroundColor: COLORS.white,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 15,
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
+                  }}>
+                  {item.status == 1 ? (
+                    <Entypo name="check" size={20} color="green" />
+                  ) : (
+                    <Entypo name="cross" size={20} color="red" />
+                  )}
+                </View>
+                <View
+                  style={{
+                    paddingHorizontal: 20,
+                    justifyContent: 'center',
+                  }}>
+                  {/* Item 1 */}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <View style={{width: '50%'}}>
+                      <Text style={{color: COLORS.white}}>
+                        Container Size: {item.container_size}
+                      </Text>
+                    </View>
+                    <View>
+                      <Text style={{color: COLORS.white}}>
+                        Vehicles: {item.vehicle}
+                      </Text>
+                    </View>
+                  </View>
 
-        {/* Second item in list */}
-        <TouchableOpacity
-          style={{
-            height: SIZES.windowHeight / 6,
-            width: SIZES.windowWidth / 1.1,
-            backgroundColor: COLORS.primary,
-            borderRadius: 20,
-            justifyContent: 'center',
-            marginTop: 10,
-          }}>
+                  {/* Item 2 */}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: 7,
+                    }}>
+                    <View style={{width: '50%'}}>
+                      <Text style={{color: COLORS.white}}>
+                        Loading Port: {item.loading_port}
+                      </Text>
+                    </View>
+                    <View>
+                      <Text style={{color: COLORS.white}}>
+                        Shipping Line: {item.shipping_line}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Item 3 */}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      // justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                    <View style={{width: '50%'}}>
+                      <Text style={{color: COLORS.white}}>
+                        Destination: {item.destination}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        height: '60%',
+                        width: 80,
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 10,
+                      }}>
+                      <Text style={{color: COLORS.black}}>{item.rate}$</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
+
+        {shippingRates == null && (
           <View
-            style={{
-              height: 25,
-              width: 25,
-              backgroundColor: COLORS.white,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 15,
-              position: 'absolute',
-              top: 10,
-              right: 10,
-            }}>
-            <Entypo name="cross" size={20} color="red" />
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size={'large'} color={COLORS.primary} />
           </View>
-          <View
-            style={{
-              paddingHorizontal: 20,
-              justifyContent: 'center',
-            }}>
-            {/* Item 1 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={{width: '50%'}}>
-                <Text style={{color: COLORS.white}}>Container Size: 315</Text>
-              </View>
-              <View>
-                <Text style={{color: COLORS.white}}>Vehicles: 15</Text>
-              </View>
-            </View>
-
-            {/* Item 2 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={{width: '50%'}}>
-                <Text style={{color: COLORS.white}}>Loading Port: 15</Text>
-              </View>
-              <View>
-                <Text style={{color: COLORS.white}}>Shipping Line: 15</Text>
-              </View>
-            </View>
-
-            {/* Item 3 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <View style={{width: '50%'}}>
-                <Text style={{color: COLORS.white}}>Destination: 15</Text>
-              </View>
-              <View
-                style={{
-                  height: '60%',
-                  width: 80,
-                  backgroundColor: 'white',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 10,
-                }}>
-                <Text style={{color: COLORS.black}}>500$</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
+        )}
       </View>
     </View>
   );
