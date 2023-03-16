@@ -21,13 +21,14 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AnimatedLottieView from 'lottie-react-native';
 
 export default function CustomerVehicle({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [vehicle, setVehicles] = useState(null);
   const [isGridView, setIsGridView] = useState(false);
+
+  var asset_url = 'https://app.ecsapshipping.com/public/';
 
   const _onRefresh = () => {
     setRefreshing(true);
@@ -61,8 +62,8 @@ export default function CustomerVehicle({navigation}) {
               setVehicles(data);
               console.log('Vehicle fetched successfully');
               console.log(data.message);
+              // data.data.map(item => console.log(item.warehouse_image));
               setRefreshing(false);
-              // globalThis.myVarr.data.map(item => console.log(item.id));
             } else {
               console.log('Error fetching vehicle');
               //  setIsLoading(false);
@@ -78,12 +79,13 @@ export default function CustomerVehicle({navigation}) {
 
     fetchData();
   }, [isRefreshing]);
+
   // render item function for vehicle FlatList
   function renderVehicle({item}) {
     function InsideText({Text1, Text2}) {
       return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{width: '40%'}}>
+          <View style={{width: '36%'}}>
             <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
           </View>
 
@@ -92,8 +94,8 @@ export default function CustomerVehicle({navigation}) {
               style={{
                 color: COLORS.black,
                 fontSize: 13,
-                paddingLeft: 10,
                 textAlign: 'justify',
+                paddingLeft: 5,
               }}>
               {Text2}
             </Text>
@@ -144,6 +146,30 @@ export default function CustomerVehicle({navigation}) {
                   style={{height: 60, width: 100, borderRadius: 10}}
                 />
               </View>
+
+              <View style={{position: 'absolute', right: '3%'}}>
+                {!item.warehouse_image || item.warehouse_image.length === 0 ? (
+                  <View
+                    style={{
+                      height: 50,
+                      width: 70,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text style={{color: COLORS.black}}>No Image</Text>
+                  </View>
+                ) : (
+                  <Image
+                    source={{
+                      uri: asset_url + item.warehouse_image[0].name,
+                    }}
+                    resizeMode="cover"
+                    style={{height: 50, width: 70, borderRadius: 10}}
+                  />
+                )}
+              </View>
             </View>
           </LinearGradient>
         </TouchableOpacity>
@@ -174,8 +200,8 @@ export default function CustomerVehicle({navigation}) {
       <View style={{flex: 1, alignItems: 'center'}}>
         <TouchableOpacity
           style={{
-            height: SIZES.windowHeight / 8,
-            width: SIZES.windowWidth / 2.2,
+            height: SIZES.windowHeight / 9.2,
+            width: SIZES.windowWidth / 2.1,
             marginTop: 10,
             // paddingHorizontal: 10,
           }}
@@ -197,22 +223,69 @@ export default function CustomerVehicle({navigation}) {
                 flex: 1,
                 flexDirection: 'row',
               }}>
-              <View>
-                <View>
+              <View style={{}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    // justifyContent: 'space-between',
+                  }}>
+                  <View style={{}}>
+                    {!item.warehouse_image ||
+                    item.warehouse_image.length === 0 ? (
+                      <View
+                        style={{
+                          height: 30,
+                          width: 40,
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{color: COLORS.black, fontSize: 10}}>
+                          No Image
+                        </Text>
+                      </View>
+                    ) : (
+                      <Image
+                        source={{
+                          uri: asset_url + item.warehouse_image[0].name,
+                        }}
+                        resizeMode="cover"
+                        style={{height: 30, width: 40, borderRadius: 10}}
+                      />
+                    )}
+                  </View>
+
+                  <View style={{left: '15%'}}>
+                    <Text style={{color: COLORS.white, fontSize: 13}}>
+                      {item.make + ' ' + item.year}
+                    </Text>
+                    <Text style={{color: COLORS.white, fontSize: 13}}>
+                      {item.shipper_name}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      color: COLORS.white,
+                      fontSize: 13,
+                      textAlign: 'justify',
+                    }}>
+                    VIN:
+                  </Text>
                   <Text
                     style={{
                       color: COLORS.black,
                       fontSize: 13,
-                      paddingLeft: 10,
                       textAlign: 'justify',
+                      left: '10%',
                     }}>
                     {item.vin}
                   </Text>
                 </View>
-                <InsideText Text2={item.shipper_name} />
-                <InsideText
-                  Text2={item.make + ' ' + item.model + ' ' + item.year}
-                />
               </View>
 
               <View>
@@ -277,7 +350,7 @@ export default function CustomerVehicle({navigation}) {
           <View
             style={{
               height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 1.7,
+              width: SIZES.windowWidth / 1.36,
               backgroundColor: COLORS.white,
               borderRadius: 10,
               alignItems: 'center',
@@ -285,14 +358,32 @@ export default function CustomerVehicle({navigation}) {
               shadowColor: COLORS.black,
               elevation: 10,
             }}>
-            <View style={{paddingLeft: 10}}>
-              <MaterialIcons name="search" size={25} color={'grey'} />
-            </View>
             <TextInput
-              style={{flex: 1, color: 'black'}}
+              style={{flex: 1, color: 'black', paddingLeft: 10}}
               placeholder="Enter vin or lot no"
               placeholderTextColor={'grey'}
             />
+          </View>
+
+          {/* search button view */}
+          <View
+            style={{
+              shadowColor: COLORS.black,
+              elevation: 10,
+              height: SIZES.windowHeight / 18,
+              width: SIZES.windowWidth / 7.5,
+              backgroundColor: COLORS.white,
+              borderRadius: 10,
+            }}>
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+              }}
+              onPress={() => console.log('Search Vehicle')}>
+              <MaterialIcons name="search" size={20} color={COLORS.black} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -398,11 +489,19 @@ export default function CustomerVehicle({navigation}) {
                   justifyContent: 'center',
                 }}
                 onPress={() => setIsGridView(!isGridView)}>
-                <MaterialCommunity
-                  name="view-grid"
-                  size={20}
-                  color={COLORS.primary}
-                />
+                {isGridView == false ? (
+                  <MaterialCommunity
+                    name="view-grid"
+                    size={20}
+                    color={COLORS.primary}
+                  />
+                ) : (
+                  <MaterialCommunity
+                    name="format-list-bulleted-square"
+                    size={20}
+                    color={COLORS.primary}
+                  />
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -452,12 +551,7 @@ export default function CustomerVehicle({navigation}) {
         {vehicle == null && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <AnimatedLottieView
-              source={require('../../../../assets/animations/loader.json')} // specify the path to your JSON file
-              autoPlay={true} // play the animation automatically
-              loop={true} // loop the animation continuously
-              style={{height: 30, width: 30}}
-            />
+            <ActivityIndicator size={'large'} color={COLORS.primary} />
           </View>
         )}
       </View>
