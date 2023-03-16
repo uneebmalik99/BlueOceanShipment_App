@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -21,14 +22,30 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Dropdown} from 'react-native-element-dropdown';
 
 export default function CustomerContainer({navigation}) {
+  // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // data from api saving in this state
   const [shipment, setShipment] = useState(null);
+
+  // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
 
+  //   fot shipments type dropdown
+  const [shipmentType, setShipmentType] = useState(null);
+  const [shipmentFocus, setShipmentFocus] = useState(false);
+
   var asset_url = 'https://app.ecsapshipping.com/public/';
+
+  const data = [
+    {label: 'Item 1', value: '1'},
+    {label: 'Item 2', value: '2'},
+    {label: 'Item 3', value: '3'},
+  ];
 
   const _onRefresh = () => {
     setRefreshing(true);
@@ -376,9 +393,27 @@ export default function CustomerContainer({navigation}) {
             paddingTop: 10,
           }}>
           <View>
-            <Text style={{fontSize: 14, color: COLORS.primary}}>
-              All Shipments
-            </Text>
+            <Dropdown
+              style={[styles.dropdown, shipmentFocus && {borderColor: 'blue'}]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={data}
+              // search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder={!shipmentFocus ? 'All Shipments' : '...'}
+              searchPlaceholder="Search..."
+              value={shipmentType}
+              onFocus={() => setShipmentFocus(true)}
+              onBlur={() => setShipmentFocus(false)}
+              onChange={item => {
+                setShipmentType(item.value);
+                setShipmentFocus(false);
+              }}
+            />
           </View>
 
           <View style={{flexDirection: 'row'}}>
@@ -534,3 +569,46 @@ export default function CustomerContainer({navigation}) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    padding: 16,
+  },
+  dropdown: {
+    height: SIZES.windowHeight / 18,
+    width: SIZES.windowWidth / 3,
+    borderColor: COLORS.primary,
+    // borderWidth: 0.5,
+    // borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    color: COLORS.primary,
+  },
+  selectedTextStyle: {
+    fontSize: 14,
+  },
+  iconStyle: {
+    width: 20,
+    tintColor: COLORS.primary,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 14,
+  },
+});
