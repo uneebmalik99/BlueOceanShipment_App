@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -21,14 +22,30 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Dropdown} from 'react-native-element-dropdown';
 
 export default function CustomerVehicle({navigation}) {
+  // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // data from api saving in this state
   const [vehicle, setVehicles] = useState(null);
+
+  // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
 
+  //   fot vehicle name dropdown
+  const [vehicleType, setVehicleType] = useState(null);
+  const [vehicleFocus, setVehicleFocus] = useState(false);
+
   var asset_url = 'https://app.ecsapshipping.com/public/';
+
+  const data = [
+    {label: 'Item 1', value: '1'},
+    {label: 'Item 2', value: '2'},
+    {label: 'Item 3', value: '3'},
+  ];
 
   const _onRefresh = () => {
     setRefreshing(true);
@@ -179,23 +196,6 @@ export default function CustomerVehicle({navigation}) {
 
   // flatlist render function for grid items
   function renderGridVehicle({item}) {
-    function InsideText({Text2}) {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 13,
-                paddingLeft: 10,
-                textAlign: 'justify',
-              }}>
-              {Text2}
-            </Text>
-          </View>
-        </View>
-      );
-    }
     return (
       <View style={{flex: 1, alignItems: 'center'}}>
         <TouchableOpacity
@@ -416,9 +416,27 @@ export default function CustomerVehicle({navigation}) {
             paddingTop: 10,
           }}>
           <View>
-            <Text style={{fontSize: 14, color: COLORS.primary}}>
-              All Vehicles
-            </Text>
+            <Dropdown
+              style={[styles.dropdown, vehicleFocus && {borderColor: 'blue'}]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={data}
+              // search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder={!vehicleFocus ? 'All Vehicles' : '...'}
+              searchPlaceholder="Search..."
+              value={vehicleType}
+              onFocus={() => setVehicleFocus(true)}
+              onBlur={() => setVehicleFocus(false)}
+              onChange={item => {
+                setVehicleType(item.value);
+                setVehicleFocus(false);
+              }}
+            />
           </View>
 
           <View style={{flexDirection: 'row'}}>
@@ -573,3 +591,46 @@ export default function CustomerVehicle({navigation}) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    padding: 16,
+  },
+  dropdown: {
+    height: SIZES.windowHeight / 18,
+    width: SIZES.windowWidth / 3.5,
+    borderColor: COLORS.primary,
+    // borderWidth: 0.5,
+    // borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    color: COLORS.primary,
+  },
+  selectedTextStyle: {
+    fontSize: 14,
+  },
+  iconStyle: {
+    width: 20,
+    tintColor: COLORS.primary,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 14,
+  },
+});
