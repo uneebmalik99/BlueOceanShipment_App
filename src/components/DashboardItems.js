@@ -52,9 +52,9 @@ export default function DashboardItems({
         <View>
           <View
             style={{
-              height: 30,
-              width: 30,
-              borderRadius: 15,
+              height: 40,
+              width: 40,
+              borderRadius: 20,
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: Color1,
@@ -63,8 +63,8 @@ export default function DashboardItems({
               source={Icon1}
               resizeMode="contain"
               style={{
-                height: 20,
-                width: 20,
+                height: 30,
+                width: 30,
               }}
             />
           </View>
@@ -103,9 +103,9 @@ export default function DashboardItems({
         <View>
           <View
             style={{
-              height: 30,
-              width: 30,
-              borderRadius: 15,
+              height: 40,
+              width: 40,
+              borderRadius: 20,
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: Color2,
@@ -114,8 +114,8 @@ export default function DashboardItems({
               source={Icon2}
               resizeMode="contain"
               style={{
-                height: 20,
-                width: 20,
+                height: 30,
+                width: 30,
               }}
             />
           </View>
