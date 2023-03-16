@@ -26,6 +26,7 @@ export default function CustomerContainer({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [shipment, setShipment] = useState(null);
+  const [isGridView, setIsGridView] = useState(false);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -141,13 +142,6 @@ export default function CustomerContainer({navigation}) {
 
             <View style={{position: 'absolute', right: '3%'}}>
               {!item.loading_image || item.loading_image.length === 0 ? (
-                // <Image
-                //   source={{
-                //     uri: `https://code.recuweb.com/c/u/3a09f4cf991c32bd735fa06db67889e5/2018/08/wordpress-photo-gallery-plugins1.png`,
-                //   }}
-                //   resizeMode="contain"
-                //   style={{height: 50, width: 70, borderRadius: 10}}
-                // />
                 <View
                   style={{
                     height: 50,
@@ -172,6 +166,98 @@ export default function CustomerContainer({navigation}) {
           </View>
         </LinearGradient>
       </TouchableOpacity>
+    );
+  }
+
+  // render grid container
+  function renderGridContainer({item}) {
+    return (
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <TouchableOpacity
+          style={{
+            height: SIZES.windowHeight / 8.2,
+            width: SIZES.windowWidth / 2.1,
+            marginTop: 10,
+          }}
+          onPress={() => navigation.navigate('ContainerDetails', {Data: item})}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
+            style={{
+              borderRadius: 15,
+              flex: 1,
+            }}>
+            {/* view for holding image and vehicle information */}
+            <View
+              style={{
+                paddingHorizontal: 10,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flex: 1,
+                flexDirection: 'row',
+              }}>
+              <View style={{flex: 1}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{}}>
+                    {!item.loading_image || item.loading_image.length === 0 ? (
+                      <View
+                        style={{
+                          height: 30,
+                          width: 40,
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{color: COLORS.black, fontSize: 10}}>
+                          No Image
+                        </Text>
+                      </View>
+                    ) : (
+                      <Image
+                        source={{
+                          uri: asset_url + item.loading_image[0].name,
+                        }}
+                        resizeMode="cover"
+                        style={{height: 30, width: 40, borderRadius: 10}}
+                      />
+                    )}
+                  </View>
+
+                  <View>
+                    <Text style={{color: COLORS.white, fontSize: 13}}>
+                      {item.booking_number}
+                    </Text>
+                    <Text style={{color: COLORS.white, fontSize: 13}}>
+                      {item.shipper}
+                    </Text>
+                  </View>
+                </View>
+                {/* <InsideText Text1={'Company Name: '} Text2={item.company_name} /> */}
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={{color: COLORS.black, fontSize: 13}}>
+                    Container No:
+                  </Text>
+                  <Text style={{color: COLORS.white, fontSize: 13}}>
+                    {item.container_no}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -223,7 +309,7 @@ export default function CustomerContainer({navigation}) {
           <View
             style={{
               height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 1.7,
+              width: SIZES.windowWidth / 1.36,
               backgroundColor: COLORS.white,
               borderRadius: 10,
               alignItems: 'center',
@@ -231,11 +317,8 @@ export default function CustomerContainer({navigation}) {
               shadowColor: COLORS.black,
               elevation: 10,
             }}>
-            <View style={{paddingLeft: 10}}>
-              <MaterialIcons name="search" size={25} color={'grey'} />
-            </View>
             <TextInput
-              style={{flex: 1, color: 'black'}}
+              style={{flex: 1, color: 'black', paddingLeft: 10}}
               placeholder="Enter container no"
               placeholderTextColor={'grey'}
             />
@@ -247,7 +330,7 @@ export default function CustomerContainer({navigation}) {
               shadowColor: COLORS.black,
               elevation: 10,
               height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 8.5,
+              width: SIZES.windowWidth / 7.5,
               backgroundColor: COLORS.white,
               borderRadius: 10,
             }}>
@@ -256,36 +339,9 @@ export default function CustomerContainer({navigation}) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flex: 1,
-              }}>
-              <MaterialCommunity
-                name="filter-variant"
-                size={20}
-                color={COLORS.black}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* sort button view */}
-          <View
-            style={{
-              shadowColor: COLORS.black,
-              elevation: 10,
-              height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 8.5,
-              backgroundColor: COLORS.white,
-              borderRadius: 10,
-            }}>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <MaterialCommunity
-                name="sort-bool-descending"
-                size={20}
-                color={COLORS.black}
-              />
+              }}
+              onPress={() => console.log('Search Container')}>
+              <MaterialIcons name="search" size={20} color={COLORS.black} />
             </TouchableOpacity>
           </View>
         </View>
@@ -301,7 +357,7 @@ export default function CustomerContainer({navigation}) {
           borderTopRightRadius: 40,
           shadowColor: COLORS.black,
           elevation: 3,
-          alignItems: 'center',
+          // alignItems: 'center',
         }}>
         <View style={{position: 'absolute'}}>
           <SvgXml
@@ -311,7 +367,107 @@ export default function CustomerContainer({navigation}) {
           />
         </View>
 
-        {shipment != null ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            paddingTop: 10,
+          }}>
+          <View>
+            <Text style={{fontSize: 14, color: COLORS.primary}}>
+              All Shipments
+            </Text>
+          </View>
+
+          <View style={{flexDirection: 'row'}}>
+            {/* filter button view */}
+            <View
+              style={{
+                shadowColor: COLORS.black,
+                elevation: 10,
+                height: SIZES.windowHeight / 18,
+                width: SIZES.windowWidth / 8.5,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+                right: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <MaterialCommunity
+                  name="filter-variant"
+                  size={20}
+                  color={COLORS.black}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* sort button view */}
+            <View
+              style={{
+                shadowColor: COLORS.black,
+                elevation: 10,
+                height: SIZES.windowHeight / 18,
+                width: SIZES.windowWidth / 8.5,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+                right: 5,
+              }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <MaterialCommunity
+                  name="sort-bool-descending"
+                  size={20}
+                  color={COLORS.black}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* list grid toggle button view */}
+            <View
+              style={{
+                shadowColor: COLORS.black,
+                elevation: 10,
+                height: SIZES.windowHeight / 18,
+                width: SIZES.windowWidth / 8.5,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => setIsGridView(!isGridView)}>
+                {isGridView == false ? (
+                  <MaterialCommunity
+                    name="view-grid"
+                    size={20}
+                    color={COLORS.primary}
+                  />
+                ) : (
+                  <MaterialCommunity
+                    name="format-list-bulleted-square"
+                    size={20}
+                    color={COLORS.primary}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {shipment != null && isGridView == false && (
           <FlatList
             data={shipment.data}
             keyExtractor={item => item.id}
@@ -329,7 +485,30 @@ export default function CustomerContainer({navigation}) {
               />
             }
           />
-        ) : (
+        )}
+
+        {shipment != null && isGridView == true && (
+          <FlatList
+            data={shipment.data}
+            numColumns={2}
+            keyExtractor={item => item.id}
+            contentContainerStyle={{
+              paddingBottom: '30%',
+              paddingTop: 10,
+            }}
+            renderItem={renderGridContainer}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={_onRefresh}
+                colors={['#1B7ADE']}
+              />
+            }
+          />
+        )}
+
+        {shipment == null && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
