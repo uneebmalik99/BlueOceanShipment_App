@@ -42,9 +42,9 @@ export default function CustomerContainer({navigation}) {
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
   const data = [
-    {label: 'Item 1', value: '1'},
-    {label: 'Item 2', value: '2'},
-    {label: 'Item 3', value: '3'},
+    {label: 'New Order', value: '1'},
+    {label: 'Dispatch', value: '2'},
+    {label: 'On Hand', value: '3'},
   ];
 
   const _onRefresh = () => {
@@ -54,6 +54,7 @@ export default function CustomerContainer({navigation}) {
 
   useEffect(() => {
     const fetchData = async () => {
+      setShipment(null);
       try {
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
@@ -420,13 +421,15 @@ export default function CustomerContainer({navigation}) {
             {/* filter button view */}
             <View
               style={{
-                shadowColor: COLORS.black,
+                shadowColor: COLORS.primary,
                 elevation: 10,
                 height: SIZES.windowHeight / 18,
                 width: SIZES.windowWidth / 8.5,
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
                 right: 10,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
               }}>
               <TouchableOpacity
                 style={{
@@ -452,6 +455,8 @@ export default function CustomerContainer({navigation}) {
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
                 right: 5,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
               }}>
               <TouchableOpacity
                 style={{
@@ -476,6 +481,8 @@ export default function CustomerContainer({navigation}) {
                 width: SIZES.windowWidth / 8.5,
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
               }}>
               <TouchableOpacity
                 style={{
