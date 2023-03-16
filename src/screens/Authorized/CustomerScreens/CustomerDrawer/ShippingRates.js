@@ -60,7 +60,7 @@ export default function Rate() {
               <View
                 key={item.id}
                 style={{
-                  height: SIZES.windowHeight / 8,
+                  height: SIZES.windowHeight / 7,
                   width: SIZES.windowWidth / 1.1,
                   backgroundColor: COLORS.primary,
                   borderRadius: 20,
@@ -106,7 +106,6 @@ export default function Rate() {
                       </Text>
                     </View>
                   </View>
-
                   {/* Item 2 */}
                   <View
                     style={{
@@ -125,7 +124,6 @@ export default function Rate() {
                       </Text>
                     </View>
                   </View>
-
                   {/* Item 3 */}
                   <View
                     style={{
@@ -150,6 +148,13 @@ export default function Rate() {
                       <Text style={{color: COLORS.black}}>{item.rate}$</Text>
                     </View>
                   </View>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: item.status == 1 ? 'green' : 'red',
+                      marginTop: 3,
+                    }}
+                  />
                 </View>
               </View>
             );
