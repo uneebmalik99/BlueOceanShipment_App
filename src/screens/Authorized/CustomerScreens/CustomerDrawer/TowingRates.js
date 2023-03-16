@@ -32,8 +32,6 @@ export default function TowingRates() {
               setTowingRates(data);
               console.log('Towing Prices successfully');
               console.log(data.message);
-              // console.log(data.data.master_towing);
-              // setRefreshing(false);
             } else {
               console.log('Error fetching towing prices');
             }
@@ -52,15 +50,13 @@ export default function TowingRates() {
   return (
     <View style={{flex: 1, backgroundColor: '#C3E7F8'}}>
       <View style={{alignItems: 'center', marginTop: 25}}>
-        {/* first item in list */}
-
         {towingRates != null &&
           towingRates.data.master_towing.map(item => {
             return (
               <View
                 key={item.id}
                 style={{
-                  height: SIZES.windowHeight / 10,
+                  height: SIZES.windowHeight / 9,
                   width: SIZES.windowWidth / 1.1,
                   backgroundColor: COLORS.primary,
                   borderRadius: 20,
@@ -123,7 +119,7 @@ export default function TowingRates() {
                     </View>
                     <View
                       style={{
-                        height: '60%',
+                        height: '70%',
                         width: 80,
                         backgroundColor: 'white',
                         alignItems: 'center',
@@ -133,6 +129,14 @@ export default function TowingRates() {
                       <Text style={{color: COLORS.black}}>{item.rate}$</Text>
                     </View>
                   </View>
+
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: item.status == 1 ? 'green' : 'red',
+                      marginTop: 5,
+                    }}
+                  />
                 </View>
               </View>
             );
