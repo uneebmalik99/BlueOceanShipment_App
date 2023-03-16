@@ -31,6 +31,7 @@ export default function CustomerVehicle({navigation}) {
 
   // data from api saving in this state
   const [vehicle, setVehicles] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
@@ -39,12 +40,18 @@ export default function CustomerVehicle({navigation}) {
   const [vehicleType, setVehicleType] = useState(null);
   const [vehicleFocus, setVehicleFocus] = useState(false);
 
+  // searched vehicle states
+  const [searchedVehicle, setSearchedVehicle] = useState(null);
+  const [vin, setVin] = useState('');
+  const [viewAll, setViewAll] = useState(false);
+  const [searchLoader, setSearchLoader] = useState(false);
+
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
   const data = [
-    {label: 'Item 1', value: '1'},
-    {label: 'Item 2', value: '2'},
-    {label: 'Item 3', value: '3'},
+    {label: 'New Order', value: '1'},
+    {label: 'Dispatch', value: '2'},
+    {label: 'On Hand', value: '3'},
   ];
 
   const _onRefresh = () => {
@@ -54,8 +61,9 @@ export default function CustomerVehicle({navigation}) {
 
   useEffect(() => {
     const fetchData = async () => {
-      //  setIsLoading(true);
-
+      setVehicles(null);
+      setLoading(true);
+      setSearchedVehicle(null);
       try {
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
@@ -77,13 +85,14 @@ export default function CustomerVehicle({navigation}) {
 
             if (data.status == 'Success') {
               setVehicles(data);
+              setLoading(false);
               console.log('Vehicle fetched successfully');
               console.log(data.message);
               // data.data.map(item => console.log(item.warehouse_image));
               setRefreshing(false);
             } else {
               console.log('Error fetching vehicle');
-              //  setIsLoading(false);
+              setLoading(false);
             }
           } catch (error) {
             console.error(error);
@@ -95,31 +104,88 @@ export default function CustomerVehicle({navigation}) {
     };
 
     fetchData();
-  }, [isRefreshing]);
+  }, [isRefreshing, viewAll]);
+
+  // vehicle search api
+  const Search = async () => {
+    if (vin.length == 0) {
+      console.log('Please Enter Vin/Lot Number');
+      alert('Please Enter Vin/Lot Number');
+    } else {
+      setSearchLoader(true);
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            var url = 'https://app.ecsapshipping.com/api/auth/vehicle/search';
+            var value = {};
+
+            value.vin_lot_no = vin;
+
+            console.log('Search_key_vale ', value);
+            fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+              },
+              body: JSON.stringify(value),
+            })
+              .then(response => response.json())
+              .then(responseJson => {
+                console.log(responseJson.message);
+                if (responseJson.status == 'Success') {
+                  // console.log(responseJson.data[0].warehouse_image[0]);
+                  setSearchedVehicle(responseJson);
+                  setSearchLoader(false);
+                  setVehicles(null);
+                  setVin('');
+                } else {
+                  console.log('Status: ' + responseJson.status);
+                  alert('Vin/Lot not found');
+                }
+              })
+              .catch(error => {
+                setSearchLoader(false);
+                alert('Error while search ' + error);
+                console.warn(error);
+              });
+          } catch (error) {
+            setSearchLoader(false);
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+      }
+    }
+  };
+
+  function InsideText({Text1, Text2}) {
+    return (
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{width: '36%'}}>
+          <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
+        </View>
+
+        <View>
+          <Text
+            style={{
+              color: COLORS.black,
+              fontSize: 13,
+              textAlign: 'justify',
+              paddingLeft: 5,
+            }}>
+            {Text2}
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   // render item function for vehicle FlatList
   function renderVehicle({item}) {
-    function InsideText({Text1, Text2}) {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{width: '36%'}}>
-            <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
-          </View>
-
-          <View>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 13,
-                textAlign: 'justify',
-                paddingLeft: 5,
-              }}>
-              {Text2}
-            </Text>
-          </View>
-        </View>
-      );
-    }
     return (
       <View style={{flex: 1}}>
         <TouchableOpacity
@@ -281,7 +347,7 @@ export default function CustomerVehicle({navigation}) {
                       color: COLORS.black,
                       fontSize: 13,
                       textAlign: 'justify',
-                      left: '10%',
+                      left: '20%',
                     }}>
                     {item.vin}
                   </Text>
@@ -361,7 +427,11 @@ export default function CustomerVehicle({navigation}) {
             <TextInput
               style={{flex: 1, color: 'black', paddingLeft: 10}}
               placeholder="Enter vin or lot no"
+              editable={true}
+              selectTextOnFocus={true}
               placeholderTextColor={'grey'}
+              value={vin}
+              onChangeText={text => setVin(text)}
             />
           </View>
 
@@ -381,11 +451,17 @@ export default function CustomerVehicle({navigation}) {
                 justifyContent: 'center',
                 flex: 1,
               }}
-              onPress={() => console.log('Search Vehicle')}>
+              onPress={Search}>
               <MaterialIcons name="search" size={20} color={COLORS.black} />
             </TouchableOpacity>
           </View>
         </View>
+
+        {searchLoader == true && (
+          <View style={{marginTop: 5}}>
+            <ActivityIndicator size={'small'} color={COLORS.white} />
+          </View>
+        )}
       </View>
 
       <View
@@ -450,6 +526,8 @@ export default function CustomerVehicle({navigation}) {
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
                 right: 10,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
               }}>
               <TouchableOpacity
                 style={{
@@ -475,6 +553,8 @@ export default function CustomerVehicle({navigation}) {
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
                 right: 5,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
               }}>
               <TouchableOpacity
                 style={{
@@ -499,6 +579,8 @@ export default function CustomerVehicle({navigation}) {
                 width: SIZES.windowWidth / 8.5,
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
+                borderWidth: 1,
+                borderColor: COLORS.primary,
               }}>
               <TouchableOpacity
                 style={{
@@ -524,6 +606,103 @@ export default function CustomerVehicle({navigation}) {
             </View>
           </View>
         </View>
+
+        {searchedVehicle != null && (
+          <View>
+            <TouchableOpacity
+              style={{
+                height: SIZES.windowHeight / 8,
+                width: SIZES.windowWidth,
+                marginTop: 10,
+                paddingHorizontal: 20,
+              }}
+              onPress={() =>
+                navigation.navigate('VehicleDetails', {
+                  Data: searchedVehicle.data[0],
+                })
+              }>
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
+                style={{
+                  flex: 1,
+                  borderRadius: 15,
+                }}>
+                {/* view for holding image and vehicle information */}
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flex: 1,
+                    flexDirection: 'row',
+                  }}>
+                  <View>
+                    <InsideText
+                      Text1={'Vin No: '}
+                      Text2={searchedVehicle.data[0].vin}
+                    />
+                    <InsideText
+                      Text1={'Shipper Name: '}
+                      Text2={searchedVehicle.data[0].shipper_name}
+                    />
+                    <InsideText
+                      Text1={'Lot No: '}
+                      Text2={searchedVehicle.data[0].lot}
+                    />
+                  </View>
+
+                  <View style={{position: 'absolute', right: '3%'}}>
+                    {!searchedVehicle.data[0].warehouse_image ||
+                    searchedVehicle.data[0].warehouse_image.length === 0 ? (
+                      <View
+                        style={{
+                          height: 50,
+                          width: 70,
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{color: COLORS.black}}>No Image</Text>
+                      </View>
+                    ) : (
+                      <Image
+                        source={{
+                          uri:
+                            asset_url +
+                            searchedVehicle.data[0].warehouse_image[0].name,
+                        }}
+                        resizeMode="cover"
+                        style={{height: 50, width: 70, borderRadius: 10}}
+                      />
+                    )}
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <View style={{alignItems: 'center', marginTop: 10}}>
+              <TouchableOpacity
+                style={{
+                  height: SIZES.windowHeight / 18,
+                  width: SIZES.windowWidth / 2,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 10,
+                }}
+                onPress={() => {
+                  setSearchedVehicle(null);
+                  setVehicles(null);
+                  setViewAll(!viewAll);
+                }}>
+                <Text style={{color: COLORS.white}}>View All</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         {vehicle != null && isGridView == false && (
           <FlatList
@@ -566,7 +745,7 @@ export default function CustomerVehicle({navigation}) {
           />
         )}
 
-        {vehicle == null && (
+        {loading == true && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
