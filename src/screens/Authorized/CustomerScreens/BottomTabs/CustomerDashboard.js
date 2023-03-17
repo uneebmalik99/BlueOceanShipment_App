@@ -204,7 +204,7 @@ export default function CustomerDashboard({navigation}) {
               justifyContent: 'center',
               right: '15%',
             }}
-            onPress={() => console.log('Notification Pressed')}>
+            onPress={() => navigation.navigate('Notifications')}>
             <View
               style={{
                 height: 13,
@@ -262,7 +262,7 @@ export default function CustomerDashboard({navigation}) {
               {userName} to {TEXT.title}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => console.log('Sticky Notes')}>
+          <TouchableOpacity onPress={() => navigation.navigate('StickyNotes')}>
             <Image
               source={require('../../../../assets/icons/sticky.png')}
               style={{

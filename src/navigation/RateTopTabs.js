@@ -30,7 +30,7 @@ const MyTabs = ({navigation}) => {
             paddingTop: '5%',
           }}>
           <TouchableOpacity style={{}} onPress={() => navigation.openDrawer()}>
-            <MaterialCommunity name="menu" size={20} color={COLORS.white} />
+            <MaterialCommunity name="menu" size={25} color={COLORS.white} />
           </TouchableOpacity>
 
           <View>
