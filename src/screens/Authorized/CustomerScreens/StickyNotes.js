@@ -117,6 +117,7 @@ export default function StickyNotes({navigation}) {
               console.log('Success');
               alert('Note Added Successfully');
               setIsUpdated(!isUpdated);
+              setModalVisible(false);
             } else {
               console.log('UnSuccess ', responseJson);
             }
@@ -285,7 +286,7 @@ export default function StickyNotes({navigation}) {
           </View>
         )}
 
-        {allNotes === null && (
+        {loading === true && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
