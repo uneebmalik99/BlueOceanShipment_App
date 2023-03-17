@@ -11,6 +11,7 @@ import AddVehicle from '../screens/Authorized/CustomerScreens/VehicleScreens/Add
 import ContainerDetails from '../screens/Authorized/CustomerScreens/ContainerScreens/ContainerDetails';
 import EditContainer from '../screens/Authorized/CustomerScreens/ContainerScreens/EditContainer';
 import AddContainer from '../screens/Authorized/CustomerScreens/ContainerScreens/AddContainer';
+import StickyNotes from '../screens/Authorized/CustomerScreens/StickyNotes';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ export default function MainStack() {
       <Stack.Screen name="ContainerDetails" component={ContainerDetails} />
       <Stack.Screen name="EditContainer" component={EditContainer} />
       <Stack.Screen name="AddContainer" component={AddContainer} />
+      <Stack.Screen name="StickyNotes" component={StickyNotes} />
     </Stack.Navigator>
   );
 }
