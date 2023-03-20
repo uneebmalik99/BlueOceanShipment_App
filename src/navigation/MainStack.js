@@ -12,6 +12,11 @@ import ContainerDetails from '../screens/Authorized/CustomerScreens/ContainerScr
 import EditContainer from '../screens/Authorized/CustomerScreens/ContainerScreens/EditContainer';
 import AddContainer from '../screens/Authorized/CustomerScreens/ContainerScreens/AddContainer';
 import StickyNotes from '../screens/Authorized/CustomerScreens/StickyNotes';
+import AdminDrawer from './AdminDrawer';
+import ShipmentDetails from '../screens/Authorized/Admin/Shipment/ShipmentDetails';
+import EditShipment from '../screens/Authorized/Admin/Shipment/EditShipment';
+import AdminVehicleDetails from '../screens/Authorized/Admin/Vehicle/AdminVehicleDetails';
+import EditAdminVehicle from '../screens/Authorized/Admin/Vehicle/EditAdminVehicle';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +36,14 @@ export default function MainStack() {
       <Stack.Screen name="EditContainer" component={EditContainer} />
       <Stack.Screen name="AddContainer" component={AddContainer} />
       <Stack.Screen name="StickyNotes" component={StickyNotes} />
+      <Stack.Screen name="AdminDrawer" component={AdminDrawer} />
+      <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} />
+      <Stack.Screen name="EditShipment" component={EditShipment} />
+      <Stack.Screen
+        name="AdminVehicleDetails"
+        component={AdminVehicleDetails}
+      />
+      <Stack.Screen name="EditAdminVehicle" component={EditAdminVehicle} />
     </Stack.Navigator>
   );
 }
