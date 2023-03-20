@@ -245,10 +245,19 @@ export default function CustomerDashboard({navigation}) {
 
       {/* welcome view (username and company name) */}
       <View style={{paddingHorizontal: 20}}>
-        <View>
-          <Text style={{color: COLORS.white, fontSize: 20, fontWeight: 'bold'}}>
-            Welcome,
-          </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View>
+            <Text
+              style={{color: COLORS.white, fontSize: 20, fontWeight: 'bold'}}>
+              Welcome,
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={{left: 5}}
+            onPress={() => navigation.navigate('AdminDrawer')}>
+            <Text style={{color: 'red', fontSize: 16}}>Admin</Text>
+          </TouchableOpacity>
         </View>
         <View
           style={{
