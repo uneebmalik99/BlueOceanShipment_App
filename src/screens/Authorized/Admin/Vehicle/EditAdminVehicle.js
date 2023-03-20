@@ -78,7 +78,7 @@ export default function EditAdminVehicle({navigation, route}) {
               //   setWareHouseImage([]);
               //   setAuctionImage([]);
               //   setPickupImage([]);
-              console.log('Success');
+              console.log('Update Success');
               alert('Update Success');
             } else {
               console.log('UnSuccess ', responseJson);
