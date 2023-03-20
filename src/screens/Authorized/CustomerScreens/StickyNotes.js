@@ -132,6 +132,38 @@ export default function StickyNotes({navigation}) {
     }
   };
 
+  // function for deleting sticky notes
+  const deleteNote = async id => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        console.log('Token retrieved from AsyncStorage:', token);
+
+        const url = `https://app.ecsapshipping.com/api/auth/sticknotes/delete/${id}`;
+
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token,
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.status == 'Success') {
+          console.log('Success');
+          setIsUpdated(!isUpdated);
+          alert('Note Deleted Successfully');
+        } else {
+          console.log('UnSuccess ', data);
+        }
+      }
+    } catch (error) {
+      console.warn('Error while retrieving token from AsyncStorage:', error);
+    }
+  };
+
   function renderNotes({item, index}) {
     return (
       <View style={{marginHorizontal: 5, marginVertical: 5}}>
@@ -159,7 +191,7 @@ export default function StickyNotes({navigation}) {
             </View>
 
             <View style={{marginTop: 5}}>
-              <TouchableOpacity onPress={() => console.log('Note Deleted')}>
+              <TouchableOpacity onPress={() => deleteNote(item.id)}>
                 <Entypo name="cross" size={20} color={'red'} />
               </TouchableOpacity>
             </View>
