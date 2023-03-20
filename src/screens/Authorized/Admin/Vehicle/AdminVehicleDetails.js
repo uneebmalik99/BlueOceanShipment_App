@@ -41,7 +41,7 @@ export default function AdminVehicleDetails({navigation, route}) {
           const data = await response.json();
 
           if (data.status == 'Success') {
-            console.log('Success');
+            console.log('Fetched Vehicle Details Successfully');
             setDetails(data);
             // console.log(JSON.stringify(data));
           } else {
