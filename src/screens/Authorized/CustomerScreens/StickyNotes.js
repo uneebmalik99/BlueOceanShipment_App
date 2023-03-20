@@ -18,11 +18,17 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StickyNotes({navigation}) {
+  // state which recieves the text that user type while creating a note
   const [notesText, setNotesText] = useState('');
+  // this state gets all the data from api (view all sticky notes)
   const [allNotes, setAllNotes] = useState(null);
+  // state for showing and hiding the create note modal
   const [modalVisible, setModalVisible] = useState(false);
+  // state which causes the useEffect to re-render everytime data changes
   const [isUpdated, setIsUpdated] = useState(false);
+  // state for controlling the loader
   const [loading, setLoading] = useState(false);
+  // state where randomly generated colors are saved
   const [itemColors, setItemColors] = useState({});
 
   function getRandomColor() {
@@ -164,6 +170,7 @@ export default function StickyNotes({navigation}) {
     }
   };
 
+  // render notes flatlist function
   function renderNotes({item, index}) {
     return (
       <View style={{marginHorizontal: 5, marginVertical: 5}}>
