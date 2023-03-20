@@ -10,19 +10,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {COLORS, SIZES, TEXT} from '../constants/theme';
-import Customer from '../screens/Authorized/CustomerScreens/CustomerDrawer/Customer';
-import CustomerBottomTabs from '../navigation/CustomerBottomTabs';
-import ContainerTracking from '../screens/Authorized/CustomerScreens/ContainerScreens/ContainerTracking';
-import Reporting from '../screens/Authorized/CustomerScreens/CustomerDrawer/Reporting';
-import Rate from '../screens/Authorized/CustomerScreens/CustomerDrawer/ShippingRates';
-import RateTopTabs from '../navigation/RateTopTabs';
+import AllVehicle from '../screens/Authorized/Admin/Vehicle/AllVehicle';
+import AllShipments from '../screens/Authorized/Admin/Shipment/AllShipments';
 
 const DrawerNav = createDrawerNavigator();
 
-export default function CustomerDrawer() {
+export default function AdminDrawer() {
   return (
     <DrawerNav.Navigator
-      initialRouteName="CustomerBottoms"
+      initialRouteName="All Vehicles"
       screenOptions={{
         headerShown: false,
         drawerActiveBackgroundColor: COLORS.draweritems,
@@ -83,49 +79,24 @@ export default function CustomerDrawer() {
         </View>
       )}>
       <DrawerNav.Screen
-        name="CustomerBottoms"
-        component={CustomerBottomTabs}
+        name="All Vehicles"
+        component={AllVehicle}
         options={{
           drawerIcon: ({color}) => (
-            <Icon name="dashboard" size={25} color={color} />
-          ),
-          drawerItemStyle: {display: 'none'},
-        }}
-      />
-
-      <DrawerNav.Screen
-        name="Rate"
-        component={RateTopTabs}
-        options={{
-          drawerIcon: ({color}) => (
-            <Icon name="star-rate" size={25} color={color} />
+            <Ionicons name="car-sport-sharp" size={25} color={color} />
           ),
         }}
       />
       <DrawerNav.Screen
-        name="Reporting"
-        component={Reporting}
+        name="All Shipments"
+        component={AllShipments}
         options={{
           drawerIcon: ({color}) => (
-            <IconCommunity name="note-text-outline" size={25} color={color} />
-          ),
-        }}
-      />
-      <DrawerNav.Screen
-        name="Customers"
-        component={Customer}
-        options={{
-          drawerIcon: ({color}) => (
-            <Ionicons name="people" size={25} color={color} />
-          ),
-        }}
-      />
-      <DrawerNav.Screen
-        name="Track Container"
-        component={ContainerTracking}
-        options={{
-          drawerIcon: ({color}) => (
-            <Ionicons name="md-boat-sharp" size={25} color={color} />
+            <IconCommunity
+              name="truck-cargo-container"
+              size={25}
+              color={color}
+            />
           ),
         }}
       />
