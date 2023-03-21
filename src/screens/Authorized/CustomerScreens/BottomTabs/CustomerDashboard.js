@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, SIZES, SVGBackground, TEXT} from '../../../../constants/theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Community from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SvgXml} from 'react-native-svg';
 import DashboardItems from '../../../../components/DashboardItems';
 import {Easing} from 'react-native-reanimated';
@@ -244,7 +245,7 @@ export default function CustomerDashboard({navigation}) {
       </View>
 
       {/* welcome view (username and company name) */}
-      <View style={{paddingHorizontal: 20}}>
+      <View style={{paddingHorizontal: 20, paddingTop: 10}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View>
             <Text
@@ -253,11 +254,11 @@ export default function CustomerDashboard({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{left: 5}}
             onPress={() => navigation.navigate('AdminDrawer')}>
             <Text style={{color: 'red', fontSize: 16}}>Admin</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View
           style={{
@@ -271,15 +272,27 @@ export default function CustomerDashboard({navigation}) {
               {userName} to {TEXT.title}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('StickyNotes')}>
-            <Image
-              source={require('../../../../assets/icons/sticky.png')}
-              style={{
-                height: 30,
-                width: 30,
-              }}
-            />
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AdminDrawer')}
+              style={{right: '25%'}}>
+              <Community
+                name="circle-edit-outline"
+                color={COLORS.white}
+                size={25}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('StickyNotes')}>
+              <Image
+                source={require('../../../../assets/icons/sticky.png')}
+                style={{
+                  height: 30,
+                  width: 30,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
