@@ -158,7 +158,7 @@ export default function EditAdminVehicle({navigation, route}) {
         <View style={{alignItems: 'center', marginTop: 20}}>
           {/* lot textinput */}
           <TextInput
-            placeholder={'enter lot'}
+            placeholder={'Enter lot'}
             onChangeText={text => setLot(text)}
             keyboardType={'number-pad'}
             value={lot}
