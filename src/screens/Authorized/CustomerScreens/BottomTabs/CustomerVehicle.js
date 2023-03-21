@@ -24,7 +24,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-element-dropdown';
 
-export default function CustomerVehicle({navigation}) {
+export default function CustomerVehicles({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -87,6 +87,8 @@ export default function CustomerVehicle({navigation}) {
               setVehicles(data);
               setLoading(false);
               console.log('Vehicle fetched successfully');
+
+              // console.log(JSON.stringify(data));
               console.log(data.message);
               // data.data.map(item => console.log(item.warehouse_image));
               setRefreshing(false);
@@ -136,7 +138,6 @@ export default function CustomerVehicle({navigation}) {
               .then(responseJson => {
                 console.log(responseJson.message);
                 if (responseJson.status == 'Success') {
-                  // console.log(responseJson.data[0].warehouse_image[0]);
                   setSearchedVehicle(responseJson);
                   setSearchLoader(false);
                   setVehicles(null);
@@ -195,7 +196,7 @@ export default function CustomerVehicle({navigation}) {
             marginTop: 10,
             paddingHorizontal: 20,
           }}
-          onPress={() => navigation.navigate('VehicleDetails', {Data: item})}>
+          onPress={() => navigation.navigate('VehicleDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -271,7 +272,7 @@ export default function CustomerVehicle({navigation}) {
             marginTop: 10,
             // paddingHorizontal: 10,
           }}
-          onPress={() => navigation.navigate('VehicleDetails', {Data: item})}>
+          onPress={() => navigation.navigate('VehicleDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -753,7 +754,7 @@ export default function CustomerVehicle({navigation}) {
         )}
       </View>
 
-      <View style={{position: 'absolute', right: '5%', bottom: '13%'}}>
+      {/* <View style={{position: 'absolute', right: '5%', bottom: '13%'}}>
         <TouchableOpacity
           style={{
             height: 45,
@@ -766,7 +767,7 @@ export default function CustomerVehicle({navigation}) {
           onPress={() => navigation.navigate('AddVehicle')}>
           <MaterialIcons name="add" size={25} color={COLORS.white} />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
