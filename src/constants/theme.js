@@ -89,4 +89,7 @@ export const SVGVehicle = `<svg width="311" height="655" viewBox="0 0 311 655" f
 <circle cx="258.5" cy="504.5" r="52.5" fill="#BDDAFB" fill-opacity="0.46"/>
 </svg>`;
 
-export default {COLORS, SIZES, TEXT, SVGBackground, SVGVehicle};
+var asset_url = 'https://app.ecsapshipping.com/public/';
+export const IMAGE_URL = asset_url;
+
+export default {COLORS, SIZES, TEXT, SVGBackground, SVGVehicle, IMAGE_URL};
