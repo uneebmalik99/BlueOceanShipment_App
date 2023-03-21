@@ -1,14 +1,61 @@
-import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
-import React from 'react';
-import {SIZES, COLORS} from '../../../../constants/theme';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {SIZES, COLORS, IMAGE_URL} from '../../../../constants/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import VehicleHeader from '../../../../components/VehicleHeader';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useIsFocused} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ContainerDetails({navigation, route}) {
   //data coming from vehicle screens
-  const {Data} = route.params;
+  const {ID} = route.params;
+  console.log(ID);
+  const [details, setDetails] = useState(null);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const ViewDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+          console.log('Token retrieved from AsyncStorage:', token);
+
+          const url = `https://app.ecsapshipping.com/api/auth/shipment/show/${ID}`;
+
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token,
+            },
+          });
+
+          const data = await response.json();
+
+          if (data.status == 'Success') {
+            console.log('Fetched Shipment Details Successfully');
+            setDetails(data);
+            console.log(JSON.stringify(data));
+          } else {
+            console.log('UnSuccess ', data);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+      }
+    };
+
+    ViewDetails();
+  }, [isFocused]);
 
   function renderVehicle({item}) {
     function InsideText({Text1, Text2}) {
@@ -41,7 +88,7 @@ export default function ContainerDetails({navigation, route}) {
             marginTop: 10,
             paddingHorizontal: 20,
           }}
-          onPress={() => navigation.navigate('VehicleDetails', {Data: item})}>
+          onPress={() => navigation.navigate('VehicleDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -135,83 +182,101 @@ export default function ContainerDetails({navigation, route}) {
         GoBack={() => navigation.goBack()}
       /> */}
 
-      <View
-        style={{
-          height: SIZES.windowHeight / 12,
-          width: SIZES.windowWidth,
-          backgroundColor: COLORS.primary,
-          //   borderTopLeftRadius: 30,
-          //   borderTopRightRadius: 30,
-          //   bottom: SIZES.windowHeight / 6.2 - 100,
-          justifyContent: 'center',
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 20,
-          }}>
-          <View>
-            <Text style={{color: COLORS.white, fontSize: 16}}>
-              Container No: {Data.container_no}
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('EditContainer', {ContainerData: Data})
-            }>
-            <MaterialCommunity
-              name="pencil-box-multiple"
-              size={25}
-              color={COLORS.white}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={{alignItems: 'center', marginTop: 20}}>
-        <ContactItems ItemText={'Company Name: ' + Data.company_name} />
-
-        <View style={{marginTop: 15}}>
-          <ContactItems ItemText={'Shippment Type: ' + Data.shipment_type} />
-        </View>
-
-        <View style={{marginTop: 15}}>
-          <ContactItems ItemText={'Booking No: ' + Data.booking_number} />
-        </View>
-      </View>
-
-      <View style={{flex: 1}}>
-        <View
-          style={{
-            height: SIZES.windowHeight / 12,
-            width: SIZES.windowWidth,
-            backgroundColor: COLORS.primary,
-            marginTop: 30,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-          }}>
-          <Text style={{fontSize: 16, color: COLORS.white, fontWeight: 'bold'}}>
-            Vehicles
-          </Text>
-        </View>
-
+      {details != null ? (
         <View>
-          <FlatList
-            data={Data.vehicle}
-            keyExtractor={item => item.id}
-            contentContainerStyle={{
-              paddingBottom: '30%',
-              paddingTop: 10,
-            }}
-            renderItem={renderVehicle}
-            showsVerticalScrollIndicator={false}
-          />
+          <View
+            style={{
+              height: SIZES.windowHeight / 12,
+              width: SIZES.windowWidth,
+              backgroundColor: COLORS.primary,
+              //   borderTopLeftRadius: 30,
+              //   borderTopRightRadius: 30,
+              //   bottom: SIZES.windowHeight / 6.2 - 100,
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 20,
+              }}>
+              <View>
+                <Text style={{color: COLORS.white, fontSize: 16}}>
+                  Container No: {details.data.container_no}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('EditContainer', {
+                    ID: ID,
+                    Details: details,
+                  })
+                }>
+                <MaterialCommunity
+                  name="pencil-box-multiple"
+                  size={25}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={{alignItems: 'center', marginTop: 20}}>
+            <ContactItems
+              ItemText={'Company Name: ' + details.data.company_name}
+            />
+
+            <View style={{marginTop: 15}}>
+              <ContactItems
+                ItemText={'Shippment Type: ' + details.data.shipment_type}
+              />
+            </View>
+
+            <View style={{marginTop: 15}}>
+              <ContactItems
+                ItemText={'Booking No: ' + details.data.booking_number}
+              />
+            </View>
+          </View>
+
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                height: SIZES.windowHeight / 12,
+                width: SIZES.windowWidth,
+                backgroundColor: COLORS.primary,
+                marginTop: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 30,
+              }}>
+              <Text
+                style={{fontSize: 16, color: COLORS.white, fontWeight: 'bold'}}>
+                Vehicles
+              </Text>
+            </View>
+
+            <View>
+              <FlatList
+                data={details.data.vehicle}
+                keyExtractor={item => item.id}
+                contentContainerStyle={{
+                  paddingBottom: '30%',
+                  paddingTop: 10,
+                }}
+                renderItem={renderVehicle}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      ) : (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size={'large'} color={COLORS.primary} />
+        </View>
+      )}
 
       {/* <View
         style={{paddingHorizontal: 20, paddingTop: 20, alignItems: 'center'}}>
