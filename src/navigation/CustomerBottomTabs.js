@@ -20,9 +20,9 @@ export default function CustomerBottomTabs() {
           return (
             <Text
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 'bold',
-                color: focused ? COLORS.primary : 'grey',
+                color: focused ? COLORS.white : 'grey',
                 left: 3,
               }}>
               {route.name}
@@ -34,7 +34,7 @@ export default function CustomerBottomTabs() {
 
           if (route.name === 'Home') {
             iconName = 'home-variant';
-          } else if (route.name === 'Container') {
+          } else if (route.name === 'Shipment') {
             iconName = 'apps-box';
           } else if (route.name === 'Vehicle') {
             iconName = 'car';
@@ -42,24 +42,24 @@ export default function CustomerBottomTabs() {
             iconName = 'file-document';
           }
 
-          const iconColor = focused ? COLORS.primary : 'grey';
+          const iconColor = focused ? COLORS.white : 'grey';
 
-          return <Icon name={iconName} size={25} color={iconColor} />;
+          return <Icon name={iconName} size={20} color={iconColor} />;
         },
         headerShown: false,
       })}
       tabBarOptions={{}}
       appearance={{
-        activeTabBackgrounds: 'rgba(25, 112, 221, 0.3)',
+        activeTabBackgrounds: COLORS.primary,
         // dotSize: 20,
         floating: true,
-        tabBarBackground: '#D3D3D3',
+        tabBarBackground: '#ECF0F1',
         // whenActiveShow: 'both',
         // whenInactiveShow: 'both',
       }}>
       <Tab.Screen name="Home" component={CustomerDashboard} />
-      <Tab.Screen name="Container" component={CustomerContainer} />
       <Tab.Screen name="Vehicle" component={CustomerVehicle} />
+      <Tab.Screen name="Shipment" component={CustomerContainer} />
       <Tab.Screen name="Invoice" component={CustomerInvoice} />
     </Tab.Navigator>
   );
