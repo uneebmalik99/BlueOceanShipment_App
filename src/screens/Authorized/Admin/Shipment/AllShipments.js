@@ -101,7 +101,7 @@ export default function AllShipments({navigation}) {
     function InsideText({Text1, Text2}) {
       return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{width: '36%'}}>
+          <View style={{width: 105}}>
             <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
           </View>
 
@@ -110,7 +110,7 @@ export default function AllShipments({navigation}) {
               style={{
                 color: COLORS.black,
                 fontSize: 12,
-                paddingLeft: 10,
+                // paddingLeft: 10,
                 textAlign: 'justify',
               }}>
               {Text2}
@@ -120,70 +120,78 @@ export default function AllShipments({navigation}) {
       );
     }
     return (
-      <TouchableOpacity
-        style={{
-          height: SIZES.windowHeight / 6.6,
-          width: SIZES.windowWidth,
-          marginTop: 10,
-          paddingHorizontal: 20,
-        }}
-        onPress={() => navigation.navigate('ShipmentDetails', {Data: item})}>
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
+      <View style={{flex: 1, alignItems: 'center'}}>
+        <TouchableOpacity
           style={{
-            borderRadius: 15,
-            flex: 1,
-          }}>
-          {/* view for holding image and vehicle information */}
-          <View
+            height: SIZES.windowHeight / 6.6,
+            width: SIZES.windowWidth,
+            marginTop: 10,
+            paddingHorizontal: 20,
+          }}
+          onPress={() => navigation.navigate('ShipmentDetails', {ID: item.id})}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
             style={{
-              paddingHorizontal: 10,
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              borderRadius: 15,
               flex: 1,
-              flexDirection: 'row',
             }}>
-            <View>
-              {/* <InsideText Text1={'Company Name: '} Text2={item.company_name} /> */}
-              <Text style={{color: COLORS.white, fontSize: 14}}>
-                {item.company_name}
-              </Text>
-              <InsideText Text1={'Container No: '} Text2={item.container_no} />
-              <InsideText Text1={'Booking No: '} Text2={item.booking_number} />
-              <InsideText
-                Text1={'Destination: '}
-                Text2={item.destination_country}
-              />
-            </View>
-
-            <View style={{position: 'absolute', right: '3%'}}>
-              {!item.loading_image || item.loading_image.length === 0 ? (
-                <View
-                  style={{
-                    height: 50,
-                    width: 70,
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{color: COLORS.black}}>No Image</Text>
-                </View>
-              ) : (
-                <Image
-                  source={{
-                    uri: asset_url + item.loading_image[0].name,
-                  }}
-                  resizeMode="cover"
-                  style={{height: 50, width: 70, borderRadius: 10}}
+            {/* view for holding image and vehicle information */}
+            <View
+              style={{
+                paddingHorizontal: 10,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flex: 1,
+                flexDirection: 'row',
+              }}>
+              <View>
+                {/* <InsideText Text1={'Company Name: '} Text2={item.company_name} /> */}
+                <Text style={{color: COLORS.white, fontSize: 14}}>
+                  {item.company_name}
+                </Text>
+                <InsideText
+                  Text1={'Container No: '}
+                  Text2={item.container_no}
                 />
-              )}
+                <InsideText
+                  Text1={'Booking No: '}
+                  Text2={item.booking_number}
+                />
+                <InsideText
+                  Text1={'Destination: '}
+                  Text2={item.destination_country}
+                />
+              </View>
+
+              <View style={{position: 'absolute', right: '3%'}}>
+                {!item.loading_image || item.loading_image.length === 0 ? (
+                  <View
+                    style={{
+                      height: 50,
+                      width: 70,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text style={{color: COLORS.black}}>No Image</Text>
+                  </View>
+                ) : (
+                  <Image
+                    source={{
+                      uri: asset_url + item.loading_image[0].name,
+                    }}
+                    resizeMode="cover"
+                    style={{height: 50, width: 70, borderRadius: 10}}
+                  />
+                )}
+              </View>
             </View>
-          </View>
-        </LinearGradient>
-      </TouchableOpacity>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -197,7 +205,7 @@ export default function AllShipments({navigation}) {
             width: SIZES.windowWidth / 2.1,
             marginTop: 10,
           }}
-          onPress={() => navigation.navigate('ContainerDetails', {Data: item})}>
+          onPress={() => navigation.navigate('ShipmentDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
