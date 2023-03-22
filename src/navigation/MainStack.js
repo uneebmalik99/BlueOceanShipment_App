@@ -3,7 +3,7 @@ import UnAuthDrawer from './UnAuthDrawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import CustomerDrawer from './CustomerDrawer';
-import Notifications from '../screens/Authorized/CustomerScreens/Notifications';
+import Notifications from '../screens/Authorized/CustomerScreens/Notifications/Notifications';
 import CustomerProfile from '../screens/Authorized/CustomerScreens/CustomerProfile';
 import VehicleDetails from '../screens/Authorized/CustomerScreens/VehicleScreens/VehicleDetails';
 import EditVehicleDetails from '../screens/Authorized/CustomerScreens/VehicleScreens/EditVehicleDetails';
@@ -17,6 +17,7 @@ import ShipmentDetails from '../screens/Authorized/Admin/Shipment/ShipmentDetail
 import EditShipment from '../screens/Authorized/Admin/Shipment/EditShipment';
 import AdminVehicleDetails from '../screens/Authorized/Admin/Vehicle/AdminVehicleDetails';
 import EditAdminVehicle from '../screens/Authorized/Admin/Vehicle/EditAdminVehicle';
+import CreateNotifications from '../screens/Authorized/CustomerScreens/Notifications/CreateNotifications';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,10 @@ export default function MainStack() {
         component={AdminVehicleDetails}
       />
       <Stack.Screen name="EditAdminVehicle" component={EditAdminVehicle} />
+      <Stack.Screen
+        name="CreateNotifications"
+        component={CreateNotifications}
+      />
     </Stack.Navigator>
   );
 }
