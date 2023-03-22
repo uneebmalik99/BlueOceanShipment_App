@@ -1,6 +1,12 @@
-import {Dimensions} from 'react-native';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import {Dimensions, Platform} from 'react-native';
+const windowWidth =
+  Platform.OS === 'android'
+    ? Dimensions.get('window').width
+    : Dimensions.get('screen').width;
+const windowHeight =
+  Platform.OS === 'android'
+    ? Dimensions.get('window').height
+    : Dimensions.get('screen').height;
 
 export const COLORS = {
   // base colors
