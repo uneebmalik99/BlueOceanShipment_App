@@ -5,14 +5,16 @@ import {
   TextInput,
   Image,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import AppBackground from '../../../../components/AppBackground';
 import {SIZES, COLORS, SVGBackground} from '../../../../constants/theme';
 import {SvgXml} from 'react-native-svg';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CustomerData = [
   {
@@ -38,6 +40,55 @@ const CustomerData = [
 ];
 
 export default function Customer({navigation}) {
+  const [allCustomers, setAllCustomers] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setAllCustomers(null);
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            const response = await fetch(
+              'https://app.ecsapshipping.com/api/auth/customer/View/AllCustomers',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + token,
+                },
+              },
+            );
+
+            console.log('Fetching customers...');
+            const data = await response.json();
+
+            if (data.success == 'Success') {
+              setAllCustomers(data);
+              setLoading(false);
+              console.log('Customers fetched successfully');
+              console.log(data.success);
+            } else {
+              console.log('Error fetching customers');
+              setLoading(false);
+            }
+          } catch (error) {
+            console.error(error);
+            setLoading(false);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const renderCustomers = ({item}) => {
     return (
       <View style={{flex: 1, paddingTop: 10}}>
@@ -64,7 +115,7 @@ export default function Customer({navigation}) {
               }}>
               <View>
                 <Image
-                  source={item.cover}
+                  source={require('../../../../assets/images/model.jpg')}
                   resizeMode="contain"
                   style={{height: 50, width: 50, borderRadius: 25}}
                 />
@@ -72,6 +123,9 @@ export default function Customer({navigation}) {
               <View style={{paddingLeft: 20}}>
                 <Text style={{fontSize: 16, color: COLORS.white}}>
                   {item.name}
+                </Text>
+                <Text style={{fontSize: 14, color: COLORS.black}}>
+                  Username: {item.username}
                 </Text>
               </View>
             </View>
@@ -207,16 +261,24 @@ export default function Customer({navigation}) {
           elevation: 3,
           alignItems: 'center',
         }}>
-        <FlatList
-          data={CustomerData}
-          keyExtractor={item => item.id}
-          contentContainerStyle={{
-            paddingBottom: '30%',
-            paddingTop: 10,
-          }}
-          renderItem={renderCustomers}
-          showsVerticalScrollIndicator={false}
-        />
+        {allCustomers != null && (
+          <FlatList
+            data={allCustomers.data}
+            keyExtractor={item => item.id}
+            contentContainerStyle={{
+              paddingBottom: '30%',
+              paddingTop: 10,
+            }}
+            renderItem={renderCustomers}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+        {loading == true && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size={'large'} color={COLORS.primary} />
+          </View>
+        )}
       </View>
     </View>
   );
