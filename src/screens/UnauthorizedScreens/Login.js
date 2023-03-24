@@ -1,4 +1,5 @@
 import {
+  ScrollView,
   View,
   Text,
   ActivityIndicator,
@@ -6,8 +7,9 @@ import {
   TouchableOpacity,
   Animated,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {View as MotiView, AnimatePresence} from 'moti';
 import {COLORS, SIZES, TEXT} from '../../constants/theme';
@@ -35,6 +37,20 @@ export default function Login({navigation}) {
   const [checkPassword, setCheckPassword] = useState(true);
 
   const [isFormValid, setIsFormValid] = useState(true);
+  const animation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [animation]);
+
+  const translateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [500, 0],
+  });
 
   const handleEmailFocus = () => {
     setEmailFocused(true);
@@ -176,287 +192,196 @@ export default function Login({navigation}) {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <View
-        style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
-        <AppBackground />
-      </View>
-      {/* first circle at at left corner */}
-      <MotiView
-        from={{translateX: 0, translateY: 0}}
-        animate={{
-          translateX: [100, 200, 50, 300, 250],
-          translateY: [0, 100, -50, 500, 0],
-        }}
-        transition={{type: 'timing', duration: 3000, loop: true}}
-        style={{
-          width: '50%',
-          height: '26%',
-          backgroundColor: 'rgba(133, 180, 235, 0.32)',
-          position: 'absolute',
-          borderRadius: 100,
-        }}
-      />
-
-      {/* second circle at top right corner */}
-      <MotiView
-        from={{translateX: 0, translateY: 0}}
-        animate={{
-          translateX: [
-            SIZES.windowWidth / 12,
-            SIZES.windowWidth / 10,
-            SIZES.windowWidth / 8,
-            SIZES.windowWidth / 6,
-            SIZES.windowWidth / 4,
-          ],
-          translateY: [
-            SIZES.windowHeight / 12,
-            SIZES.windowHeight / 10,
-            SIZES.windowHeight / 8,
-            SIZES.windowHeight / 6,
-            SIZES.windowHeight / 4,
-          ],
-          // perspective: 100,
-        }}
-        transition={{type: 'timing', duration: 3000, loop: true}}
-        style={{
-          width: SIZES.windowWidth / 1.8,
-          height: SIZES.windowHeight / 3.5,
-          backgroundColor: 'rgba(133, 180, 235, 0.32)',
-          position: 'absolute',
-          borderRadius: SIZES.windowHeight / 3,
-          right: 0,
-          top: 0,
-          left: 0,
-          // right: -SIZES.windowWidth / 4.5,
-          // top: -SIZES.windowHeight / 18,
-        }}
-      />
-
-      {/* third circle at middle left*/}
-      <MotiView
-        from={{translateX: 0, translateY: 0}}
-        animate={{
-          translateX: [200, 100, 250, 300, 250],
-          translateY: [-100, 0, 150, 500, 0],
-        }}
-        transition={{type: 'timing', duration: 3000, loop: true}}
-        style={{
-          width: SIZES.windowWidth / 2.2,
-          height: SIZES.windowHeight / 4.6,
-          backgroundColor: 'rgba(133, 180, 235, 0.32)',
-          position: 'absolute',
-          borderRadius: SIZES.windowHeight / 3,
-          left: -SIZES.windowWidth / 14,
-          bottom: SIZES.windowHeight / 3.5,
-        }}
-      />
-
-      {/* fourth circle at middle of screen*/}
-      <MotiView
-        from={{translateX: 0, translateY: 0}}
-        animate={{
-          translateX: [-50, -100, 50, 300, 250],
-          translateY: [-50, -100, 0, 200, 0],
-        }}
-        transition={{type: 'timing', duration: 3000, loop: true}}
-        style={{
-          width: SIZES.windowWidth / 3.5,
-          height: SIZES.windowHeight / 7,
-          backgroundColor: 'rgba(133, 180, 235, 0.32)',
-          position: 'absolute',
-          borderRadius: SIZES.windowHeight / 3,
-          left: SIZES.windowWidth / 3.3,
-          bottom: SIZES.windowHeight / 10,
-        }}
-      />
-
-      <View>
-        <TouchableOpacity
-          style={{paddingTop: 20, paddingLeft: 20}}
-          onPress={() => navigation.openDrawer()}>
-          <Icon name="menu" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      <Animated.View
+    <ImageBackground
+      style={{flex: 1}}
+      source={require('../../assets/back2.jpg')}>
+      <Animated.ScrollView
         style={[
-          {alignItems: 'center', justifyContent: 'center'},
-          loginViewStyle,
+          {
+            backgroundColor: COLORS.white,
+            position: 'absolute',
+            width: '100%',
+            height: '70%',
+            bottom: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            paddingHorizontal: 20,
+          },
+          {transform: [{translateY}]},
         ]}>
-        <Animated.Text
+        <View style={{marginTop: 20}}>
+          <Text style={{fontWeight: 'bold', color: COLORS.black, fontSize: 16}}>
+            Welcome to Blue Ocean Shipping
+          </Text>
+          <Text style={{color: 'grey', marginTop: 5}}>Sign in to continue</Text>
+        </View>
+
+        <View
           style={{
-            color: 'white',
-            fontSize: textAnimation,
-            textAlign: 'center',
-            paddingHorizontal: 10,
+            marginTop: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: emailFocused ? COLORS.primary : 'grey',
+            flexDirection: 'row',
+            alignItems: 'center',
           }}>
-          Welcome to {TEXT.title}
-        </Animated.Text>
-        {button && (
+          <Icon
+            name="email"
+            size={20}
+            color={emailFocused ? COLORS.primary : 'grey'}
+          />
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                paddingLeft: 10,
+                top: '20%',
+              }}>
+              <Text style={{color: COLORS.black, fontWeight: 'bold'}}>
+                EMAIL
+              </Text>
+            </View>
+            <TextInput
+              placeholder="Username or email"
+              keyboardType="email-address"
+              placeholderTextColor={emailFocused ? COLORS.primary : 'grey'}
+              style={{
+                flex: 1,
+                paddingLeft: 10,
+                color: 'black',
+                borderColor: emailFocused ? COLORS.primary : 'black',
+              }}
+              ref={emailRef}
+              onChangeText={text => handleEmail(text)}
+              onFocus={handleEmailFocus}
+              onBlur={handleEmailBlur}
+            />
+          </View>
+        </View>
+        {checkEmail ? null : (
+          <Text
+            style={{
+              color: 'red',
+              alignSelf: 'flex-start',
+              paddingLeft: '8%',
+            }}>
+            Invalid Email
+          </Text>
+        )}
+
+        <View
+          style={{
+            marginTop: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: passwordFocused ? COLORS.primary : 'grey',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Icon
+            name="lock"
+            size={20}
+            color={passwordFocused ? COLORS.primary : 'grey'}
+          />
+          <View style={{flex: 1}}>
+            <View
+              style={{
+                paddingLeft: 10,
+                top: '20%',
+              }}>
+              <Text style={{color: COLORS.black, fontWeight: 'bold'}}>
+                PASSWORD
+              </Text>
+            </View>
+            <TextInput
+              placeholder="Password"
+              keyboardType="visible-password"
+              placeholderTextColor={passwordFocused ? COLORS.primary : 'grey'}
+              style={{
+                flex: 1,
+                borderBottomColor: passwordFocused ? COLORS.primary : 'grey',
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingLeft: 10,
+              }}
+              ref={passwordRef}
+              onChangeText={text => handlePassword(text)}
+              onFocus={handlePasswordFocus}
+              onBlur={handlePasswordBlur}
+            />
+          </View>
+        </View>
+        {checkPassword ? null : (
+          <Text
+            style={{
+              color: 'red',
+              alignSelf: 'flex-start',
+              paddingLeft: '8%',
+            }}>
+            Invalid Password
+          </Text>
+        )}
+
+        <View style={{marginTop: 20, alignItems: 'center'}}>
           <TouchableOpacity
-            onPress={handleLoginPress}
+            disabled={isFormValid}
             style={{
               width: SIZES.windowWidth / 1.2,
-              height: SIZES.windowHeight / 12,
-              marginTop: 10,
-              borderRadius: 13,
+              height: SIZES.windowHeight / 16,
+              backgroundColor: isFormValid ? 'grey' : COLORS.primary,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 10,
+            }}
+            onPress={LoginFunction}>
+            <Text
+              style={{
+                color: COLORS.white,
+                fontSize: 16,
+              }}>
+              Sign in
+            </Text>
+          </TouchableOpacity>
+
+          {isLoading == true && (
+            <View>
+              <ActivityIndicator
+                size={'large'}
+                color={COLORS.primary}
+                animating={true}
+              />
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={{alignItems: 'center', marginTop: 20}}
+            onPress={() => console.log('Forgot Password?')}>
+            <Text style={{color: 'grey', fontSize: 14}}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{marginTop: 20, alignItems: 'center'}}>
+          <TouchableOpacity
+            // disabled={isFormValid}
+            style={{
+              width: SIZES.windowWidth / 1.2,
+              height: SIZES.windowHeight / 16,
               backgroundColor: COLORS.white,
               alignItems: 'center',
               justifyContent: 'center',
-            }}>
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: 'grey',
+            }}
+            onPress={() => console.log('SignUp Pressed')}>
             <Text
               style={{
-                color: COLORS.primary,
-                fontSize: 18,
-                fontWeight: 'bold',
+                color: COLORS.black,
+                fontSize: 16,
               }}>
-              Get Started
+              Sign up
             </Text>
           </TouchableOpacity>
-        )}
-      </Animated.View>
-
-      <AnimatePresence exitBeforeEnter>
-        {showLogin && (
-          <MotiView
-            key="yellow"
-            from={{opacity: 0, scale: 0.9}}
-            animate={{opacity: 1, scale: 1}}
-            exit={{opacity: 0, scale: 0.9}}
-            style={{alignItems: 'center', justifyContent: 'center', flex: 1}}
-            transition={{type: 'timing', delay: 1000, duration: 500}}>
-            <View
-              style={{
-                height: SIZES.windowHeight / 4,
-                width: SIZES.windowWidth / 1.2,
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                borderRadius: 20,
-                shadowColor: 'blue',
-                justifyContent: 'center',
-                elevation: 3,
-              }}>
-              <View style={{paddingLeft: 10, bottom: 15}}>
-                <Text
-                  style={{
-                    color: COLORS.primary,
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                  }}>
-                  Sign in
-                </Text>
-              </View>
-
-              <View style={{alignItems: 'center'}}>
-                <TextInput
-                  placeholder="Username or Email"
-                  keyboardType="email-address"
-                  placeholderTextColor={emailFocused ? COLORS.primary : 'grey'}
-                  style={{
-                    height: SIZES.windowHeight / 16,
-                    width: SIZES.windowWidth / 1.4,
-                    borderWidth: 1,
-                    paddingLeft: 10,
-                    borderRadius: 10,
-                    color: 'black',
-                    borderColor: emailFocused ? COLORS.primary : 'black',
-                  }}
-                  ref={emailRef}
-                  onChangeText={text => handleEmail(text)}
-                  onFocus={handleEmailFocus}
-                  onBlur={handleEmailBlur}
-                />
-
-                {checkEmail ? null : (
-                  <Text
-                    style={{
-                      color: 'red',
-                      alignSelf: 'flex-start',
-                      paddingLeft: '8%',
-                    }}>
-                    Invalid Email
-                  </Text>
-                )}
-                <TextInput
-                  placeholder="Password"
-                  keyboardType="visible-password"
-                  placeholderTextColor={
-                    passwordFocused ? COLORS.primary : 'grey'
-                  }
-                  style={{
-                    height: SIZES.windowHeight / 16,
-                    width: SIZES.windowWidth / 1.4,
-                    borderWidth: 1,
-                    paddingLeft: 10,
-                    borderRadius: 10,
-                    marginTop: 10,
-                    color: 'black',
-                    borderColor: passwordFocused ? COLORS.primary : 'black',
-                  }}
-                  ref={passwordRef}
-                  onChangeText={text => handlePassword(text)}
-                  onFocus={handlePasswordFocus}
-                  onBlur={handlePasswordBlur}
-                />
-
-                {checkPassword ? null : (
-                  <Text
-                    style={{
-                      color: 'red',
-                      alignSelf: 'flex-start',
-                      paddingLeft: '8%',
-                    }}>
-                    Invalid Password
-                  </Text>
-                )}
-              </View>
-            </View>
-
-            <View style={{marginTop: 20}}>
-              <TouchableOpacity
-                disabled={isFormValid}
-                style={{
-                  width: SIZES.windowWidth / 1.2,
-                  height: SIZES.windowHeight / 16,
-                  backgroundColor: isFormValid
-                    ? 'grey'
-                    : 'rgba(255, 255, 255, 0.8)',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 10,
-                }}
-                onPress={LoginFunction}>
-                <Text
-                  style={{
-                    color: COLORS.black,
-                    fontSize: 16,
-                  }}>
-                  Sign in
-                </Text>
-              </TouchableOpacity>
-
-              {isLoading == true && (
-                <View>
-                  <ActivityIndicator
-                    size={'large'}
-                    color={COLORS.white}
-                    animating={true}
-                  />
-                </View>
-              )}
-
-              <TouchableOpacity
-                style={{alignItems: 'center', marginTop: 5}}
-                onPress={() => console.log('Forgot Password?')}>
-                <Text style={{color: 'white', fontSize: 16}}>
-                  Forgot Password?
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </MotiView>
-        )}
-      </AnimatePresence>
-    </View>
+        </View>
+      </Animated.ScrollView>
+    </ImageBackground>
   );
 }
 
