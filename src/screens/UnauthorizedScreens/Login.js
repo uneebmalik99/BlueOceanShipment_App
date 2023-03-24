@@ -39,6 +39,8 @@ export default function Login({navigation}) {
   const [isFormValid, setIsFormValid] = useState(true);
   const animation = useRef(new Animated.Value(0)).current;
 
+  const [secureEntry, setSecureEntry] = useState(false);
+
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
@@ -292,7 +294,7 @@ export default function Login({navigation}) {
             </View>
             <TextInput
               placeholder="Password"
-              keyboardType="visible-password"
+              // keyboardType="visible-password"
               placeholderTextColor={passwordFocused ? COLORS.primary : 'grey'}
               style={{
                 flex: 1,
@@ -305,8 +307,13 @@ export default function Login({navigation}) {
               onChangeText={text => handlePassword(text)}
               onFocus={handlePasswordFocus}
               onBlur={handlePasswordBlur}
+              secureTextEntry={secureEntry}
             />
           </View>
+
+          <TouchableOpacity onPress={() => setSecureEntry(!secureEntry)}>
+            <Icon name="eye" size={20} color={'grey'} />
+          </TouchableOpacity>
         </View>
         {checkPassword ? null : (
           <Text
