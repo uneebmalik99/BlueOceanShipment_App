@@ -25,6 +25,7 @@ export default function CustomerDrawer() {
       initialRouteName="CustomerBottoms"
       screenOptions={{
         headerShown: false,
+        // drawerStyle: {borderTopRightRadius: 100},
         drawerActiveBackgroundColor: COLORS.draweritems,
         drawerInactiveBackgroundColor: COLORS.white,
         drawerActiveTintColor: COLORS.white,
@@ -39,7 +40,12 @@ export default function CustomerDrawer() {
         overlayColor: 'rgba(30, 138, 225, 0.5)',
       }}
       drawerContent={({...props}) => (
-        <View style={{flex: 1, backgroundColor: '#D6E3F3'}}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#D6E3F3',
+            // borderTopRightRadius: 100,
+          }}>
           <ImageBackground
             source={require('../assets/images/customerDrawer.png')}
             style={{

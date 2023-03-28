@@ -11,15 +11,19 @@ import {
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import {View as MotiView, AnimatePresence} from 'moti';
 import {COLORS, SIZES, TEXT} from '../../constants/theme';
 import AppBackground from '../../components/AppBackground';
 import {Easing} from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Biometrics, {BiometryType, BiometryTypes} from 'react-native-biometrics';
 
 export default function Login({navigation}) {
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+
+  var value = {};
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -35,6 +39,156 @@ export default function Login({navigation}) {
   const animation = useRef(new Animated.Value(0)).current;
 
   const [secureEntry, setSecureEntry] = useState(true);
+
+  // states for Biometrics atuhtentication
+  const ReactNativeBiometrics = new Biometrics();
+  const [isFirstTimeLogin, setIsFirstTimeLogin] = useState(true);
+  const [isBiometricsSupported, setIsBiometricsSupported] = useState(false);
+  const [biometricType, setBiometricType] = useState(null);
+
+  useEffect(() => {
+    ReactNativeBiometrics.isSensorAvailable().then(result => {
+      setIsBiometricsSupported(result.available);
+      setBiometricType(result.biometryType);
+      console.log('Biometrics Supported');
+    });
+  }, []);
+
+  const storeLoginCredentials = async () => {
+    try {
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('password', password);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    AsyncStorage.multiGet(['email', 'password']).then(result => {
+      setIsFirstTimeLogin(!result);
+      if (!result) {
+        console.log('No authentication data');
+      } else {
+        console.log('Found authentication data: ' + result);
+      }
+    });
+  }, []);
+
+  const BiometricAuthentication = async () => {
+    const Email = await AsyncStorage.getItem('email');
+    const Password = await AsyncStorage.getItem('password');
+    if (!Email || !Password) {
+      console.log('Please log in with email and password for the first time');
+      alert('Please log in with email and password for the first time');
+    } else {
+      setIsLoading(true);
+      var url = 'https://app.ecsapshipping.com/api/auth/login';
+
+      (value.email = Email), (value.password = Password);
+      console.log('Login_key_vale ', value);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(value),
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson.status == 'Success') {
+            // console.log(JSON.stringify(responseJson));
+            if (isFirstTimeLogin) {
+              storeLoginCredentials();
+            }
+            console.log(responseJson.data.token);
+            const AsyncData = [
+              ['token', responseJson.data.token],
+              ['name', responseJson.data.data.name],
+              ['username', responseJson.data.data.username],
+              ['email', responseJson.data.data.email],
+              ['company_name', responseJson.data.data.company_name],
+              ['company_email', responseJson.data.data.company_email],
+              ['status', responseJson.data.data.status],
+              ['role_id', responseJson.data.data.role_id],
+            ];
+
+            AsyncStorage.multiSet(AsyncData)
+              .then(() => {
+                console.log('Data Saved Succefully');
+              })
+              .catch(error => {
+                console.log('Error Saving Data');
+              });
+
+            console.log('Login Success');
+            setIsLoading(false);
+            emailRef.current.clear();
+            passwordRef.current.clear();
+            setEmail('');
+            setPassword('');
+            setIsFormValid(true);
+            // console.log(responseJson.data.token);
+            navigation.navigate('CustomerDrawer');
+          } else {
+            console.log('Login Error');
+          }
+        })
+        .catch(error => {
+          setIsLoading(false);
+          alert('Error while login' + error);
+          console.warn(error);
+        });
+      console.log('successful biometrics provided');
+    }
+  };
+
+  // login authentication by using Biometrics (if they are available)
+  const handleBiometrics = async () => {
+    if (isBiometricsSupported && biometricType === BiometryTypes.TouchID) {
+      console.log('TouchID is supported');
+      ReactNativeBiometrics.simplePrompt({
+        promptMessage: 'Confirm Fingerprint',
+      })
+        .then(resultObject => {
+          const {success} = resultObject;
+          if (success) {
+            BiometricAuthentication();
+          } else {
+            console.log('user cancelled biometric prompt');
+          }
+        })
+        .catch(() => {
+          console.log('biometrics failed');
+        });
+    } else if (
+      isBiometricsSupported &&
+      biometricType === BiometryTypes.FaceID
+    ) {
+      console.log('FaceID is supported');
+      BiometricAuthentication();
+    } else if (
+      isBiometricsSupported &&
+      biometricType === BiometryTypes.Biometrics
+    ) {
+      console.log('Biometrics is supported');
+      ReactNativeBiometrics.simplePrompt({
+        promptMessage: 'Scan fingerprint or face id',
+      })
+        .then(resultObject => {
+          const {success} = resultObject;
+          if (success) {
+            BiometricAuthentication();
+          } else {
+            console.log('user cancelled biometric prompt');
+          }
+        })
+        .catch(() => {
+          console.log('biometrics failed');
+        });
+    } else {
+      console.log('Biometric authentication not available on this device');
+      alert('Biometric authentication not available on this device');
+    }
+  };
 
   useEffect(() => {
     Animated.timing(animation, {
@@ -61,13 +215,14 @@ export default function Login({navigation}) {
   };
   const handlePasswordBlur = () => setPasswordFocused(false);
 
+  // login function by clicking on sign in button and entering username and password
   const LoginFunction = async () => {
     if (email.length == 0 || password.length == 0) {
       return console.log('Please enter email and password');
     } else {
       setIsLoading(true);
       var url = 'https://app.ecsapshipping.com/api/auth/login';
-      var value = {};
+
       (value.email = email), (value.password = password);
       console.log('Login_key_vale ', value);
       fetch(url, {
@@ -80,10 +235,14 @@ export default function Login({navigation}) {
         .then(response => response.json())
         .then(responseJson => {
           if (responseJson.status == 'Success') {
-            // console.log(JSON.stringify(responseJson));
+            if (isFirstTimeLogin) {
+              console.log('isFirstTimeLogin ran');
+              storeLoginCredentials();
+            }
             console.log(responseJson.data.token);
             const AsyncData = [
               ['token', responseJson.data.token],
+              ['password', password],
               ['name', responseJson.data.data.name],
               ['username', responseJson.data.data.username],
               ['email', responseJson.data.data.email],
@@ -93,7 +252,6 @@ export default function Login({navigation}) {
               ['role_id', responseJson.data.data.role_id],
             ];
 
-            // console.log(AsyncData[0]);
             AsyncStorage.multiSet(AsyncData)
               .then(() => {
                 console.log('Data Saved Succefully');
@@ -102,16 +260,6 @@ export default function Login({navigation}) {
                 console.log('Error Saving Data');
               });
 
-            // AsyncStorage.setItem('token', responseJson.data.token)
-            //   .then(() => {
-            //     console.log('Token saved to AsyncStorage');
-            //   })
-            //   .catch(error => {
-            //     console.warn(
-            //       'Error while saving token to AsyncStorage:',
-            //       error,
-            //     );
-            //   });
             console.log('Login Success');
             setIsLoading(false);
             emailRef.current.clear();
@@ -395,11 +543,17 @@ export default function Login({navigation}) {
           </Text>
         )}
 
-        <View style={{marginTop: 20, alignItems: 'center'}}>
+        <View
+          style={{
+            marginTop: 20,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
           <TouchableOpacity
             disabled={isFormValid}
             style={{
-              width: SIZES.windowWidth / 1.2,
+              width: SIZES.windowWidth / 1.3,
               height: SIZES.windowHeight / 16,
               backgroundColor: isFormValid ? 'grey' : COLORS.primary,
               alignItems: 'center',
@@ -426,45 +580,29 @@ export default function Login({navigation}) {
             )}
           </TouchableOpacity>
 
+          {/* biometric authenticaion */}
           <TouchableOpacity
-            style={{alignItems: 'center', marginTop: 20}}
-            onPress={() => console.log('Forgot Password?')}>
-            <Text style={{color: 'grey', fontSize: 14}}>Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{marginTop: 20, alignItems: 'center'}}>
-          <TouchableOpacity
-            // disabled={isFormValid}
             style={{
-              width: SIZES.windowWidth / 1.2,
+              width: SIZES.windowWidth / 9,
               height: SIZES.windowHeight / 16,
-              backgroundColor: COLORS.white,
+              borderWidth: 1,
+              borderColor: COLORS.primary,
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 10,
-              borderWidth: 1,
-              borderColor: 'grey',
             }}
-            onPress={() => console.log('SignUp Pressed')}>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 16,
-              }}>
-              Sign up
-            </Text>
+            onPress={handleBiometrics}>
+            <IonIcon name="finger-print" size={20} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
+
+        {/* forgot password button */}
+        <TouchableOpacity
+          style={{alignItems: 'center', marginTop: 20}}
+          onPress={() => console.log('Forgot Password?')}>
+          <Text style={{color: 'grey', fontSize: 14}}>Forgot Password?</Text>
+        </TouchableOpacity>
       </Animated.ScrollView>
     </View>
   );
 }
-
-const style = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-});
