@@ -158,9 +158,101 @@ export default function Login({navigation}) {
   };
 
   return (
-    <ImageBackground
-      style={{flex: 1}}
-      source={require('../../assets/images/ship.jpg')}>
+    <View style={{flex: 1}}>
+      <View
+        style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
+        <AppBackground />
+      </View>
+
+      {/* first circle at at left corner */}
+      <MotiView
+        from={{translateX: 0, translateY: 0}}
+        animate={{
+          translateX: [100, 200, 50, 300, 250],
+          translateY: [0, 100, -50, 500, 0],
+        }}
+        transition={{type: 'timing', duration: 3000, loop: true}}
+        style={{
+          width: 200,
+          height: 200,
+          backgroundColor: 'rgba(133, 180, 235, 0.32)',
+          position: 'absolute',
+          borderRadius: 100,
+        }}
+      />
+
+      {/* second circle at top right corner */}
+      <MotiView
+        from={{translateX: 0, translateY: 0}}
+        animate={{
+          translateX: [
+            SIZES.windowWidth / 12,
+            SIZES.windowWidth / 10,
+            SIZES.windowWidth / 8,
+            SIZES.windowWidth / 6,
+            SIZES.windowWidth / 4,
+          ],
+          translateY: [
+            SIZES.windowHeight / 12,
+            SIZES.windowHeight / 10,
+            SIZES.windowHeight / 8,
+            SIZES.windowHeight / 6,
+            SIZES.windowHeight / 4,
+          ],
+          // perspective: 100,
+        }}
+        transition={{type: 'timing', duration: 3000, loop: true}}
+        style={{
+          width: 150,
+          height: 150,
+          backgroundColor: 'rgba(133, 180, 235, 0.32)',
+          position: 'absolute',
+          borderRadius: 75,
+          right: 0,
+          top: 0,
+          left: 0,
+          // right: -SIZES.windowWidth / 4.5,
+          // top: -SIZES.windowHeight / 18,
+        }}
+      />
+
+      {/* third circle at middle left*/}
+      <MotiView
+        from={{translateX: 0, translateY: 0}}
+        animate={{
+          translateX: [200, 100, 250, 300, 250],
+          translateY: [-100, 0, 150, 500, 0],
+        }}
+        transition={{type: 'timing', duration: 3000, loop: true}}
+        style={{
+          width: 230,
+          height: 230,
+          backgroundColor: 'rgba(133, 180, 235, 0.32)',
+          position: 'absolute',
+          borderRadius: 150,
+          left: -SIZES.windowWidth / 14,
+          bottom: SIZES.windowHeight / 3.5,
+        }}
+      />
+
+      {/* fourth circle at middle of screen*/}
+      <MotiView
+        from={{translateX: 0, translateY: 0}}
+        animate={{
+          translateX: [-50, -100, 50, 300, 250],
+          translateY: [-50, -100, 0, 200, 0],
+        }}
+        transition={{type: 'timing', duration: 3000, loop: true}}
+        style={{
+          width: 100,
+          height: 100,
+          backgroundColor: 'rgba(133, 180, 235, 0.32)',
+          position: 'absolute',
+          borderRadius: 50,
+          left: SIZES.windowWidth / 3.3,
+          bottom: SIZES.windowHeight / 10,
+        }}
+      />
       <View>
         <TouchableOpacity
           style={{paddingTop: 20, paddingLeft: 20}}
@@ -365,7 +457,7 @@ export default function Login({navigation}) {
           </TouchableOpacity>
         </View>
       </Animated.ScrollView>
-    </ImageBackground>
+    </View>
   );
 }
 
