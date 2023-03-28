@@ -619,7 +619,7 @@ export default function CustomerVehicles({navigation}) {
               }}
               onPress={() =>
                 navigation.navigate('VehicleDetails', {
-                  Data: searchedVehicle.data[0],
+                  ID: searchedVehicle.data[0].id,
                 })
               }>
               <LinearGradient
