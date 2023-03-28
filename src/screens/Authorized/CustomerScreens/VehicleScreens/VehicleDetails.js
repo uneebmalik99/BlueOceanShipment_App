@@ -16,6 +16,7 @@ import {useIsFocused} from '@react-navigation/native';
 export default function AdminVehicleDetails({navigation, route}) {
   //data coming from vehicle screens
   const {ID} = route.params;
+  console.log(ID);
   const [details, setDetails] = useState(null);
   const isFocused = useIsFocused();
 
