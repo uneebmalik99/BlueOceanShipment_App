@@ -20,11 +20,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Login({navigation}) {
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [button, showButton] = useState(true);
-  const loginSlideAnimationValue = useRef(new Animated.Value(0)).current;
-  const welcomeAnimation = useRef(new Animated.Value(1)).current;
-  const textAnimation = useRef(new Animated.Value(26)).current;
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -39,12 +34,12 @@ export default function Login({navigation}) {
   const [isFormValid, setIsFormValid] = useState(true);
   const animation = useRef(new Animated.Value(0)).current;
 
-  const [secureEntry, setSecureEntry] = useState(false);
+  const [secureEntry, setSecureEntry] = useState(true);
 
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
-      duration: 1000,
+      duration: 1500,
       useNativeDriver: true,
     }).start();
   }, [animation]);
@@ -138,37 +133,6 @@ export default function Login({navigation}) {
     }
   };
 
-  const handleLoginPress = () => {
-    setShowLogin(true);
-    showButton(false);
-
-    Animated.parallel([
-      Animated.timing(welcomeAnimation, {
-        toValue: 0.2,
-        duration: 1000,
-        useNativeDriver: true,
-        easing: Easing.ease,
-      }),
-      Animated.timing(textAnimation, {
-        toValue: 20,
-        duration: 1000,
-        useNativeDriver: false,
-        easing: Easing.ease,
-      }),
-    ]).start();
-  };
-
-  const loginViewStyle = {
-    transform: [
-      {
-        translateY: welcomeAnimation.interpolate({
-          inputRange: [0, 2.2],
-          outputRange: [0, 500],
-        }),
-      },
-    ],
-  };
-
   const handleEmail = text => {
     if (validateEmail(text)) {
       setEmail(text);
@@ -196,7 +160,14 @@ export default function Login({navigation}) {
   return (
     <ImageBackground
       style={{flex: 1}}
-      source={require('../../assets/back2.jpg')}>
+      source={require('../../assets/images/ship.jpg')}>
+      <View>
+        <TouchableOpacity
+          style={{paddingTop: 20, paddingLeft: 20}}
+          onPress={() => navigation.openDrawer()}>
+          <Icon name="menu" size={25} color="white" />
+        </TouchableOpacity>
+      </View>
       <Animated.ScrollView
         style={[
           {
@@ -205,8 +176,8 @@ export default function Login({navigation}) {
             width: '100%',
             height: '70%',
             bottom: 0,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
             paddingHorizontal: 20,
           },
           {transform: [{translateY}]},
@@ -215,7 +186,9 @@ export default function Login({navigation}) {
           <Text style={{fontWeight: 'bold', color: COLORS.black, fontSize: 16}}>
             Welcome to Blue Ocean Shipping
           </Text>
-          <Text style={{color: 'grey', marginTop: 5}}>Sign in to continue</Text>
+          <Text style={{color: COLORS.primary, marginTop: 5}}>
+            Sign in to continue
+          </Text>
         </View>
 
         <View
@@ -312,7 +285,11 @@ export default function Login({navigation}) {
           </View>
 
           <TouchableOpacity onPress={() => setSecureEntry(!secureEntry)}>
-            <Icon name="eye" size={20} color={'grey'} />
+            <Icon
+              name={secureEntry ? 'eye-off' : 'eye'}
+              size={20}
+              color={'grey'}
+            />
           </TouchableOpacity>
         </View>
         {checkPassword ? null : (
@@ -338,24 +315,24 @@ export default function Login({navigation}) {
               borderRadius: 10,
             }}
             onPress={LoginFunction}>
-            <Text
-              style={{
-                color: COLORS.white,
-                fontSize: 16,
-              }}>
-              Sign in
-            </Text>
+            {isLoading == true ? (
+              <View>
+                <ActivityIndicator
+                  size={'small'}
+                  color={COLORS.white}
+                  animating={true}
+                />
+              </View>
+            ) : (
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontSize: 16,
+                }}>
+                Sign in
+              </Text>
+            )}
           </TouchableOpacity>
-
-          {isLoading == true && (
-            <View>
-              <ActivityIndicator
-                size={'large'}
-                color={COLORS.primary}
-                animating={true}
-              />
-            </View>
-          )}
 
           <TouchableOpacity
             style={{alignItems: 'center', marginTop: 20}}
