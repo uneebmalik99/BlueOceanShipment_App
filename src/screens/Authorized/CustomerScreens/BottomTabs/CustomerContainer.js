@@ -31,13 +31,20 @@ export default function CustomerContainer({navigation}) {
 
   // data from api saving in this state
   const [shipment, setShipment] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
 
+  // for searching shipment
+  const [containerNo, setContainerNo] = useState('');
+  const [searchLoader, setSearchLoader] = useState(false);
+  const [searchedShipment, setSearchedShipment] = useState(null);
+  const [viewAll, setViewAll] = useState(false);
+
   //   fot shipments type dropdown
-  const [shipmentType, setShipmentType] = useState(null);
   const [shipmentFocus, setShipmentFocus] = useState(false);
+  const [shipmentType, setShipmentType] = useState(null);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -52,9 +59,66 @@ export default function CustomerContainer({navigation}) {
     setIsRefreshing(!isRefreshing);
   };
 
+  // shipment search api
+  const Search = async () => {
+    if (containerNo.length == 0) {
+      console.log('Please Enter Container Number');
+      alert('Please Enter Container Number');
+    } else {
+      setSearchLoader(true);
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            var url = 'https://app.ecsapshipping.com/api/auth/shipment/search';
+            var value = {};
+
+            value.container_number = containerNo;
+
+            console.log('Search_key_vale ', value);
+            fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+              },
+              body: JSON.stringify(value),
+            })
+              .then(response => response.json())
+              .then(responseJson => {
+                console.log(responseJson.message);
+                if (responseJson.status == 'Success') {
+                  setSearchedShipment(responseJson);
+                  setSearchLoader(false);
+                  setShipment(null);
+                  setContainerNo('');
+                } else {
+                  console.log('Status: ' + responseJson.status);
+                  alert('Vin/Lot not found');
+                }
+              })
+              .catch(error => {
+                setSearchLoader(false);
+                alert('Error while search ' + error);
+                console.warn(error);
+              });
+          } catch (error) {
+            setSearchLoader(false);
+            console.error(error);
+          }
+        }
+      } catch (error) {
+        setSearchLoader(false);
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setShipment(null);
+      setLoading(true);
       try {
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
@@ -77,48 +141,51 @@ export default function CustomerContainer({navigation}) {
             if (data.status == 'Success') {
               setShipment(data);
               console.log('Shippment fetched successfully');
+              setLoading(false);
               console.log(data.message);
               setRefreshing(false);
             } else {
               console.log('Error fetching shippment');
-              //  setIsLoading(false);
+              setLoading(false);
             }
           } catch (error) {
             console.error(error);
+            setLoading(false);
           }
         }
       } catch (error) {
         console.warn('Error while retrieving token from AsyncStorage:', error);
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [isRefreshing]);
+  }, [isRefreshing, viewAll]);
 
+  function InsideText({Text1, Text2}) {
+    return (
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{width: 105}}>
+          <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
+        </View>
+
+        <View>
+          <Text
+            style={{
+              color: COLORS.black,
+              fontSize: 12,
+              // paddingLeft: 10,
+              textAlign: 'justify',
+            }}>
+            {Text2}
+          </Text>
+        </View>
+      </View>
+    );
+  }
   // render item function for vehicle FlatList
   function renderContainer({item}) {
     // console.log(item.loading_image[0]);
-    function InsideText({Text1, Text2}) {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{width: 105}}>
-            <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
-          </View>
-
-          <View>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: 12,
-                // paddingLeft: 10,
-                textAlign: 'justify',
-              }}>
-              {Text2}
-            </Text>
-          </View>
-        </View>
-      );
-    }
     return (
       <View style={{flex: 1, alignItems: 'center'}}>
         <TouchableOpacity
@@ -351,10 +418,12 @@ export default function CustomerContainer({navigation}) {
               style={{flex: 1, color: 'black', paddingLeft: 10}}
               placeholder="Enter container no"
               placeholderTextColor={'grey'}
+              value={containerNo}
+              onChangeText={text => setContainerNo(text)}
             />
           </View>
 
-          {/* filter button view */}
+          {/* search button view */}
           <View
             style={{
               shadowColor: COLORS.black,
@@ -370,11 +439,16 @@ export default function CustomerContainer({navigation}) {
                 justifyContent: 'center',
                 flex: 1,
               }}
-              onPress={() => console.log('Search Container')}>
+              onPress={Search}>
               <MaterialIcons name="search" size={20} color={COLORS.black} />
             </TouchableOpacity>
           </View>
         </View>
+        {searchLoader == true && (
+          <View style={{marginTop: 5}}>
+            <ActivityIndicator size={'small'} color={COLORS.white} />
+          </View>
+        )}
       </View>
 
       <View
@@ -521,6 +595,108 @@ export default function CustomerContainer({navigation}) {
           </View>
         </View>
 
+        {/* searched shipment data shows here */}
+        {searchedShipment != null && (
+          <View style={{alignItems: 'center'}}>
+            <TouchableOpacity
+              style={{
+                height: SIZES.windowHeight / 6.6,
+                width: SIZES.windowWidth,
+                marginTop: 10,
+                paddingHorizontal: 20,
+              }}
+              onPress={() =>
+                navigation.navigate('ContainerDetails', {
+                  ID: searchedShipment.data[0].id,
+                })
+              }>
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
+                style={{
+                  borderRadius: 15,
+                  flex: 1,
+                }}>
+                {/* view for holding image and vehicle information */}
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flex: 1,
+                    flexDirection: 'row',
+                  }}>
+                  <View>
+                    {/* <InsideText Text1={'Company Name: '} Text2={item.company_name} /> */}
+                    <Text style={{color: COLORS.white, fontSize: 14}}>
+                      {searchedShipment.data[0].company_name}
+                    </Text>
+                    <InsideText
+                      Text1={'Container No: '}
+                      Text2={searchedShipment.data[0].container_no}
+                    />
+                    <InsideText
+                      Text1={'Booking No: '}
+                      Text2={searchedShipment.data[0].booking_number}
+                    />
+                    <InsideText
+                      Text1={'Destination: '}
+                      Text2={searchedShipment.data[0].destination_country}
+                    />
+                  </View>
+
+                  <View style={{position: 'absolute', right: '3%'}}>
+                    {!searchedShipment.data[0].loading_image ||
+                    searchedShipment.data[0].loading_image.length === 0 ? (
+                      <View
+                        style={{
+                          height: 50,
+                          width: 70,
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{color: COLORS.black}}>No Image</Text>
+                      </View>
+                    ) : (
+                      <Image
+                        source={{
+                          uri:
+                            asset_url +
+                            searchedShipment.data[0].loading_image[0].name,
+                        }}
+                        resizeMode="cover"
+                        style={{height: 50, width: 70, borderRadius: 10}}
+                      />
+                    )}
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <View style={{alignItems: 'center', marginTop: 10}}>
+              <TouchableOpacity
+                style={{
+                  height: SIZES.windowHeight / 18,
+                  width: SIZES.windowWidth / 2,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 10,
+                }}
+                onPress={() => {
+                  setSearchedShipment(null);
+                  setShipment(null);
+                  setViewAll(!viewAll);
+                }}>
+                <Text style={{color: COLORS.white}}>View All</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
         {shipment != null && isGridView == false && (
           <FlatList
             data={shipment.data}
@@ -562,7 +738,7 @@ export default function CustomerContainer({navigation}) {
           />
         )}
 
-        {shipment == null && (
+        {loading == true && (
           <View
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
