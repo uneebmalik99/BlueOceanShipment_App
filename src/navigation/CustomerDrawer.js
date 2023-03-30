@@ -25,7 +25,7 @@ export default function CustomerDrawer() {
       initialRouteName="CustomerBottoms"
       screenOptions={{
         headerShown: false,
-        // drawerStyle: {borderTopRightRadius: 100},
+        // drawerSetyle: {borderTopRightRadius: 100},
         drawerActiveBackgroundColor: COLORS.draweritems,
         drawerInactiveBackgroundColor: COLORS.white,
         drawerActiveTintColor: COLORS.white,
