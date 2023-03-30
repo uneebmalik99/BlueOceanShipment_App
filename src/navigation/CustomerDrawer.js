@@ -1,14 +1,16 @@
 import 'react-native-gesture-handler';
-import {View, Text, Image, ImageBackground} from 'react-native';
-import React from 'react';
+import {View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
+  DrawerItem,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {COLORS, SIZES, TEXT} from '../constants/theme';
 import Customer from '../screens/Authorized/CustomerScreens/CustomerDrawer/Customer';
 import CustomerBottomTabs from '../navigation/CustomerBottomTabs';
@@ -16,26 +18,39 @@ import ContainerTracking from '../screens/Authorized/CustomerScreens/ContainerSc
 import Reporting from '../screens/Authorized/CustomerScreens/CustomerDrawer/Reporting';
 import Rate from '../screens/Authorized/CustomerScreens/CustomerDrawer/ShippingRates';
 import RateTopTabs from '../navigation/RateTopTabs';
+import CustomerVehicles from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerVehicle';
+import CustomerContainer from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerContainer';
+import CustomerInvoices from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerInvoices';
+import Notifications from '../screens/Authorized/CustomerScreens/Notifications/Notifications';
+import CustomerDashboard from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerDashboard';
+import ContactUS from '../screens/UnauthorizedScreens/LoginDrawerScreens/ContactUs';
 
 const DrawerNav = createDrawerNavigator();
 
 export default function CustomerDrawer() {
+  const [languageID, setLanguageID] = useState(0);
   return (
     <DrawerNav.Navigator
-      initialRouteName="CustomerBottoms"
+      initialRouteName="Dashboard"
       screenOptions={{
         headerShown: false,
-        // drawerSetyle: {borderTopRightRadius: 100},
-        drawerActiveBackgroundColor: COLORS.draweritems,
-        drawerInactiveBackgroundColor: COLORS.white,
-        drawerActiveTintColor: COLORS.white,
-        drawerInactiveTintColor: COLORS.draweritems,
-        drawerLabelStyle: {marginLeft: -20},
+        drawerStyle: {borderTopRightRadius: 40},
+        // drawerActiveBackgroundColor: COLORS.draweritems,
+        // drawerInactiveBackgroundColor: COLORS.white,
+        drawerActiveTintColor: COLORS.primary,
+        drawerInactiveTintColor: COLORS.black,
+        drawerLabelStyle: {
+          marginLeft: -20,
+          color: '#454545',
+        },
         drawerItemStyle: {
-          borderRadius: 20,
-          shadowColor: 'grey',
-          elevation: 3,
+          // borderRadius: 20,
+          // shadowColor: 'grey',
+          // elevation: 3,
           // marginTop: 10,
+          marginVertical: 0,
+          marginTop: 0,
+          marginBottom: 0,
         },
         overlayColor: 'rgba(30, 138, 225, 0.5)',
       }}
@@ -43,77 +58,223 @@ export default function CustomerDrawer() {
         <View
           style={{
             flex: 1,
-            backgroundColor: '#D6E3F3',
-            // borderTopRightRadius: 100,
+            backgroundColor: COLORS.white,
+            borderTopRightRadius: 40,
+            // borderBottomEndRadius: 40,
           }}>
-          <ImageBackground
-            source={require('../assets/images/customerDrawer.png')}
+          <Image
+            source={require('../assets/images/drawer.png')}
+            resizeMode={'contain'}
             style={{
+              width: '95%',
+              position: 'absolute',
+              top: -SIZES.windowHeight / 11,
+            }}
+          />
+
+          <View
+            style={{
+              alignItems: 'flex-end',
+              paddingTop: 15,
+              paddingRight: 15,
+            }}>
+            <TouchableOpacity onPress={() => props.navigation.closeDrawer()}>
+              <Entypo name="cross" size={25} color="red" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{}}>
+              <Image
+                source={require('../assets/images/model.jpg')}
+                resizeMode="contain"
+                style={{
+                  height: 70,
+                  width: 70,
+                  borderRadius: 35,
+                  borderWidth: 2,
+                  borderColor: COLORS.white,
+                  marginLeft: 10,
+                }}
+              />
+            </View>
+
+            <View style={{paddingLeft: 10}}>
+              <Text style={{color: COLORS.black, fontSize: 16}}>
+                Master Admin
+              </Text>
+              <Text style={{color: COLORS.black, fontSize: 14}}>
+                masteradmin@gmail.com
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              marginTop: 20,
+              paddingHorizontal: 20,
               flexDirection: 'row',
               alignItems: 'center',
-              height: SIZES.windowHeight / 8,
-              marginTop: 30,
+              justifyContent: 'space-around',
+              // flex: 1,
             }}>
-            <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-              <View>
-                <Image
-                  source={require('../assets/images/model.jpg')}
-                  resizeMode="contain"
-                  style={{
-                    height: 50,
-                    width: 50,
-                    borderRadius: 25,
-                    borderWidth: 1,
-                    borderColor: COLORS.white,
-                    marginLeft: 10,
-                  }}
-                />
-              </View>
+            <TouchableOpacity
+              style={{
+                height: SIZES.windowHeight / 16,
+                width: SIZES.windowWidth / 3.2,
+                backgroundColor:
+                  languageID == 1 ? COLORS.primary : COLORS.white,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 5,
+                elevation: 7,
+                shadowColor: 'black',
+              }}
+              onPress={() => setLanguageID(1)}>
+              <Image
+                source={require('../assets/images/uk.png')}
+                style={{height: 15, width: 25, right: 3}}
+              />
+              <Text
+                style={{
+                  color: languageID == 1 ? COLORS.white : COLORS.black,
+                  left: 3,
+                }}>
+                English
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                height: SIZES.windowHeight / 16,
+                width: SIZES.windowWidth / 3.2,
+                backgroundColor:
+                  languageID == 2 ? COLORS.primary : COLORS.white,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 5,
+                elevation: 7,
+                shadowColor: 'black',
+              }}
+              onPress={() => setLanguageID(2)}>
+              <Image
+                source={require('../assets/images/uae.png')}
+                style={{height: 15, width: 25, right: 3}}
+              />
+              <Text
+                style={{
+                  color: languageID == 2 ? COLORS.white : COLORS.black,
+                  left: 3,
+                }}>
+                Arabic
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-              <View style={{paddingLeft: 10}}>
-                <Text style={{color: COLORS.white, fontSize: 14}}>
-                  Master Admin
-                </Text>
-                <Text style={{color: COLORS.white, fontSize: 14}}>
-                  masteradmin@gmail.com
-                </Text>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{paddingBottom: '10%'}}>
+            <DrawerContentScrollView
+              {...props}
+              contentContainerStyle={{flex: 1}}>
+              <View style={{paddingTop: 20}}>
+                <DrawerItemList {...props} />
               </View>
-            </View>
-          </ImageBackground>
+            </DrawerContentScrollView>
 
-          <DrawerContentScrollView {...props} contentContainerStyle={{flex: 1}}>
-            <View style={{paddingTop: 30}}>
-              <DrawerItemList {...props} />
+            <View style={{paddingHorizontal: 10, marginTop: 10}}>
+              <View
+                style={{height: 1, width: '100%', backgroundColor: 'grey'}}
+              />
             </View>
-          </DrawerContentScrollView>
+            <View style={{marginTop: 20, alignItems: 'center'}}>
+              <TouchableOpacity
+                style={{
+                  height: SIZES.windowHeight / 14,
+                  width: '80%',
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <View style={{right: '5%'}}>
+                  <Icon name="logout" size={20} color={COLORS.white} />
+                </View>
+                <Text style={{color: COLORS.white, left: '5%'}}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={{marginTop: 10, alignItems: 'center'}}>
+              <Text style={{color: COLORS.primary}}>
+                Developed By The Revolution Technologies
+              </Text>
+            </View>
+          </ScrollView>
         </View>
       )}>
       <DrawerNav.Screen
-        name="CustomerBottoms"
-        component={CustomerBottomTabs}
+        name="Dashboard"
+        component={CustomerDashboard}
         options={{
           drawerIcon: ({color}) => (
-            <Icon name="dashboard" size={25} color={color} />
-          ),
-          drawerItemStyle: {display: 'none'},
-        }}
-      />
-
-      <DrawerNav.Screen
-        name="Rate"
-        component={RateTopTabs}
-        options={{
-          drawerIcon: ({color}) => (
-            <Icon name="star-rate" size={25} color={color} />
+            <Image
+              source={require('../assets/icons/dash.png')}
+              resizeMode="contain"
+              style={{
+                width: 15,
+                height: 15,
+              }}
+            />
           ),
         }}
       />
       <DrawerNav.Screen
-        name="Reporting"
-        component={Reporting}
+        name="Vehicles"
+        component={CustomerVehicles}
         options={{
           drawerIcon: ({color}) => (
-            <IconCommunity name="note-text-outline" size={25} color={color} />
+            <Image
+              source={require('../assets/icons/vehicl.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Shipments"
+        component={CustomerContainer}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/ship.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Invoices"
+        component={CustomerInvoices}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/invoice.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
           ),
         }}
       />
@@ -122,16 +283,160 @@ export default function CustomerDrawer() {
         component={Customer}
         options={{
           drawerIcon: ({color}) => (
-            <Ionicons name="people" size={25} color={color} />
+            <Image
+              source={require('../assets/icons/avatar.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
           ),
         }}
       />
       <DrawerNav.Screen
-        name="Track Container"
+        name="Reporting"
+        component={Reporting}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/reporting.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+
+      <DrawerNav.Screen
+        name="Rate"
+        component={RateTopTabs}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/rate.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Watchlist"
+        component={RateTopTabs}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/watchlist.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/notif.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+
+      <DrawerNav.Screen
+        name="Terms and Conditions"
         component={ContainerTracking}
         options={{
           drawerIcon: ({color}) => (
-            <Ionicons name="md-boat-sharp" size={25} color={color} />
+            <Image
+              source={require('../assets/icons/tac.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="FAQs / Turotials"
+        component={ContainerTracking}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/faq.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="About Us"
+        component={ContainerTracking}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/about-us.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Contact Us"
+        component={ContainerTracking}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/contact.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          ),
+        }}
+      />
+      <DrawerNav.Screen
+        name="Settings"
+        component={ContainerTracking}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              source={require('../assets/icons/setting.png')}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
           ),
         }}
       />
