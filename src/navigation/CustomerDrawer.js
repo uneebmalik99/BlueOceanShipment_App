@@ -121,7 +121,7 @@ export default function CustomerDrawer() {
             <TouchableOpacity
               style={{
                 height: SIZES.windowHeight / 16,
-                width: SIZES.windowWidth / 3.2,
+                width: SIZES.windowWidth / 3.7,
                 backgroundColor:
                   languageID == 1 ? COLORS.primary : COLORS.white,
                 flexDirection: 'row',
@@ -147,7 +147,7 @@ export default function CustomerDrawer() {
             <TouchableOpacity
               style={{
                 height: SIZES.windowHeight / 16,
-                width: SIZES.windowWidth / 3.2,
+                width: SIZES.windowWidth / 3.7,
                 backgroundColor:
                   languageID == 2 ? COLORS.primary : COLORS.white,
                 flexDirection: 'row',
@@ -216,7 +216,7 @@ export default function CustomerDrawer() {
       )}>
       <DrawerNav.Screen
         name="Dashboard"
-        component={CustomerDashboard}
+        component={CustomerBottomTabs}
         options={{
           drawerIcon: ({color}) => (
             <Image
