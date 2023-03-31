@@ -32,10 +32,10 @@ export default function Login({navigation}) {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [checkEmail, setCheckEmail] = useState(true);
-  const [checkPassword, setCheckPassword] = useState(true);
+  const [checkEmail, setCheckEmail] = useState(false);
+  const [checkPassword, setCheckPassword] = useState(false);
 
-  const [isFormValid, setIsFormValid] = useState(true);
+  // const [isFormValid, setIsFormValid] = useState(false);
   const animation = useRef(new Animated.Value(0)).current;
 
   const [secureEntry, setSecureEntry] = useState(true);
@@ -46,6 +46,43 @@ export default function Login({navigation}) {
   const [isBiometricsSupported, setIsBiometricsSupported] = useState(false);
   const [biometricType, setBiometricType] = useState(null);
 
+  // function to control what to do when the textinputs are in focus and are in blur
+  const handleEmailFocus = () => setEmailFocused(true);
+  const handleEmailBlur = () => setEmailFocused(false);
+
+  const handlePasswordFocus = () => setPasswordFocused(true);
+  const handlePasswordBlur = () => setPasswordFocused(false);
+
+  // email input onchange function to check validation
+  const handleEmail = text => {
+    if (validateEmail(text)) {
+      setEmail(text);
+      setCheckEmail(false);
+    } else {
+      setCheckEmail(true);
+    }
+  };
+  // password input onchange function to check validation
+  const handlePassword = text => {
+    if (text.length == 0) {
+      setCheckPassword(true);
+    } else {
+      setPassword(text);
+      setCheckPassword(false);
+    }
+  };
+
+  // email regular expression for validation
+  const validateEmail = email => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const [checkEmailDisable, setcheckEmailDisable] = useState(false);
+  const [checkPasswordDisable, setcheckPasswordDisable] = useState(false);
+  const isFormValid = checkEmailDisable && checkPasswordDisable;
+
+  // useEffect to check the availibility of sensors
   useEffect(() => {
     ReactNativeBiometrics.isSensorAvailable().then(result => {
       setIsBiometricsSupported(result.available);
@@ -54,6 +91,8 @@ export default function Login({navigation}) {
     });
   }, []);
 
+  // this function will be calle in login function if the authentication credentials are not stored
+  // in the app for the first time running of app, it will not get called again if the credentials are stored
   const storeLoginCredentials = async () => {
     try {
       await AsyncStorage.setItem('email', email);
@@ -62,6 +101,10 @@ export default function Login({navigation}) {
       console.error(error);
     }
   };
+
+  // useEffect to get the login credentials from AsyncStorage, this is used to check if the user has logged in
+  // first time or not, the useEffect will check if email and password are present in the AsyncStorage, if they are
+  // it will toggle the setIsFirstTimeLogin
   useEffect(() => {
     AsyncStorage.multiGet(['email', 'password']).then(result => {
       setIsFirstTimeLogin(!result);
@@ -73,6 +116,7 @@ export default function Login({navigation}) {
     });
   }, []);
 
+  // function for biometric authentication
   const BiometricAuthentication = async () => {
     const Email = await AsyncStorage.getItem('email');
     const Password = await AsyncStorage.getItem('password');
@@ -95,7 +139,6 @@ export default function Login({navigation}) {
         .then(response => response.json())
         .then(responseJson => {
           if (responseJson.status == 'Success') {
-            // console.log(JSON.stringify(responseJson));
             if (isFirstTimeLogin) {
               storeLoginCredentials();
             }
@@ -125,8 +168,6 @@ export default function Login({navigation}) {
             passwordRef.current.clear();
             setEmail('');
             setPassword('');
-            setIsFormValid(true);
-            // console.log(responseJson.data.token);
             navigation.navigate('CustomerDrawer');
           } else {
             console.log('Login Error');
@@ -190,6 +231,7 @@ export default function Login({navigation}) {
     }
   };
 
+  // useEffect for animation
   useEffect(() => {
     Animated.timing(animation, {
       toValue: 1,
@@ -203,22 +245,11 @@ export default function Login({navigation}) {
     outputRange: [500, 0],
   });
 
-  const handleEmailFocus = () => {
-    setEmailFocused(true);
-    setCheckEmail(false);
-  };
-  const handleEmailBlur = () => setEmailFocused(false);
-
-  const handlePasswordFocus = () => {
-    setPasswordFocused(true);
-    setCheckPassword(false);
-  };
-  const handlePasswordBlur = () => setPasswordFocused(false);
-
   // login function by clicking on sign in button and entering username and password
   const LoginFunction = async () => {
     if (email.length == 0 || password.length == 0) {
-      return console.log('Please enter email and password');
+      console.log('Please enter email and password');
+      alert('Please enter email and password');
     } else {
       setIsLoading(true);
       var url = 'https://app.ecsapshipping.com/api/auth/login';
@@ -242,7 +273,7 @@ export default function Login({navigation}) {
             console.log(responseJson.data.token);
             const AsyncData = [
               ['token', responseJson.data.token],
-              ['password', password],
+              // ['password', password],
               ['name', responseJson.data.data.name],
               ['username', responseJson.data.data.username],
               ['email', responseJson.data.data.email],
@@ -266,11 +297,11 @@ export default function Login({navigation}) {
             passwordRef.current.clear();
             setEmail('');
             setPassword('');
-            setIsFormValid(true);
-            // console.log(responseJson.data.token);
             navigation.navigate('CustomerDrawer');
           } else {
             console.log('Login Error');
+            setIsLoading(false);
+            alert('Login Error');
           }
         })
         .catch(error => {
@@ -279,30 +310,6 @@ export default function Login({navigation}) {
           console.warn(error);
         });
     }
-  };
-
-  const handleEmail = text => {
-    if (validateEmail(text)) {
-      setEmail(text);
-      setCheckEmail(true);
-    } else {
-      setCheckEmail(false);
-    }
-  };
-  const handlePassword = text => {
-    if (text.length == 0) {
-      setCheckPassword(false);
-      setIsFormValid(true);
-    } else {
-      setPassword(text);
-      setCheckPassword(true);
-      setIsFormValid(false);
-    }
-  };
-
-  const validateEmail = email => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   };
 
   return (
@@ -471,7 +478,7 @@ export default function Login({navigation}) {
             />
           </View>
         </View>
-        {checkEmail ? null : (
+        {checkEmail && (
           <Text
             style={{
               color: 'red',
@@ -532,7 +539,7 @@ export default function Login({navigation}) {
             />
           </TouchableOpacity>
         </View>
-        {checkPassword ? null : (
+        {checkPassword && (
           <Text
             style={{
               color: 'red',
@@ -551,11 +558,10 @@ export default function Login({navigation}) {
             justifyContent: 'space-between',
           }}>
           <TouchableOpacity
-            disabled={isFormValid}
             style={{
               width: SIZES.windowWidth / 1.3,
               height: SIZES.windowHeight / 16,
-              backgroundColor: isFormValid ? 'grey' : COLORS.primary,
+              backgroundColor: COLORS.primary,
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 10,
