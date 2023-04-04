@@ -4,13 +4,16 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  FlatList,
+  Image,
 } from 'react-native';
 import React, {useState} from 'react';
-import {SIZES, COLORS} from '../../../../constants/theme';
+import {SIZES, COLORS, IMAGE_URL} from '../../../../constants/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import VehicleHeader from '../../../../components/VehicleHeader';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function EditShipment({navigation, route}) {
   const {ID, Details} = route.params;
@@ -21,6 +24,88 @@ export default function EditShipment({navigation, route}) {
   const [loadingPort, setLoadingPort] = useState('');
   const [destinationState, setDestinationState] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
+  const [deletedItems, setDeletedItems] = useState([]);
+  const [newImages, setNewImages] = useState(null);
+
+  // funcion for opening gallery
+
+  const OpenGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    })
+      .then(image => {
+        console.log(image);
+        const newImage = {
+          uri: image.path,
+          type: image.mime,
+          name: image.path.split('/').pop(),
+          size: image.size,
+          height: image.height,
+          width: image.width,
+        };
+        setNewImages(newImage);
+        console.log(newImages);
+        alert('Image selected, press save');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const OpenCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+    })
+      .then(image => {
+        console.log(image);
+        const newImage = {
+          uri: image.path,
+          type: image.mime,
+          name: image.path.split('/').pop(),
+          size: image.size,
+          height: image.height,
+          width: image.width,
+        };
+        setNewImages(newImage);
+        alert('Image selected, press save');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  // flatlist render function
+  const renderItem = ({item}) => {
+    const imgID = item.id;
+    const isDeleted = deletedItems.includes(imgID);
+    return (
+      <View style={{margin: 10}}>
+        <Image
+          source={{uri: IMAGE_URL + item.name}}
+          resizeMode="contain"
+          style={{height: windowHeight / 12, width: windowWidth / 6.5}}
+        />
+
+        <TouchableOpacity
+          onPress={() => {
+            const imgID = item.id;
+            // g.push(imgID)
+            setDeletedItems([...deletedItems, imgID]);
+            console.log(deletedItems);
+            // console.log(g)
+          }}
+          disabled={isDeleted}>
+          <Text style={{color: isDeleted ? 'gray' : 'red'}}>
+            {isDeleted ? 'Delete' : 'Delete'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   const update = async () => {
     var value = new FormData();
@@ -48,6 +133,12 @@ export default function EditShipment({navigation, route}) {
       destinationCountry.length != 0 &&
         value.append('destination_country', destinationCountry);
     }
+    deletedItems.forEach(id => {
+      value.append('loading_delelte_images[]', id);
+    });
+    setDeletedItems([]);
+
+    value.append('loading_images[]', newImages);
 
     console.log('===' + JSON.stringify(value));
     try {
@@ -70,6 +161,7 @@ export default function EditShipment({navigation, route}) {
           .then(responseJson => {
             if (responseJson.status == 'Success') {
               console.log('Update Success');
+              setNewImages([]);
               alert('Update Success');
             } else {
               alert(JSON.stringify(responseJson));
@@ -116,6 +208,53 @@ export default function EditShipment({navigation, route}) {
           style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
         />
       </View> */}
+
+      {/* view container for uploading images */}
+      <View
+        style={{alignItems: 'center', marginTop: '15%', marginBottom: '2%'}}>
+        <View
+          style={{
+            width: SIZES.windowWidth / 1.2,
+            height: SIZES.windowHeight / 3,
+            backgroundColor: 'white',
+            marginTop: 10,
+            borderWidth: 1,
+            borderRadius: 10,
+          }}>
+          {/* View with flatlist items and gallery and camera buttons */}
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {/* {imageTab == 0 && ( */}
+            <View>
+              <FlatList
+                // data={DATA}
+                data={Details.data.loading_image}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                numColumns={3}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+
+            <View style={{flexDirection: 'row', paddingTop: 10}}>
+              <TouchableOpacity onPress={OpenGallery}>
+                <Image
+                  source={require('../../../../assets/icons/gallery.png')}
+                  resizeMode="contain"
+                  style={{height: 30, width: 30, tintColor: '#c1dcfa'}}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={OpenCamera}>
+                <Image
+                  source={require('../../../../assets/icons/camera.png')}
+                  resizeMode="contain"
+                  style={{height: 30, width: 30, left: 5, tintColor: '#c1dcfa'}}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
 
       <VehicleHeader
         HeaderTitle={'Edit Container'}
