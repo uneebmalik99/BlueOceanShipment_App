@@ -4,6 +4,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SIZES, COLORS} from '../../../../constants/theme';
@@ -16,8 +17,10 @@ import {useIsFocused} from '@react-navigation/native';
 export default function AdminVehicleDetails({navigation, route}) {
   //data coming from vehicle screens
   const {ID} = route.params;
+  // console.log(ID);
   const [details, setDetails] = useState(null);
   const isFocused = useIsFocused();
+  const [imageTab, setImageTab] = useState(0);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -76,34 +79,166 @@ export default function AdminVehicleDetails({navigation, route}) {
       </View>
     );
   }
+  // flatlist render function
+  const renderItem = ({item}) => {
+    return (
+      <View style={{margin: 5}}>
+        <Image
+          source={{uri: asset_url + item.name}}
+          resizeMode="contain"
+          style={{height: 60, width: 60}}
+        />
+      </View>
+    );
+  };
+
+  const renderPickup = ({item}) => {
+    console.log(item.thumbnail);
+    return (
+      <View style={{margin: 5}}>
+        <Image
+          source={{uri: asset_url + item.name}}
+          resizeMode="contain"
+          style={{height: 60, width: 60}}
+        />
+      </View>
+    );
+  };
+
+  const renderAuction = ({item}) => {
+    return (
+      <View style={{marginHorizontal: 5, marginVertical: 5}}>
+        <Image
+          source={{uri: asset_url + item.name}}
+          resizeMode="contain"
+          style={{height: 60, width: 60}}
+        />
+      </View>
+    );
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
-      {/* cover of the image */}
-      {details != null && (
-        <View>
-          {!details.data.warehouse_image ||
-          details.data.warehouse_image.length === 0 ? (
-            <View
+      <View style={{alignItems: 'center', marginBottom: '5%'}}>
+        <View
+          style={{
+            width: SIZES.windowWidth / 1.2,
+            height: SIZES.windowHeight / 4,
+            backgroundColor: 'white',
+            marginTop: 10,
+            borderWidth: 1,
+            borderRadius: 10,
+
+            marginTop: '20%',
+          }}>
+          {/* View for tabs */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              // width: "100%"
+            }}>
+            <TouchableOpacity
               style={{
-                width: SIZES.windowWidth,
-                height: SIZES.windowHeight / 4,
+                backgroundColor: imageTab == 0 ? '#c1dcfa' : 'white',
+                height: SIZES.windowHeight * 0.05,
+                width: '33.3%',
+                borderTopLeftRadius: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
-              <Text style={{color: COLORS.black}}>No Image</Text>
-            </View>
-          ) : (
-            <Image
-              source={{
-                uri: asset_url + details.data.warehouse_image[0].name,
+                borderBottomWidth: 0.7,
+                borderColor: imageTab == 0 ? '#c1dcfa' : '#c1dcfa',
               }}
-              resizeMode="cover"
-              style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
-            />
-          )}
+              onPress={() => setImageTab(0)}>
+              <Text>Warehouse</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: imageTab == 1 ? '#c1dcfa' : 'white',
+                height: SIZES.windowHeight * 0.05,
+                width: '33.3%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottomWidth: 0.7,
+                borderLeftWidth: 0.7,
+                borderColor: imageTab == 1 ? '#c1dcfa' : '#c1dcfa',
+              }}
+              onPress={() => setImageTab(1)}>
+              <Text>Pickup</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: imageTab == 3 ? '#c1dcfa' : 'white',
+                height: SIZES.windowHeight * 0.05,
+                width: '33.2%',
+                borderTopRightRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottomWidth: 0.7,
+                borderLeftWidth: 0.7,
+                borderColor: imageTab == 3 ? '#c1dcfa' : '#c1dcfa',
+              }}
+              onPress={() => setImageTab(3)}>
+              <Text>Auction</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* View with flatlist items and gallery and camera buttons */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+            }}>
+            {/* Warehouse images */}
+            {imageTab == 0 && details != null && (
+              <View>
+                <FlatList
+                  // data={DATA}
+                  data={details.data.warehouse_image}
+                  renderItem={renderItem}
+                  keyExtractor={item => item.id}
+                  numColumns={4}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+            )}
+
+            {/* Pickup images */}
+
+            {imageTab == 1 && details != null && (
+              <View>
+                <FlatList
+                  data={details.data.pickupimages}
+                  // data={Pickup}
+                  renderItem={renderPickup}
+                  keyExtractor={item => item.id}
+                  numColumns={4}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+            )}
+
+            {/* Auction images */}
+            {imageTab == 3 && details != null && (
+              <View>
+                <FlatList
+                  // data={Auction}
+                  data={details.data.auction_image}
+                  renderItem={renderAuction}
+                  keyExtractor={item => item.id}
+                  numColumns={4}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+            )}
+          </View>
         </View>
-      )}
+      </View>
 
       <VehicleHeader
         HeaderTitle={'Vehicle Details'}
