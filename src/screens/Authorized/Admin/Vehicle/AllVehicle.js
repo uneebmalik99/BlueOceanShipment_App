@@ -455,16 +455,16 @@ export default function AllVehicle({navigation}) {
                 flex: 1,
               }}
               onPress={Search}>
-              <MaterialIcons name="search" size={20} color={COLORS.black} />
+              {searchLoader == true ? (
+                <View style={{}}>
+                  <ActivityIndicator size={'small'} color={COLORS.primary} />
+                </View>
+              ) : (
+                <MaterialIcons name="search" size={20} color={COLORS.black} />
+              )}
             </TouchableOpacity>
           </View>
         </View>
-
-        {searchLoader == true && (
-          <View style={{marginTop: 5}}>
-            <ActivityIndicator size={'small'} color={COLORS.white} />
-          </View>
-        )}
       </View>
 
       <View
@@ -620,8 +620,8 @@ export default function AllVehicle({navigation}) {
                 paddingHorizontal: 20,
               }}
               onPress={() =>
-                navigation.navigate('VehicleDetails', {
-                  Data: searchedVehicle.data[0],
+                navigation.navigate('AdminVehicleDetails', {
+                  ID: searchedVehicle.data[0].id,
                 })
               }>
               <LinearGradient
