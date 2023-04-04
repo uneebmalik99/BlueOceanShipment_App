@@ -221,19 +221,6 @@ export default function ContainerDetails({navigation, route}) {
                   Container No: {details.data.container_no}
                 </Text>
               </View>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('EditContainer', {
-                    ID: ID,
-                    Details: details,
-                  })
-                }>
-                <MaterialCommunity
-                  name="pencil-box-multiple"
-                  size={25}
-                  color={COLORS.white}
-                />
-              </TouchableOpacity>
             </View>
           </View>
 

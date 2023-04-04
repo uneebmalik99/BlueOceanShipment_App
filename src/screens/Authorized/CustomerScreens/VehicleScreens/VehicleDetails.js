@@ -14,7 +14,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
 
-export default function AdminVehicleDetails({navigation, route}) {
+export default function VehicleDetails({navigation, route}) {
   //data coming from vehicle screens
   const {ID} = route.params;
   const [details, setDetails] = useState(null);
@@ -298,7 +298,8 @@ export default function AdminVehicleDetails({navigation, route}) {
             </View>
           </View>
 
-          <View
+          {/* edit vehicle button */}
+          {/* <View
             style={{
               paddingHorizontal: 20,
               paddingTop: 20,
@@ -331,7 +332,7 @@ export default function AdminVehicleDetails({navigation, route}) {
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
