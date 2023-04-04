@@ -453,16 +453,16 @@ export default function CustomerVehicles({navigation}) {
                 flex: 1,
               }}
               onPress={Search}>
-              <MaterialIcons name="search" size={20} color={COLORS.black} />
+              {searchLoader == true ? (
+                <View style={{}}>
+                  <ActivityIndicator size={'small'} color={COLORS.primary} />
+                </View>
+              ) : (
+                <MaterialIcons name="search" size={20} color={COLORS.black} />
+              )}
             </TouchableOpacity>
           </View>
         </View>
-
-        {searchLoader == true && (
-          <View style={{marginTop: 5}}>
-            <ActivityIndicator size={'small'} color={COLORS.white} />
-          </View>
-        )}
       </View>
 
       <View
