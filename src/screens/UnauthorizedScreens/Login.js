@@ -78,10 +78,6 @@ export default function Login({navigation}) {
     return emailRegex.test(email);
   };
 
-  const [checkEmailDisable, setcheckEmailDisable] = useState(false);
-  const [checkPasswordDisable, setcheckPasswordDisable] = useState(false);
-  const isFormValid = checkEmailDisable && checkPasswordDisable;
-
   // useEffect to check the availibility of sensors
   useEffect(() => {
     ReactNativeBiometrics.isSensorAvailable().then(result => {
