@@ -195,9 +195,7 @@ export default function AllShipments({navigation}) {
             marginTop: 10,
             paddingHorizontal: 20,
           }}
-          onPress={() =>
-            navigation.navigate('ContainerDetails', {ID: item.id})
-          }>
+          onPress={() => navigation.navigate('ShipmentDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -274,9 +272,7 @@ export default function AllShipments({navigation}) {
             width: SIZES.windowWidth / 2.1,
             marginTop: 10,
           }}
-          onPress={() =>
-            navigation.navigate('ContainerDetails', {ID: item.id})
-          }>
+          onPress={() => navigation.navigate('ShipmentDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -440,15 +436,16 @@ export default function AllShipments({navigation}) {
                 flex: 1,
               }}
               onPress={Search}>
-              <MaterialIcons name="search" size={20} color={COLORS.black} />
+              {searchLoader == true ? (
+                <View style={{}}>
+                  <ActivityIndicator size={'small'} color={COLORS.primary} />
+                </View>
+              ) : (
+                <MaterialIcons name="search" size={20} color={COLORS.black} />
+              )}
             </TouchableOpacity>
           </View>
         </View>
-        {searchLoader == true && (
-          <View style={{marginTop: 5}}>
-            <ActivityIndicator size={'small'} color={COLORS.white} />
-          </View>
-        )}
       </View>
 
       <View
@@ -606,7 +603,7 @@ export default function AllShipments({navigation}) {
                 paddingHorizontal: 20,
               }}
               onPress={() =>
-                navigation.navigate('ContainerDetails', {
+                navigation.navigate('ShipmentDetails', {
                   ID: searchedShipment.data[0].id,
                 })
               }>
