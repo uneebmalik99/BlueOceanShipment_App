@@ -21,7 +21,7 @@ export default function AddVehicle({navigation}) {
       lot: lot,
       shipper_name: shipper,
       make: make,
-      vehicle_id: 101,
+      // vehicle_id: 101,
     };
 
     try {
@@ -29,7 +29,7 @@ export default function AddVehicle({navigation}) {
       if (token !== null) {
         console.log('Token retrieved from AsyncStorage:', token);
 
-        var url = 'https://app.ecsapshipping.com/api/auth/vehicle/update';
+        var url = 'https://app.ecsapshipping.com/api/auth/vehicle/create';
 
         console.log('Data Provided: ' + JSON.stringify(data));
         fetch(url, {
@@ -44,11 +44,11 @@ export default function AddVehicle({navigation}) {
           .then(response => response.json())
           .then(responseJson => {
             if (responseJson.status == 'Success') {
-              console.log('Success');
+              console.log(responseJson.message);
               console.log(JSON.stringify(responseJson));
               alert('Add Success');
             } else {
-              alert('Add Failed');
+              alert('Add Failed: ' + JSON.stringify(responseJson));
               console.log('UnSuccess ', responseJson);
             }
           })
