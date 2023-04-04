@@ -744,7 +744,7 @@ export default function AllShipments({navigation}) {
         {/* <View style={{paddingBottom: SIZES.windowHeight / 10}} /> */}
       </View>
 
-      {/* <View style={{position: 'absolute', right: '5%', bottom: '13%'}}>
+      <View style={{position: 'absolute', right: '5%', bottom: '5%'}}>
         <TouchableOpacity
           style={{
             height: 45,
@@ -757,7 +757,7 @@ export default function AllShipments({navigation}) {
           onPress={() => navigation.navigate('AddContainer')}>
           <MaterialIcons name="add" size={25} color={COLORS.white} />
         </TouchableOpacity>
-      </View> */}
+      </View>
     </View>
   );
 }

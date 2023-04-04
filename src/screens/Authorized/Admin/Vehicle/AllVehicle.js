@@ -756,7 +756,7 @@ export default function AllVehicle({navigation}) {
         )}
       </View>
 
-      <View style={{position: 'absolute', right: '5%', bottom: '13%'}}>
+      <View style={{position: 'absolute', right: '5%', bottom: '5%'}}>
         <TouchableOpacity
           style={{
             height: 45,

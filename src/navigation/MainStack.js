@@ -7,10 +7,10 @@ import Notifications from '../screens/Authorized/CustomerScreens/Notifications/N
 import CustomerProfile from '../screens/Authorized/CustomerScreens/CustomerProfile';
 import VehicleDetails from '../screens/Authorized/CustomerScreens/VehicleScreens/VehicleDetails';
 import EditVehicleDetails from '../screens/Authorized/CustomerScreens/VehicleScreens/EditVehicleDetails';
-import AddVehicle from '../screens/Authorized/CustomerScreens/VehicleScreens/AddVehicle';
+import AddVehicle from '../screens/Authorized/Admin/Vehicle/AddVehicle';
 import ContainerDetails from '../screens/Authorized/CustomerScreens/ContainerScreens/ContainerDetails';
 import EditContainer from '../screens/Authorized/CustomerScreens/ContainerScreens/EditContainer';
-import AddContainer from '../screens/Authorized/CustomerScreens/ContainerScreens/AddContainer';
+import AddContainer from '../screens/Authorized/Admin/Shipment/AddContainer';
 import StickyNotes from '../screens/Authorized/CustomerScreens/StickyNotes';
 import AdminDrawer from './AdminDrawer';
 import ShipmentDetails from '../screens/Authorized/Admin/Shipment/ShipmentDetails';
