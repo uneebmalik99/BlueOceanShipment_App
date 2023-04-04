@@ -57,6 +57,19 @@ export default function ShipmentDetails({navigation, route}) {
     ViewDetails();
   }, [isFocused]);
 
+  // flatlist render function
+  const renderItem = ({item}) => {
+    return (
+      <View style={{margin: 10}}>
+        <Image
+          source={{uri: IMAGE_URL + item.name}}
+          resizeMode="contain"
+          style={{height: 50, width: 50}}
+        />
+      </View>
+    );
+  };
+
   function renderVehicle({item}) {
     function InsideText({Text1, Text2}) {
       return (
@@ -184,6 +197,8 @@ export default function ShipmentDetails({navigation, route}) {
         GoBack={() => navigation.goBack()}
       /> */}
 
+      {/* view container for uploading images */}
+
       {details != null ? (
         <View>
           <View
@@ -221,6 +236,30 @@ export default function ShipmentDetails({navigation, route}) {
                   color={COLORS.white}
                 />
               </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={{alignItems: 'center'}}>
+            <View
+              style={{
+                width: SIZES.windowWidth / 1.2,
+                height: SIZES.windowHeight / 3,
+                backgroundColor: 'white',
+                marginTop: 10,
+                borderWidth: 1,
+                borderRadius: 10,
+              }}>
+              {/* View with flatlist items and gallery and camera buttons */}
+              <View style={{alignItems: 'center'}}>
+                <FlatList
+                  // data={DATA}
+                  data={details.data.loading_image}
+                  renderItem={renderItem}
+                  keyExtractor={item => item.id}
+                  numColumns={4}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
             </View>
           </View>
 
