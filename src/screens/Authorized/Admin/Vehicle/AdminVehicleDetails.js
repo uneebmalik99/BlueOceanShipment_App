@@ -13,6 +13,7 @@ import VehicleHeader from '../../../../components/VehicleHeader';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
+import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function AdminVehicleDetails({navigation, route}) {
   //data coming from vehicle screens
@@ -82,11 +83,11 @@ export default function AdminVehicleDetails({navigation, route}) {
   // flatlist render function
   const renderItem = ({item}) => {
     return (
-      <View style={{margin: 5}}>
+      <View>
         <Image
           source={{uri: asset_url + item.name}}
-          resizeMode="contain"
-          style={{height: 60, width: 60}}
+          resizeMode="cover"
+          style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
         />
       </View>
     );
@@ -95,25 +96,21 @@ export default function AdminVehicleDetails({navigation, route}) {
   const renderPickup = ({item}) => {
     console.log(item.thumbnail);
     return (
-      <View style={{margin: 5}}>
-        <Image
-          source={{uri: asset_url + item.name}}
-          resizeMode="contain"
-          style={{height: 60, width: 60}}
-        />
-      </View>
+      <Image
+        source={{uri: asset_url + item.name}}
+        resizeMode="cover"
+        style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
+      />
     );
   };
 
   const renderAuction = ({item}) => {
     return (
-      <View style={{marginHorizontal: 5, marginVertical: 5}}>
-        <Image
-          source={{uri: asset_url + item.name}}
-          resizeMode="contain"
-          style={{height: 60, width: 60}}
-        />
-      </View>
+      <Image
+        source={{uri: asset_url + item.name}}
+        resizeMode="cover"
+        style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
+      />
     );
   };
 
@@ -122,14 +119,10 @@ export default function AdminVehicleDetails({navigation, route}) {
       <View style={{alignItems: 'center', marginBottom: '5%'}}>
         <View
           style={{
-            width: SIZES.windowWidth / 1.2,
+            width: '100%',
             height: SIZES.windowHeight / 4,
             backgroundColor: 'white',
-            marginTop: 10,
-            borderWidth: 1,
-            borderRadius: 10,
-
-            marginTop: '20%',
+            marginTop: '12.7%',
           }}>
           {/* View for tabs */}
           <View
@@ -198,13 +191,26 @@ export default function AdminVehicleDetails({navigation, route}) {
             {imageTab == 0 && details != null && (
               <View>
                 <FlatList
-                  // data={DATA}
                   data={details.data.warehouse_image}
                   renderItem={renderItem}
                   keyExtractor={item => item.id}
-                  numColumns={4}
-                  showsVerticalScrollIndicator={false}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
                 />
+                <TouchableOpacity
+                  style={{position: 'absolute', bottom: 10, right: 10}}
+                  onPress={() =>
+                    navigation.navigate('ViewAllImages', {
+                      AllImages: details.data.warehouse_image,
+                    })
+                  }>
+                  <MaterialCommunity
+                    name="image-filter-center-focus"
+                    size={25}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity>
               </View>
             )}
 
@@ -214,12 +220,25 @@ export default function AdminVehicleDetails({navigation, route}) {
               <View>
                 <FlatList
                   data={details.data.pickupimages}
-                  // data={Pickup}
                   renderItem={renderPickup}
                   keyExtractor={item => item.id}
-                  numColumns={4}
-                  showsVerticalScrollIndicator={false}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
                 />
+                <TouchableOpacity
+                  style={{position: 'absolute', bottom: 10, right: 10}}
+                  onPress={() =>
+                    navigation.navigate('ViewAllImages', {
+                      AllImages: details.data.pickupimages,
+                    })
+                  }>
+                  <MaterialCommunity
+                    name="image-filter-center-focus"
+                    size={25}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity>
               </View>
             )}
 
@@ -227,13 +246,26 @@ export default function AdminVehicleDetails({navigation, route}) {
             {imageTab == 3 && details != null && (
               <View>
                 <FlatList
-                  // data={Auction}
                   data={details.data.auction_image}
                   renderItem={renderAuction}
                   keyExtractor={item => item.id}
-                  numColumns={4}
-                  showsVerticalScrollIndicator={false}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
                 />
+                <TouchableOpacity
+                  style={{position: 'absolute', bottom: 10, right: 10}}
+                  onPress={() =>
+                    navigation.navigate('ViewAllImages', {
+                      AllImages: details.data.auction_image,
+                    })
+                  }>
+                  <MaterialCommunity
+                    name="image-filter-center-focus"
+                    size={25}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity>
               </View>
             )}
           </View>
