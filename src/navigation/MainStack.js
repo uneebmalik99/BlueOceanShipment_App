@@ -18,6 +18,7 @@ import EditShipment from '../screens/Authorized/Admin/Shipment/EditShipment';
 import AdminVehicleDetails from '../screens/Authorized/Admin/Vehicle/AdminVehicleDetails';
 import EditAdminVehicle from '../screens/Authorized/Admin/Vehicle/EditAdminVehicle';
 import CreateNotifications from '../screens/Authorized/CustomerScreens/Notifications/CreateNotifications';
+import ViewAllImages from '../screens/Authorized/CustomerScreens/VehicleScreens/ViewAllImages';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,7 @@ export default function MainStack() {
         name="CreateNotifications"
         component={CreateNotifications}
       />
+      <Stack.Screen name="ViewAllImages" component={ViewAllImages} />
     </Stack.Navigator>
   );
 }
