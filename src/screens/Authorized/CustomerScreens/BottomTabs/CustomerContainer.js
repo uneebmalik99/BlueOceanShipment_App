@@ -38,6 +38,7 @@ export default function CustomerContainer({navigation}) {
 
   // for searching shipment
   const [containerNo, setContainerNo] = useState('');
+  // console.log(containerNo);
   const [searchLoader, setSearchLoader] = useState(false);
   const [searchedShipment, setSearchedShipment] = useState(null);
   const [viewAll, setViewAll] = useState(false);
@@ -45,6 +46,8 @@ export default function CustomerContainer({navigation}) {
   //   fot shipments type dropdown
   const [shipmentFocus, setShipmentFocus] = useState(false);
   const [shipmentType, setShipmentType] = useState(null);
+
+  const [recording, setRecording] = useState(false);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -406,7 +409,7 @@ export default function CustomerContainer({navigation}) {
           <View
             style={{
               height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 1.36,
+              width: SIZES.windowWidth / 1.7,
               backgroundColor: COLORS.white,
               borderRadius: 10,
               alignItems: 'center',
@@ -421,6 +424,32 @@ export default function CustomerContainer({navigation}) {
               value={containerNo}
               onChangeText={text => setContainerNo(text)}
             />
+          </View>
+
+          {/* microphone button view */}
+          <View
+            style={{
+              shadowColor: COLORS.black,
+              elevation: 10,
+              height: SIZES.windowHeight / 18,
+              width: SIZES.windowWidth / 7.5,
+              backgroundColor: COLORS.white,
+              borderRadius: 10,
+            }}>
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+              }}
+              // onPress={}
+            >
+              <MaterialCommunity
+                name="microphone"
+                size={20}
+                color={recording ? COLORS.primary : COLORS.black}
+              />
+            </TouchableOpacity>
           </View>
 
           {/* search button view */}
@@ -458,8 +487,8 @@ export default function CustomerContainer({navigation}) {
           flex: 1,
           width: '100%',
           marginTop: 30,
-          borderTopLeftRadius: 40,
-          borderTopRightRadius: 40,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
           shadowColor: COLORS.black,
           elevation: 3,
           // alignItems: 'center',
