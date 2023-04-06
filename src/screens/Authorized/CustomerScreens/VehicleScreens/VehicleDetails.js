@@ -12,6 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import VehicleHeader from '../../../../components/VehicleHeader';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useIsFocused} from '@react-navigation/native';
 
 export default function VehicleDetails({navigation, route}) {
@@ -81,11 +82,11 @@ export default function VehicleDetails({navigation, route}) {
   // flatlist render function
   const renderItem = ({item}) => {
     return (
-      <View style={{margin: 5}}>
+      <View>
         <Image
           source={{uri: asset_url + item.name}}
-          resizeMode="contain"
-          style={{height: 60, width: 60}}
+          resizeMode="cover"
+          style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
         />
       </View>
     );
@@ -94,25 +95,21 @@ export default function VehicleDetails({navigation, route}) {
   const renderPickup = ({item}) => {
     console.log(item.thumbnail);
     return (
-      <View style={{margin: 5}}>
-        <Image
-          source={{uri: asset_url + item.name}}
-          resizeMode="contain"
-          style={{height: 60, width: 60}}
-        />
-      </View>
+      <Image
+        source={{uri: asset_url + item.name}}
+        resizeMode="cover"
+        style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
+      />
     );
   };
 
   const renderAuction = ({item}) => {
     return (
-      <View style={{marginHorizontal: 5, marginVertical: 5}}>
-        <Image
-          source={{uri: asset_url + item.name}}
-          resizeMode="contain"
-          style={{height: 60, width: 60}}
-        />
-      </View>
+      <Image
+        source={{uri: asset_url + item.name}}
+        resizeMode="cover"
+        style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
+      />
     );
   };
 
@@ -121,14 +118,10 @@ export default function VehicleDetails({navigation, route}) {
       <View style={{alignItems: 'center', marginBottom: '5%'}}>
         <View
           style={{
-            width: SIZES.windowWidth / 1.2,
+            width: '100%',
             height: SIZES.windowHeight / 4,
             backgroundColor: 'white',
-            marginTop: 10,
-            borderWidth: 1,
-            borderRadius: 10,
-
-            marginTop: '20%',
+            marginTop: '12.7%',
           }}>
           {/* View for tabs */}
           <View
@@ -143,7 +136,7 @@ export default function VehicleDetails({navigation, route}) {
                 backgroundColor: imageTab == 0 ? '#c1dcfa' : 'white',
                 height: SIZES.windowHeight * 0.05,
                 width: '33.3%',
-                borderTopLeftRadius: 10,
+                // borderTopLeftRadius: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderBottomWidth: 0.7,
@@ -173,7 +166,7 @@ export default function VehicleDetails({navigation, route}) {
                 backgroundColor: imageTab == 3 ? '#c1dcfa' : 'white',
                 height: SIZES.windowHeight * 0.05,
                 width: '33.2%',
-                borderTopRightRadius: 10,
+                // borderTopRightRadius: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderBottomWidth: 0.7,
@@ -186,56 +179,88 @@ export default function VehicleDetails({navigation, route}) {
           </View>
 
           {/* View with flatlist items and gallery and camera buttons */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flex: 1,
-            }}>
-            {/* Warehouse images */}
-            {imageTab == 0 && details != null && (
-              <View>
-                <FlatList
-                  // data={DATA}
-                  data={details.data.warehouse_image}
-                  renderItem={renderItem}
-                  keyExtractor={item => item.id}
-                  numColumns={4}
-                  showsVerticalScrollIndicator={false}
-                />
-              </View>
-            )}
 
-            {/* Pickup images */}
-
-            {imageTab == 1 && details != null && (
-              <View>
-                <FlatList
-                  data={details.data.pickupimages}
-                  // data={Pickup}
-                  renderItem={renderPickup}
-                  keyExtractor={item => item.id}
-                  numColumns={4}
-                  showsVerticalScrollIndicator={false}
+          {/* Warehouse images */}
+          {imageTab == 0 && details != null && (
+            <View>
+              <FlatList
+                data={details.data.warehouse_image}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 10, right: 10}}
+                onPress={() =>
+                  navigation.navigate('ViewAllImages', {
+                    AllImages: details.data.warehouse_image,
+                  })
+                }>
+                <MaterialCommunity
+                  name="image-filter-center-focus"
+                  size={25}
+                  color={COLORS.white}
                 />
-              </View>
-            )}
+              </TouchableOpacity>
+            </View>
+          )}
 
-            {/* Auction images */}
-            {imageTab == 3 && details != null && (
-              <View>
-                <FlatList
-                  // data={Auction}
-                  data={details.data.auction_image}
-                  renderItem={renderAuction}
-                  keyExtractor={item => item.id}
-                  numColumns={4}
-                  showsVerticalScrollIndicator={false}
+          {/* Pickup images */}
+
+          {imageTab == 1 && details != null && (
+            <View>
+              <FlatList
+                data={details.data.pickupimages}
+                renderItem={renderPickup}
+                keyExtractor={item => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 10, right: 10}}
+                onPress={() =>
+                  navigation.navigate('ViewAllImages', {
+                    AllImages: details.data.pickupimages,
+                  })
+                }>
+                <MaterialCommunity
+                  name="image-filter-center-focus"
+                  size={25}
+                  color={COLORS.white}
                 />
-              </View>
-            )}
-          </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Auction images */}
+          {imageTab == 3 && details != null && (
+            <View>
+              <FlatList
+                data={details.data.auction_image}
+                renderItem={renderAuction}
+                keyExtractor={item => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 10, right: 10}}
+                onPress={() =>
+                  navigation.navigate('ViewAllImages', {
+                    AllImages: details.data.auction_image,
+                  })
+                }>
+                <MaterialCommunity
+                  name="image-filter-center-focus"
+                  size={25}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
 
@@ -252,6 +277,7 @@ export default function VehicleDetails({navigation, route}) {
               width: SIZES.windowWidth,
               backgroundColor: COLORS.primary,
               justifyContent: 'center',
+              marginTop: 14,
             }}>
             <View
               style={{
@@ -297,42 +323,6 @@ export default function VehicleDetails({navigation, route}) {
               <ContactItems ItemText={'Lot Number: ' + details.data.lot} />
             </View>
           </View>
-
-          {/* edit vehicle button */}
-          {/* <View
-            style={{
-              paddingHorizontal: 20,
-              paddingTop: 20,
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              style={{
-                height: SIZES.windowHeight / 18,
-                width: SIZES.windowWidth / 1.3,
-                borderRadius: 10,
-              }}
-              onPress={() =>
-                navigation.navigate('EditVehicleDetails', {
-                  ID: ID,
-                  Details: details,
-                })
-              }>
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 10,
-                }}>
-                <Text style={{color: COLORS.white, fontSize: 16}}>
-                  Edit Details
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View> */}
         </View>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
