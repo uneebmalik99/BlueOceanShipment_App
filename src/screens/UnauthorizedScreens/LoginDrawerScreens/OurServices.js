@@ -118,7 +118,7 @@ export default function OurServices({navigation}) {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Services ServiceTitle={'Create Account in auction'} />
+          <Services ServiceTitle={'Create account in auction'} />
 
           <View style={{}}>
             <Services ServiceTitle={'Car shipping in containers'} />
