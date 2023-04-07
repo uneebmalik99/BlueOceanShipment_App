@@ -1,4 +1,10 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from 'react-native';
 import React from 'react';
 import AppBackground from '../../../components/AppBackground';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,31 +14,15 @@ export default function OurServices({navigation}) {
   // function for services items (used for code resuseability)
   function Services({ServiceTitle}) {
     return (
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <View
-          style={{
-            height: 20,
-            width: 20,
-            borderWidth: 1,
-            borderColor: COLORS.primary,
-            borderRadius: 15,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <View
-            style={{
-              height: 15,
-              width: 15,
-              backgroundColor: COLORS.primary,
-              borderRadius: 10,
-            }}
-          />
+      <ImageBackground
+        source={require('../../../assets/images/services.png')}
+        style={{height: 100 / 1.2, width: 112 / 1.2, alignItems: 'center'}}>
+        <View style={{position: 'absolute', bottom: 3, paddingHorizontal: 2}}>
+          <Text style={{textAlign: 'center', fontSize: 10, color: 'black'}}>
+            {ServiceTitle}
+          </Text>
         </View>
-
-        <View style={{paddingLeft: 15}}>
-          <Text style={{color: COLORS.black}}>{ServiceTitle}</Text>
-        </View>
-      </View>
+      </ImageBackground>
     );
   }
   return (
@@ -86,7 +76,7 @@ export default function OurServices({navigation}) {
           <TouchableOpacity
             style={{paddingTop: 20}}
             onPress={() => navigation.openDrawer()}>
-            <Icon name="menu" size={30} color="white" />
+            <Icon name="menu" size={25} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -121,22 +111,38 @@ export default function OurServices({navigation}) {
           </Text>
         </View>
 
-        <View style={{paddingTop: 30}}>
-          <Services ServiceTitle={'Create account in auction'} />
+        <View
+          style={{
+            paddingTop: 30,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+          <Services ServiceTitle={'Create Account in auction'} />
 
-          <View style={{paddingTop: 10}}>
-            <Services ServiceTitle={'Car purchase'} />
+          <View style={{}}>
+            <Services ServiceTitle={'Car shipping in containers'} />
           </View>
 
-          <View style={{paddingTop: 10}}>
+          <View style={{}}>
             <Services ServiceTitle={'Car towing across USA'} />
           </View>
-
-          <View style={{paddingTop: 10}}>
+        </View>
+        <View
+          style={{
+            paddingTop: 30,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+          <View style={{}}>
             <Services ServiceTitle={'Car warehousing before export'} />
           </View>
+          <View style={{}}>
+            <Services ServiceTitle={'Custom clearance in UAE'} />
+          </View>
 
-          <View style={{paddingTop: 10}}>
+          <View style={{}}>
             <Services ServiceTitle={'Make export documentation'} />
           </View>
         </View>
