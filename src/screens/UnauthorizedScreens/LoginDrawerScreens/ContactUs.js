@@ -102,7 +102,7 @@ export default function MyComponent({navigation}) {
           <TouchableOpacity
             style={{paddingTop: 20}}
             onPress={() => navigation.openDrawer()}>
-            <Icon name="menu" size={30} color="white" />
+            <Icon name="menu" size={25} color="white" />
           </TouchableOpacity>
         </View>
 
