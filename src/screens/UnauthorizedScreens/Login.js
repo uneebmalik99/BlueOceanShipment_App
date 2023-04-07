@@ -6,8 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Animated,
-  StyleSheet,
-  ImageBackground,
+  Video,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
