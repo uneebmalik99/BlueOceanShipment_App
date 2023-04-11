@@ -554,7 +554,7 @@ export default function Login({navigation}) {
           }}>
           <TouchableOpacity
             style={{
-              width: SIZES.windowWidth / 1.3,
+              width: SIZES.windowWidth / 1.33,
               height: SIZES.windowHeight / 16,
               backgroundColor: COLORS.primary,
               alignItems: 'center',

@@ -143,6 +143,7 @@ export default function AllVehicle({navigation}) {
                   setVehicles(null);
                   setVin('');
                 } else {
+                  setSearchLoader(false);
                   console.log('Status: ' + responseJson.status);
                   alert('Vin/Lot not found');
                 }
@@ -158,6 +159,7 @@ export default function AllVehicle({navigation}) {
           }
         }
       } catch (error) {
+        setSearchLoader(false);
         console.warn('Error while retrieving token from AsyncStorage:', error);
       }
     }

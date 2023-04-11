@@ -98,10 +98,12 @@ export default function CustomerVehicles({navigation}) {
             }
           } catch (error) {
             console.error(error);
+            setLoading(false);
           }
         }
       } catch (error) {
         console.warn('Error while retrieving token from AsyncStorage:', error);
+        setLoading(false);
       }
     };
 
@@ -143,6 +145,7 @@ export default function CustomerVehicles({navigation}) {
                   setVehicles(null);
                   setVin('');
                 } else {
+                  setSearchLoader(false);
                   console.log('Status: ' + responseJson.status);
                   alert('Vin/Lot not found');
                 }
@@ -158,6 +161,7 @@ export default function CustomerVehicles({navigation}) {
           }
         }
       } catch (error) {
+        setSearchLoader(false);
         console.warn('Error while retrieving token from AsyncStorage:', error);
       }
     }
@@ -166,7 +170,7 @@ export default function CustomerVehicles({navigation}) {
   function InsideText({Text1, Text2}) {
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <View style={{width: '36%'}}>
+        <View style={{width: '38%'}}>
           <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
         </View>
 

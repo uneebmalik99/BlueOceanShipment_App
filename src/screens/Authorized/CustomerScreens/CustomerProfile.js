@@ -3,8 +3,8 @@ import React from 'react';
 
 export default function CustomerProfile() {
   return (
-    <View>
-      <Text>CustomerProfile</Text>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <Text>User Profile</Text>
     </View>
   );
 }
