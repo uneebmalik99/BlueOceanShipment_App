@@ -268,7 +268,7 @@ export default function Login({navigation}) {
             console.log(responseJson.data.token);
             const AsyncData = [
               ['token', responseJson.data.token],
-              // ['password', password],
+              ['password', password],
               ['name', responseJson.data.data.name],
               ['username', responseJson.data.data.username],
               ['email', responseJson.data.data.email],
