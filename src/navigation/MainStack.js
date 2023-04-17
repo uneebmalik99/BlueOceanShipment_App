@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import UnAuthDrawer from './UnAuthDrawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import CustomerDrawer from './CustomerDrawer';
 import Notifications from '../screens/Authorized/CustomerScreens/Notifications/Notifications';
 import CustomerProfile from '../screens/Authorized/CustomerScreens/CustomerProfile';
@@ -19,15 +19,71 @@ import AdminVehicleDetails from '../screens/Authorized/Admin/Vehicle/AdminVehicl
 import EditAdminVehicle from '../screens/Authorized/Admin/Vehicle/EditAdminVehicle';
 import CreateNotifications from '../screens/Authorized/CustomerScreens/Notifications/CreateNotifications';
 import ViewAllImages from '../screens/Authorized/CustomerScreens/VehicleScreens/ViewAllImages';
+import Onboarding from '../screens/UnauthorizedScreens/OnBoarding/Onboarding';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 export default function MainStack() {
+  // const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+
+  // useEffect(() => {
+  //   AsyncStorage.getItem('alreadyLaunched').then(value => {
+  //     if (value === null) {
+  //       AsyncStorage.setItem('alreadyLaunched', 'true');
+  //       setIsFirstLaunch(true);
+  //     } else {
+  //       setIsFirstLaunch(false);
+  //     }
+  //   });
+  // });
+
+  // if (isFirstLaunch === null) {
+  //   return null;
+  // } else if (isFirstLaunch === true) {
+  //   return (
+  //     <Stack.Navigator
+  //       initialRouteName="Onboarding"
+  //       screenOptions={{headerShown: false}}>
+  //       <Stack.Screen name="Drawer" component={UnAuthDrawer} />
+  //       <Stack.Screen name="Onboarding" component={Onboarding} />
+  //       <Stack.Screen name="CustomerDrawer" component={CustomerDrawer} />
+  //       <Stack.Screen name="Notifications" component={Notifications} />
+  //       <Stack.Screen name="CustomerProfile" component={CustomerProfile} />
+  //       <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
+  //       <Stack.Screen
+  //         name="EditVehicleDetails"
+  //         component={EditVehicleDetails}
+  //       />
+  //       <Stack.Screen name="AddVehicle" component={AddVehicle} />
+  //       <Stack.Screen name="ContainerDetails" component={ContainerDetails} />
+  //       <Stack.Screen name="EditContainer" component={EditContainer} />
+  //       <Stack.Screen name="AddContainer" component={AddContainer} />
+  //       <Stack.Screen name="StickyNotes" component={StickyNotes} />
+  //       <Stack.Screen name="AdminDrawer" component={AdminDrawer} />
+  //       <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} />
+  //       <Stack.Screen name="EditShipment" component={EditShipment} />
+  //       <Stack.Screen
+  //         name="AdminVehicleDetails"
+  //         component={AdminVehicleDetails}
+  //       />
+  //       <Stack.Screen name="EditAdminVehicle" component={EditAdminVehicle} />
+  //       <Stack.Screen
+  //         name="CreateNotifications"
+  //         component={CreateNotifications}
+  //       />
+  //       <Stack.Screen name="ViewAllImages" component={ViewAllImages} />
+  //     </Stack.Navigator>
+  //   );
+  // } else {
+  //   return <UnAuthDrawer />;
+  // }
   return (
     <Stack.Navigator
       initialRouteName="Drawer"
       screenOptions={{headerShown: false}}>
       <Stack.Screen name="Drawer" component={UnAuthDrawer} />
+      <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="CustomerDrawer" component={CustomerDrawer} />
       <Stack.Screen name="Notifications" component={Notifications} />
       <Stack.Screen name="CustomerProfile" component={CustomerProfile} />
