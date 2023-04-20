@@ -561,7 +561,9 @@ export default function Login({navigation}) {
               justifyContent: 'center',
               borderRadius: 10,
             }}
-            onPress={LoginFunction}>
+            onPress={LoginFunction}
+            // onPress={() => navigation.navigate('CustomerDrawer')}
+          >
             {isLoading == true ? (
               <View>
                 <ActivityIndicator

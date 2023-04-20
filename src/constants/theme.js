@@ -17,6 +17,12 @@ export const COLORS = {
   black: '#1E1F20',
   white: '#FFFFFF',
 
+  //status colors
+
+  onhandStatus: '#FF7A00',
+  dispatched: '#EF5757',
+  notitle: '#3D9F64',
+
   // dashboard colors
   pickedup: '#CADCF3',
   ontheway: '#E9C9CA',

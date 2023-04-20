@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SIZES, COLORS} from '../../../../constants/theme';
@@ -14,6 +15,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useIsFocused} from '@react-navigation/native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default function VehicleDetails({navigation, route}) {
   //data coming from vehicle screens
@@ -21,6 +23,8 @@ export default function VehicleDetails({navigation, route}) {
   const [details, setDetails] = useState(null);
   const isFocused = useIsFocused();
   const [imageTab, setImageTab] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+  const [showGeneral, setShowGeneral] = useState(false);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -109,6 +113,19 @@ export default function VehicleDetails({navigation, route}) {
         source={{uri: asset_url + item.name}}
         resizeMode="cover"
         style={{width: SIZES.windowWidth, height: SIZES.windowHeight / 4}}
+      />
+    );
+  };
+
+  const LineDivider = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          backgroundColor: 'grey',
+          width: '100%',
+          marginTop: 5,
+        }}
       />
     );
   };
@@ -270,14 +287,16 @@ export default function VehicleDetails({navigation, route}) {
       />
 
       {details != null ? (
-        <View>
+        <View style={{flex: 1}}>
           <View
             style={{
               height: SIZES.windowHeight / 12,
               width: SIZES.windowWidth,
               backgroundColor: COLORS.primary,
               justifyContent: 'center',
-              marginTop: 14,
+              // marginTop: 14,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
             }}>
             <View
               style={{
@@ -301,7 +320,493 @@ export default function VehicleDetails({navigation, route}) {
             </View>
           </View>
 
-          <View style={{alignItems: 'center', marginTop: 20}}>
+          <ScrollView
+            style={{
+              paddingHorizontal: 10,
+            }}
+            contentContainerStyle={{paddingBottom: '6%'}}>
+            {/* status and tracking pdf view */}
+            <View
+              style={{
+                marginTop: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View
+                style={{
+                  height: SIZES.windowHeight / 16,
+                  width: SIZES.windowWidth / 2.2,
+                  backgroundColor: COLORS.onhandStatus,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
+                  alignItems: 'center',
+                  borderRadius: 10,
+                }}>
+                <Text style={{color: COLORS.white}}>Status</Text>
+                <Text style={{color: COLORS.white}}>On-Hand</Text>
+              </View>
+              <TouchableOpacity style={{}}>
+                <LinearGradient
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  colors={[
+                    'rgba(241, 61, 61, 0.62)',
+                    'rgba(210, 210, 210, 0.53)',
+                  ]}
+                  style={{
+                    height: SIZES.windowHeight / 16,
+                    width: SIZES.windowWidth / 2.2,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 10,
+                    alignItems: 'center',
+                    borderRadius: 10,
+                  }}>
+                  <Image
+                    source={require('../../../../assets/icons/pdf.png')}
+                    style={{height: 16, width: 16}}
+                  />
+                  <Text style={{color: COLORS.white}}>Tracking PDF</Text>
+
+                  <View
+                    style={{
+                      width: 20,
+                      height: 20,
+                      backgroundColor: COLORS.white,
+                      elevation: 5,
+                      borderRadius: 4,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <MaterialCommunity
+                      name={'eye'}
+                      size={15}
+                      color={'#3AB180'}
+                    />
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                backgroundColor: '#D9D9D9',
+                borderWidth: 1,
+                borderColor: COLORS.primary,
+                borderRadius: 10,
+                marginTop: 10,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
+                }}>
+                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                  Vehicle Information
+                </Text>
+
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 15,
+                  }}
+                  onPress={() => setShowMore(!showMore)}>
+                  {showMore == true ? (
+                    <AntDesign
+                      name="upcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  ) : (
+                    <AntDesign
+                      name="downcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {showMore == true && (
+                <View
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: COLORS.primary,
+                    marginTop: 10,
+                    paddingHorizontal: 10,
+                  }}>
+                  {/* Description view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Description</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.year} {details.data.make}{' '}
+                        {details.data.model}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* vehicle color view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Color</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <View
+                        style={{
+                          height: 18,
+                          width: 30,
+                          backgroundColor: 'red',
+                          borderRadius: 3,
+                        }}
+                      />
+                      <Text>{details.data.null}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* vehicle type view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Vehicle Type</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.vehicle_type}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* lot number view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Lot#</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>{details.data.lot}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* keys view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Keys</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>{details.data.key}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* auction name view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Auction Name</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.auction}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* buyer id view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Buyer ID</Text>
+                    </View>
+                    <View
+                      style={{
+                        height: 18,
+                        backgroundColor: COLORS.primary,
+                        paddingHorizontal: 10,
+                        borderRadius: 5,
+                      }}>
+                      <Text style={{color: 'white'}}>
+                        {details.data.buyer_id}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* tow by view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Tow By</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>{details.data.tow}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+                </View>
+              )}
+            </View>
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                backgroundColor: '#D9D9D9',
+                borderWidth: 1,
+                borderColor: COLORS.primary,
+                borderRadius: 10,
+                marginTop: 20,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
+                }}>
+                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                  General Information
+                </Text>
+
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 15,
+                  }}
+                  onPress={() => setShowGeneral(!showGeneral)}>
+                  {showGeneral == true ? (
+                    <AntDesign
+                      name="upcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  ) : (
+                    <AntDesign
+                      name="downcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {showGeneral == true && (
+                <View
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: COLORS.primary,
+                    marginTop: 10,
+                    paddingHorizontal: 10,
+                  }}>
+                  {/* customer name view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Customer Name</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.customer_name}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* title view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Title</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.title}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* vehicle type view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Vehicle Type</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.vehicle_type}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* lot number view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Lot#</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>{details.data.lot}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* keys view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Keys</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>{details.data.key}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* auction name view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Auction Name</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.auction}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* buyer id view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Buyer ID</Text>
+                    </View>
+                    <View
+                      style={{
+                        height: 18,
+                        backgroundColor: COLORS.primary,
+                        paddingHorizontal: 10,
+                        borderRadius: 5,
+                      }}>
+                      <Text style={{color: 'white'}}>
+                        {details.data.buyer_id}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* tow by view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Tow By</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>{details.data.tow}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+                </View>
+              )}
+            </View>
+          </ScrollView>
+
+          {/* <View style={{alignItems: 'center', marginTop: 20}}>
             <ContactItems
               ItemText={
                 'Vehicle Details: ' +
@@ -322,7 +827,7 @@ export default function VehicleDetails({navigation, route}) {
             <View style={{marginTop: 15}}>
               <ContactItems ItemText={'Lot Number: ' + details.data.lot} />
             </View>
-          </View>
+          </View> */}
         </View>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
