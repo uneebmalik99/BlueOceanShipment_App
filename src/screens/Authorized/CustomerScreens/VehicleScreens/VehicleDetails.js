@@ -25,6 +25,9 @@ export default function VehicleDetails({navigation, route}) {
   const [imageTab, setImageTab] = useState(0);
   const [showMore, setShowMore] = useState(false);
   const [showGeneral, setShowGeneral] = useState(false);
+  const [totalWarehouseImages, setTotalWarehouse] = useState(null);
+  const [totalAuctionImages, setTotalAuction] = useState(null);
+  const [totalPickupImages, setTotalPickup] = useState(null);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -50,6 +53,9 @@ export default function VehicleDetails({navigation, route}) {
           if (data.status == 'Success') {
             console.log('Fetched Vehicle Details Successfully');
             setDetails(data);
+            const totalImages = data.data.warehouse_image;
+            setTotalWarehouse(totalImages.length);
+            console.log(totalImages.length);
             // console.log(JSON.stringify(data));
           } else {
             console.log('UnSuccess ', data);
@@ -244,7 +250,7 @@ export default function VehicleDetails({navigation, route}) {
                   })
                 }>
                 <MaterialCommunity
-                  name="image-filter-center-focus"
+                  name="folder-multiple-image"
                   size={25}
                   color={COLORS.white}
                 />
@@ -688,7 +694,7 @@ export default function VehicleDetails({navigation, route}) {
                   </View>
                   <LineDivider />
 
-                  {/* vehicle type view  */}
+                  {/* title state view  */}
                   <View
                     style={{
                       marginTop: 10,
@@ -697,17 +703,17 @@ export default function VehicleDetails({navigation, route}) {
                       justifyContent: 'space-between',
                     }}>
                     <View>
-                      <Text style={{color: '#1F689E'}}>Vehicle Type</Text>
+                      <Text style={{color: '#1F689E'}}>Title State</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.vehicle_type}
+                        {details.data.title_state}
                       </Text>
                     </View>
                   </View>
                   <LineDivider />
 
-                  {/* lot number view  */}
+                  {/* shipper name view  */}
                   <View
                     style={{
                       marginTop: 10,
@@ -716,51 +722,17 @@ export default function VehicleDetails({navigation, route}) {
                       justifyContent: 'space-between',
                     }}>
                     <View>
-                      <Text style={{color: '#1F689E'}}>Lot#</Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={{color: '#1F689E'}}>{details.data.lot}</Text>
-                    </View>
-                  </View>
-                  <LineDivider />
-
-                  {/* keys view  */}
-                  <View
-                    style={{
-                      marginTop: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View>
-                      <Text style={{color: '#1F689E'}}>Keys</Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={{color: '#1F689E'}}>{details.data.key}</Text>
-                    </View>
-                  </View>
-                  <LineDivider />
-
-                  {/* auction name view  */}
-                  <View
-                    style={{
-                      marginTop: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View>
-                      <Text style={{color: '#1F689E'}}>Auction Name</Text>
+                      <Text style={{color: '#1F689E'}}>Shipper Name</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.auction}
+                        {details.data.shipper_name}
                       </Text>
                     </View>
                   </View>
                   <LineDivider />
 
-                  {/* buyer id view  */}
+                  {/* status view  */}
                   <View
                     style={{
                       marginTop: 10,
@@ -769,23 +741,17 @@ export default function VehicleDetails({navigation, route}) {
                       justifyContent: 'space-between',
                     }}>
                     <View>
-                      <Text style={{color: '#1F689E'}}>Buyer ID</Text>
+                      <Text style={{color: '#1F689E'}}>Status</Text>
                     </View>
-                    <View
-                      style={{
-                        height: 18,
-                        backgroundColor: COLORS.primary,
-                        paddingHorizontal: 10,
-                        borderRadius: 5,
-                      }}>
-                      <Text style={{color: 'white'}}>
-                        {details.data.buyer_id}
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.status}
                       </Text>
                     </View>
                   </View>
                   <LineDivider />
 
-                  {/* tow by view  */}
+                  {/* pickup date view  */}
                   <View
                     style={{
                       marginTop: 10,
@@ -794,10 +760,164 @@ export default function VehicleDetails({navigation, route}) {
                       justifyContent: 'space-between',
                     }}>
                     <View>
-                      <Text style={{color: '#1F689E'}}>Tow By</Text>
+                      <Text style={{color: '#1F689E'}}>Pickup Date</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.pickup_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* sale date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Sale Date</Text>
                     </View>
                     <View>
-                      <Text style={{color: '#1F689E'}}>{details.data.tow}</Text>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.sale_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* paid date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Paid Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.paid_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* posted date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Posted Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.posted_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* days view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Days</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.days}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* delievered date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Delievered Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.delivered_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* pickup location view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Pickup Location</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.pickup_location}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* site view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Site</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.site}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* warehouse view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Warehouse</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.warehouse_storage}
+                      </Text>
                     </View>
                   </View>
                   <LineDivider />
@@ -805,29 +925,6 @@ export default function VehicleDetails({navigation, route}) {
               )}
             </View>
           </ScrollView>
-
-          {/* <View style={{alignItems: 'center', marginTop: 20}}>
-            <ContactItems
-              ItemText={
-                'Vehicle Details: ' +
-                details.data.year +
-                ' ' +
-                details.data.make +
-                ' ' +
-                details.data.model
-              }
-            />
-
-            <View style={{marginTop: 15}}>
-              <ContactItems
-                ItemText={'Shipper Name: ' + details.data.shipper_name}
-              />
-            </View>
-
-            <View style={{marginTop: 15}}>
-              <ContactItems ItemText={'Lot Number: ' + details.data.lot} />
-            </View>
-          </View> */}
         </View>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

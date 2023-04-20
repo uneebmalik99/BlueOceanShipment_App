@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SIZES, COLORS} from '../../../../constants/theme';
@@ -12,16 +13,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import VehicleHeader from '../../../../components/VehicleHeader';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useIsFocused} from '@react-navigation/native';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useIsFocused} from '@react-navigation/native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 export default function AdminVehicleDetails({navigation, route}) {
   //data coming from vehicle screens
   const {ID} = route.params;
-  // console.log(ID);
   const [details, setDetails] = useState(null);
   const isFocused = useIsFocused();
   const [imageTab, setImageTab] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+  const [showGeneral, setShowGeneral] = useState(false);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -114,6 +117,19 @@ export default function AdminVehicleDetails({navigation, route}) {
     );
   };
 
+  const LineDivider = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          backgroundColor: 'grey',
+          width: '100%',
+          marginTop: 5,
+        }}
+      />
+    );
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <View style={{alignItems: 'center', marginBottom: '5%'}}>
@@ -137,6 +153,7 @@ export default function AdminVehicleDetails({navigation, route}) {
                 backgroundColor: imageTab == 0 ? '#c1dcfa' : 'white',
                 height: SIZES.windowHeight * 0.05,
                 width: '33.3%',
+                // borderTopLeftRadius: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderBottomWidth: 0.7,
@@ -166,6 +183,7 @@ export default function AdminVehicleDetails({navigation, route}) {
                 backgroundColor: imageTab == 3 ? '#c1dcfa' : 'white',
                 height: SIZES.windowHeight * 0.05,
                 width: '33.2%',
+                // borderTopRightRadius: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderBottomWidth: 0.7,
@@ -178,95 +196,88 @@ export default function AdminVehicleDetails({navigation, route}) {
           </View>
 
           {/* View with flatlist items and gallery and camera buttons */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flex: 1,
-            }}>
-            {/* Warehouse images */}
-            {imageTab == 0 && details != null && (
-              <View>
-                <FlatList
-                  data={details.data.warehouse_image}
-                  renderItem={renderItem}
-                  keyExtractor={item => item.id}
-                  horizontal
-                  pagingEnabled
-                  showsHorizontalScrollIndicator={false}
-                />
-                <TouchableOpacity
-                  style={{position: 'absolute', bottom: 10, right: 10}}
-                  onPress={() =>
-                    navigation.navigate('ViewAllImages', {
-                      AllImages: details.data.warehouse_image,
-                    })
-                  }>
-                  <MaterialCommunity
-                    name="image-filter-center-focus"
-                    size={25}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
 
-            {/* Pickup images */}
-
-            {imageTab == 1 && details != null && (
-              <View>
-                <FlatList
-                  data={details.data.pickupimages}
-                  renderItem={renderPickup}
-                  keyExtractor={item => item.id}
-                  horizontal
-                  pagingEnabled
-                  showsHorizontalScrollIndicator={false}
+          {/* Warehouse images */}
+          {imageTab == 0 && details != null && (
+            <View>
+              <FlatList
+                data={details.data.warehouse_image}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 10, right: 10}}
+                onPress={() =>
+                  navigation.navigate('ViewAllImages', {
+                    AllImages: details.data.warehouse_image,
+                  })
+                }>
+                <MaterialCommunity
+                  name="image-filter-center-focus"
+                  size={25}
+                  color={COLORS.white}
                 />
-                <TouchableOpacity
-                  style={{position: 'absolute', bottom: 10, right: 10}}
-                  onPress={() =>
-                    navigation.navigate('ViewAllImages', {
-                      AllImages: details.data.pickupimages,
-                    })
-                  }>
-                  <MaterialCommunity
-                    name="image-filter-center-focus"
-                    size={25}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
+              </TouchableOpacity>
+            </View>
+          )}
 
-            {/* Auction images */}
-            {imageTab == 3 && details != null && (
-              <View>
-                <FlatList
-                  data={details.data.auction_image}
-                  renderItem={renderAuction}
-                  keyExtractor={item => item.id}
-                  horizontal
-                  pagingEnabled
-                  showsHorizontalScrollIndicator={false}
+          {/* Pickup images */}
+
+          {imageTab == 1 && details != null && (
+            <View>
+              <FlatList
+                data={details.data.pickupimages}
+                renderItem={renderPickup}
+                keyExtractor={item => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 10, right: 10}}
+                onPress={() =>
+                  navigation.navigate('ViewAllImages', {
+                    AllImages: details.data.pickupimages,
+                  })
+                }>
+                <MaterialCommunity
+                  name="image-filter-center-focus"
+                  size={25}
+                  color={COLORS.white}
                 />
-                <TouchableOpacity
-                  style={{position: 'absolute', bottom: 10, right: 10}}
-                  onPress={() =>
-                    navigation.navigate('ViewAllImages', {
-                      AllImages: details.data.auction_image,
-                    })
-                  }>
-                  <MaterialCommunity
-                    name="image-filter-center-focus"
-                    size={25}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Auction images */}
+          {imageTab == 3 && details != null && (
+            <View>
+              <FlatList
+                data={details.data.auction_image}
+                renderItem={renderAuction}
+                keyExtractor={item => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 10, right: 10}}
+                onPress={() =>
+                  navigation.navigate('ViewAllImages', {
+                    AllImages: details.data.auction_image,
+                  })
+                }>
+                <MaterialCommunity
+                  name="image-filter-center-focus"
+                  size={25}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
 
@@ -276,13 +287,16 @@ export default function AdminVehicleDetails({navigation, route}) {
       />
 
       {details != null ? (
-        <View>
+        <View style={{flex: 1}}>
           <View
             style={{
               height: SIZES.windowHeight / 12,
               width: SIZES.windowWidth,
               backgroundColor: COLORS.primary,
               justifyContent: 'center',
+              // marginTop: 14,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
             }}>
             <View
               style={{
@@ -306,63 +320,605 @@ export default function AdminVehicleDetails({navigation, route}) {
             </View>
           </View>
 
-          <View style={{alignItems: 'center', marginTop: 20}}>
-            <ContactItems
-              ItemText={
-                'Vehicle Details: ' +
-                details.data.year +
-                ' ' +
-                details.data.make +
-                ' ' +
-                details.data.model
-              }
-            />
-
-            <View style={{marginTop: 15}}>
-              <ContactItems
-                ItemText={'Shipper Name: ' + details.data.shipper_name}
-              />
-            </View>
-
-            <View style={{marginTop: 15}}>
-              <ContactItems ItemText={'Lot Number: ' + details.data.lot} />
-            </View>
-          </View>
-
-          <View
+          <ScrollView
             style={{
-              paddingHorizontal: 20,
-              paddingTop: 20,
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
+              paddingHorizontal: 10,
+            }}
+            contentContainerStyle={{paddingBottom: '6%'}}>
+            {/* status and tracking pdf view */}
+            <View
               style={{
-                height: SIZES.windowHeight / 18,
-                width: SIZES.windowWidth / 1.3,
-                borderRadius: 10,
-              }}
-              onPress={() =>
-                navigation.navigate('EditAdminVehicle', {
-                  ID: ID,
-                  Details: details,
-                })
-              }>
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                colors={['#1A72DE', 'rgba(35, 111, 204, 0.19)']}
+                marginTop: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View
                 style={{
-                  flex: 1,
+                  height: SIZES.windowHeight / 16,
+                  width: SIZES.windowWidth / 2.2,
+                  backgroundColor: COLORS.onhandStatus,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
                   alignItems: 'center',
-                  justifyContent: 'center',
                   borderRadius: 10,
                 }}>
-                <Text style={{color: COLORS.white, fontSize: 16}}>
-                  Edit Details
+                <Text style={{color: COLORS.white}}>Status</Text>
+                <Text style={{color: COLORS.white}}>On-Hand</Text>
+              </View>
+              <TouchableOpacity style={{}}>
+                <LinearGradient
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  colors={[
+                    'rgba(241, 61, 61, 0.62)',
+                    'rgba(210, 210, 210, 0.53)',
+                  ]}
+                  style={{
+                    height: SIZES.windowHeight / 16,
+                    width: SIZES.windowWidth / 2.2,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 10,
+                    alignItems: 'center',
+                    borderRadius: 10,
+                  }}>
+                  <Image
+                    source={require('../../../../assets/icons/pdf.png')}
+                    style={{height: 16, width: 16}}
+                  />
+                  <Text style={{color: COLORS.white}}>Tracking PDF</Text>
+
+                  <View
+                    style={{
+                      width: 20,
+                      height: 20,
+                      backgroundColor: COLORS.white,
+                      elevation: 5,
+                      borderRadius: 4,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <MaterialCommunity
+                      name={'eye'}
+                      size={15}
+                      color={'#3AB180'}
+                    />
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                backgroundColor: '#D9D9D9',
+                borderWidth: 1,
+                borderColor: COLORS.primary,
+                borderRadius: 10,
+                marginTop: 10,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
+                }}>
+                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                  Vehicle Information
                 </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 15,
+                  }}
+                  onPress={() => setShowMore(!showMore)}>
+                  {showMore == true ? (
+                    <AntDesign
+                      name="upcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  ) : (
+                    <AntDesign
+                      name="downcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {showMore == true && (
+                <View
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: COLORS.primary,
+                    marginTop: 10,
+                    paddingHorizontal: 10,
+                  }}>
+                  {/* Description view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Description</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.year} {details.data.make}{' '}
+                        {details.data.model}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* vehicle color view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Color</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <View
+                        style={{
+                          height: 18,
+                          width: 30,
+                          backgroundColor: 'red',
+                          borderRadius: 3,
+                        }}
+                      />
+                      <Text>{details.data.null}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* vehicle type view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Vehicle Type</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.vehicle_type}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* lot number view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Lot#</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>{details.data.lot}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* keys view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Keys</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>{details.data.key}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* auction name view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Auction Name</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.auction}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* buyer id view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Buyer ID</Text>
+                    </View>
+                    <View
+                      style={{
+                        height: 18,
+                        backgroundColor: COLORS.primary,
+                        paddingHorizontal: 10,
+                        borderRadius: 5,
+                      }}>
+                      <Text style={{color: 'white'}}>
+                        {details.data.buyer_id}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* tow by view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Tow By</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>{details.data.tow}</Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+                </View>
+              )}
+            </View>
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                backgroundColor: '#D9D9D9',
+                borderWidth: 1,
+                borderColor: COLORS.primary,
+                borderRadius: 10,
+                marginTop: 20,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
+                }}>
+                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                  General Information
+                </Text>
+
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 15,
+                  }}
+                  onPress={() => setShowGeneral(!showGeneral)}>
+                  {showGeneral == true ? (
+                    <AntDesign
+                      name="upcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  ) : (
+                    <AntDesign
+                      name="downcircle"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {showGeneral == true && (
+                <View
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: COLORS.primary,
+                    marginTop: 10,
+                    paddingHorizontal: 10,
+                  }}>
+                  {/* customer name view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Customer Name</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.customer_name}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* title view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Title</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.title}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* title state view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Title State</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.title_state}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* shipper name view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Shipper Name</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.shipper_name}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* status view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Status</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.status}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* pickup date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Pickup Date</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.pickup_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* sale date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Sale Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.sale_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* paid date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Paid Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.paid_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* posted date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Posted Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.posted_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* days view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Days</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.days}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* delievered date view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Delievered Date</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.delivered_date}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* pickup location view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Pickup Location</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.pickup_location}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* site view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Site</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.site}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+
+                  {/* warehouse view  */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>Warehouse</Text>
+                    </View>
+                    <View>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.warehouse_storage}
+                      </Text>
+                    </View>
+                  </View>
+                  <LineDivider />
+                </View>
+              )}
+            </View>
+          </ScrollView>
         </View>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
