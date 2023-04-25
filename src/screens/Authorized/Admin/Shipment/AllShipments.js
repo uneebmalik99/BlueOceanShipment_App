@@ -195,7 +195,12 @@ export default function AllShipments({navigation}) {
             marginTop: 10,
             paddingHorizontal: 20,
           }}
-          onPress={() => navigation.navigate('ShipmentDetails', {ID: item.id})}>
+          onPress={() =>
+            navigation.navigate('ContainerDetails', {
+              ID: item.id,
+              IMAGES: item.loading_image,
+            })
+          }>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -272,7 +277,12 @@ export default function AllShipments({navigation}) {
             width: SIZES.windowWidth / 2.1,
             marginTop: 10,
           }}
-          onPress={() => navigation.navigate('ShipmentDetails', {ID: item.id})}>
+          onPress={() =>
+            navigation.navigate('ContainerDetails', {
+              ID: item.id,
+              IMAGES: item.loading_image,
+            })
+          }>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
