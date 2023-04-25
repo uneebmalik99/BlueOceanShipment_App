@@ -199,7 +199,10 @@ export default function CustomerContainer({navigation}) {
             paddingHorizontal: 20,
           }}
           onPress={() =>
-            navigation.navigate('ContainerDetails', {ID: item.id})
+            navigation.navigate('ContainerDetails', {
+              ID: item.id,
+              IMAGES: item.loading_image,
+            })
           }>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -278,7 +281,10 @@ export default function CustomerContainer({navigation}) {
             marginTop: 10,
           }}
           onPress={() =>
-            navigation.navigate('ContainerDetails', {ID: item.id})
+            navigation.navigate('ContainerDetails', {
+              ID: item.id,
+              IMAGES: item.loading_image,
+            })
           }>
           <LinearGradient
             start={{x: 0, y: 0}}
