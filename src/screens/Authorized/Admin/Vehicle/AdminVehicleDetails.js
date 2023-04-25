@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useIsFocused} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export default function AdminVehicleDetails({navigation, route}) {
   //data coming from vehicle screens
@@ -25,6 +26,9 @@ export default function AdminVehicleDetails({navigation, route}) {
   const [imageTab, setImageTab] = useState(0);
   const [showMore, setShowMore] = useState(false);
   const [showGeneral, setShowGeneral] = useState(false);
+  const [totalWarehouseImages, setTotalWarehouse] = useState(null);
+  const [totalAuctionImages, setTotalAuction] = useState(null);
+  const [totalPickupImages, setTotalPickup] = useState(null);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -50,6 +54,13 @@ export default function AdminVehicleDetails({navigation, route}) {
           if (data.status == 'Success') {
             console.log('Fetched Vehicle Details Successfully');
             setDetails(data);
+            const warehouse_image = data.data.warehouse_image;
+            setTotalWarehouse(warehouse_image.length);
+            const pickupimages = data.data.pickupimages;
+            setTotalPickup(pickupimages.length);
+            const auction_image = data.data.auction_image;
+            setTotalAuction(auction_image.length);
+            // console.log(warehouse_image.length);
             // console.log(JSON.stringify(data));
           } else {
             console.log('UnSuccess ', data);
@@ -62,6 +73,27 @@ export default function AdminVehicleDetails({navigation, route}) {
 
     ViewDetails();
   }, [isFocused]);
+
+  function StatusColor() {
+    if (details.data.shipment_status == 1) {
+      return COLORS.onhandStatus;
+    } else if (details.data.shipment_status == 2) {
+      return COLORS.dispatched;
+    } else if (details.data.shipment_status == 3) {
+      return COLORS.notitle;
+    } else {
+      return COLORS.primary;
+    }
+  }
+  function StatusText() {
+    if (details.data.shipment_status == 1) {
+      return 'On-Hand';
+    } else if (details.data.shipment_status == 2) {
+      return 'Dispatched';
+    } else if (details.data.shipment_status == 3) {
+      return 'No Title';
+    }
+  }
 
   function ContactItems({ItemText}) {
     return (
@@ -200,27 +232,80 @@ export default function AdminVehicleDetails({navigation, route}) {
           {/* Warehouse images */}
           {imageTab == 0 && details != null && (
             <View>
-              <FlatList
-                data={details.data.warehouse_image}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-              />
-              <TouchableOpacity
-                style={{position: 'absolute', bottom: 10, right: 10}}
-                onPress={() =>
-                  navigation.navigate('ViewAllImages', {
-                    AllImages: details.data.warehouse_image,
-                  })
-                }>
-                <MaterialCommunity
-                  name="image-filter-center-focus"
-                  size={25}
-                  color={COLORS.white}
-                />
-              </TouchableOpacity>
+              {totalWarehouseImages != 0 ? (
+                <View>
+                  <FlatList
+                    data={details.data.warehouse_image}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                  />
+
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      left: 20,
+                      height: 25,
+                      width: 45,
+                      backgroundColor: 'grey',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: 5,
+                      flexDirection: 'row',
+                      opacity: 0.8,
+                      paddingHorizontal: 5,
+                    }}>
+                    <MaterialCommunity
+                      name="image-multiple-outline"
+                      size={15}
+                      color={COLORS.white}
+                    />
+                    {totalWarehouseImages != null && (
+                      <Text style={{color: COLORS.white}}>
+                        {totalWarehouseImages}
+                      </Text>
+                    )}
+                  </View>
+
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      right: 10,
+                      height: 30,
+                      width: 30,
+                      backgroundColor: 'grey',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 5,
+                    }}
+                    onPress={() =>
+                      navigation.navigate('ViewAllImages', {
+                        AllImages: details.data.warehouse_image,
+                      })
+                    }>
+                    <MaterialCommunity
+                      name="image-filter-center-focus"
+                      size={25}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Image
+                    source={require('../../../../assets/images/noimage.jpeg')}
+                    resizeMode="contain"
+                    style={{
+                      width: SIZES.windowWidth,
+                      height: SIZES.windowHeight / 4,
+                    }}
+                  />
+                </View>
+              )}
             </View>
           )}
 
@@ -228,54 +313,159 @@ export default function AdminVehicleDetails({navigation, route}) {
 
           {imageTab == 1 && details != null && (
             <View>
-              <FlatList
-                data={details.data.pickupimages}
-                renderItem={renderPickup}
-                keyExtractor={item => item.id}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-              />
-              <TouchableOpacity
-                style={{position: 'absolute', bottom: 10, right: 10}}
-                onPress={() =>
-                  navigation.navigate('ViewAllImages', {
-                    AllImages: details.data.pickupimages,
-                  })
-                }>
-                <MaterialCommunity
-                  name="image-filter-center-focus"
-                  size={25}
-                  color={COLORS.white}
-                />
-              </TouchableOpacity>
+              {totalPickupImages != 0 ? (
+                <View>
+                  <FlatList
+                    data={details.data.pickupimages}
+                    renderItem={renderPickup}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      left: 20,
+                      height: 25,
+                      width: 45,
+                      backgroundColor: 'grey',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: 5,
+                      flexDirection: 'row',
+                      opacity: 0.8,
+                      paddingHorizontal: 5,
+                    }}>
+                    <MaterialCommunity
+                      name="image-multiple-outline"
+                      size={15}
+                      color={COLORS.white}
+                    />
+                    {totalPickupImages != null && (
+                      <Text style={{color: COLORS.white}}>
+                        {totalPickupImages}
+                      </Text>
+                    )}
+                  </View>
+
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      right: 10,
+                      height: 30,
+                      width: 30,
+                      backgroundColor: 'grey',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 5,
+                    }}
+                    onPress={() =>
+                      navigation.navigate('ViewAllImages', {
+                        AllImages: details.data.pickupimages,
+                      })
+                    }>
+                    <MaterialCommunity
+                      name="image-filter-center-focus"
+                      size={25}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Image
+                    source={require('../../../../assets/images/noimage.jpeg')}
+                    resizeMode="contain"
+                    style={{
+                      width: SIZES.windowWidth,
+                      height: SIZES.windowHeight / 4,
+                    }}
+                  />
+                </View>
+              )}
             </View>
           )}
 
           {/* Auction images */}
           {imageTab == 3 && details != null && (
             <View>
-              <FlatList
-                data={details.data.auction_image}
-                renderItem={renderAuction}
-                keyExtractor={item => item.id}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-              />
-              <TouchableOpacity
-                style={{position: 'absolute', bottom: 10, right: 10}}
-                onPress={() =>
-                  navigation.navigate('ViewAllImages', {
-                    AllImages: details.data.auction_image,
-                  })
-                }>
-                <MaterialCommunity
-                  name="image-filter-center-focus"
-                  size={25}
-                  color={COLORS.white}
-                />
-              </TouchableOpacity>
+              {totalAuctionImages != 0 ? (
+                <View>
+                  <FlatList
+                    data={details.data.auction_image}
+                    renderItem={renderAuction}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                  />
+
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      left: 20,
+                      height: 25,
+                      width: 45,
+                      backgroundColor: 'grey',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: 5,
+                      flexDirection: 'row',
+                      opacity: 0.8,
+                      paddingHorizontal: 5,
+                    }}>
+                    <MaterialCommunity
+                      name="image-multiple-outline"
+                      size={15}
+                      color={COLORS.white}
+                    />
+                    {totalAuctionImages != null && (
+                      <Text style={{color: COLORS.white}}>
+                        {totalAuctionImages}
+                      </Text>
+                    )}
+                  </View>
+
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      bottom: 20,
+                      right: 10,
+                      height: 30,
+                      width: 30,
+                      backgroundColor: 'grey',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 5,
+                    }}
+                    onPress={() =>
+                      navigation.navigate('ViewAllImages', {
+                        AllImages: details.data.auction_image,
+                      })
+                    }>
+                    <MaterialCommunity
+                      name="image-filter-center-focus"
+                      size={25}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Image
+                    source={require('../../../../assets/images/noimage.jpeg')}
+                    resizeMode="contain"
+                    style={{
+                      width: SIZES.windowWidth,
+                      height: SIZES.windowHeight / 4,
+                    }}
+                  />
+                </View>
+              )}
             </View>
           )}
         </View>
@@ -336,7 +526,7 @@ export default function AdminVehicleDetails({navigation, route}) {
                 style={{
                   height: SIZES.windowHeight / 16,
                   width: SIZES.windowWidth / 2.2,
-                  backgroundColor: COLORS.onhandStatus,
+                  backgroundColor: StatusColor(),
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   paddingHorizontal: 10,
@@ -344,7 +534,7 @@ export default function AdminVehicleDetails({navigation, route}) {
                   borderRadius: 10,
                 }}>
                 <Text style={{color: COLORS.white}}>Status</Text>
-                <Text style={{color: COLORS.white}}>On-Hand</Text>
+                <Text style={{color: COLORS.white}}>{StatusText()}</Text>
               </View>
               <TouchableOpacity style={{}}>
                 <LinearGradient
@@ -532,7 +722,36 @@ export default function AdminVehicleDetails({navigation, route}) {
                       <Text style={{color: '#1F689E'}}>Keys</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={{color: '#1F689E'}}>{details.data.key}</Text>
+                      <View
+                        style={{
+                          height: 22,
+                          width: 60,
+                          backgroundColor:
+                            details.data.key == 'YES' ? 'green' : 'red',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexDirection: 'row',
+                          borderRadius: 5,
+                        }}>
+                        <View style={{right: 3}}>
+                          {details.data.key == 'YES' ? (
+                            <AntDesign
+                              name="checkcircle"
+                              size={10}
+                              color={COLORS.white}
+                            />
+                          ) : (
+                            <Entypo
+                              name="circle-with-cross"
+                              size={10}
+                              color={COLORS.white}
+                            />
+                          )}
+                        </View>
+                        <Text style={{color: COLORS.white, left: 3}}>
+                          {details.data.key}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                   <LineDivider />
