@@ -1,4 +1,11 @@
-import {View, Image, FlatList, Modal, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Image,
+  FlatList,
+  Modal,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useState} from 'react';
 import {SIZES, COLORS, IMAGE_URL} from '../../../../constants/theme';
 import VehicleHeader from '../../../../components/VehicleHeader';
@@ -9,6 +16,7 @@ export default function ViewAllImages({navigation, route}) {
   const {AllImages} = route.params;
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
+  const [loadingStates, setLoadingStates] = useState(AllImages.map(() => true));
 
   const handleImagePress = uri => {
     setSelectedImageUri(uri);
@@ -19,13 +27,30 @@ export default function ViewAllImages({navigation, route}) {
     setModalVisible(!isModalVisible);
   };
 
-  const renderItem = ({item}) => {
+  const handleImageLoad = index => {
+    setLoadingStates(prevState =>
+      prevState.map((state, i) => (i === index ? false : state)),
+    );
+  };
+
+  const renderItem = ({item, index}) => {
     return (
       <View style={{paddingVertical: 10}}>
+        {loadingStates[index] && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size={'small'} color={COLORS.primary} />
+          </View>
+        )}
         <Image
           source={{uri: IMAGE_URL + item.name}}
           resizeMode="cover"
-          style={{width: SIZES.windowWidth, height: 200}}
+          onLoad={() => handleImageLoad(index)}
+          onError={() => handleImageLoad(index)}
+          style={{
+            width: SIZES.windowWidth,
+            height: !loadingStates[index] ? 200 : 0,
+          }}
         />
         <TouchableOpacity
           style={{position: 'absolute', bottom: 20, right: 10}}
