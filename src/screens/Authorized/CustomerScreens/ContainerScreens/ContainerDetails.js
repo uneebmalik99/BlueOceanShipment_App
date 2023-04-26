@@ -209,29 +209,31 @@ export default function ContainerDetails({navigation, route}) {
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <VehicleHeader />
-      <View>
-        <FlatList
-          data={IMAGES}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-        />
-        <TouchableOpacity
-          style={{position: 'absolute', bottom: 10, right: 10}}
-          onPress={() =>
-            navigation.navigate('ViewAllImages', {
-              AllImages: IMAGES,
-            })
-          }>
-          <MaterialCommunity
-            name="image-filter-center-focus"
-            size={25}
-            color={COLORS.white}
+      {details != null && (
+        <View>
+          <FlatList
+            data={IMAGES}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
           />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={{position: 'absolute', bottom: 10, right: 10}}
+            onPress={() =>
+              navigation.navigate('ViewAllImages', {
+                AllImages: IMAGES,
+              })
+            }>
+            <MaterialCommunity
+              name="image-filter-center-focus"
+              size={25}
+              color={COLORS.white}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
 
       <VehicleHeader
         HeaderTitle={'Shipment Details'}
@@ -769,7 +771,16 @@ export default function ContainerDetails({navigation, route}) {
           </View> */}
         </View>
       ) : (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <ActivityIndicator size={'large'} color={COLORS.primary} />
         </View>
       )}
