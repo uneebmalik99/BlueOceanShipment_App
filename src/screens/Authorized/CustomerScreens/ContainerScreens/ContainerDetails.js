@@ -40,7 +40,7 @@ export default function ContainerDetails({navigation, route}) {
   };
 
   useEffect(() => {
-    const ViewDetails = async () => {
+    const ContainerDetails = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
         if (token) {
@@ -71,7 +71,7 @@ export default function ContainerDetails({navigation, route}) {
       }
     };
 
-    ViewDetails();
+    ContainerDetails();
   }, [isFocused]);
 
   // flatlist render function
@@ -208,7 +208,6 @@ export default function ContainerDetails({navigation, route}) {
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
-      <VehicleHeader />
       {details != null && (
         <View>
           <FlatList
