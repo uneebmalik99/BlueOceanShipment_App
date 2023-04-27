@@ -21,92 +21,65 @@ import CreateNotifications from '../screens/Authorized/CustomerScreens/Notificat
 import ViewAllImages from '../screens/Authorized/CustomerScreens/VehicleScreens/ViewAllImages';
 import Onboarding from '../screens/UnauthorizedScreens/OnBoarding/Onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import InvoiceDetails from '../screens/Authorized/CustomerScreens/Invoices/InvoiceDetails';
 
 const Stack = createNativeStackNavigator();
 
 export default function MainStack() {
-  // const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
-  // useEffect(() => {
-  //   AsyncStorage.getItem('alreadyLaunched').then(value => {
-  //     if (value === null) {
-  //       AsyncStorage.setItem('alreadyLaunched', 'true');
-  //       setIsFirstLaunch(true);
-  //     } else {
-  //       setIsFirstLaunch(false);
-  //     }
-  //   });
-  // });
+  useEffect(() => {
+    // check if the app has launched before
+    AsyncStorage.getItem('alreadyLaunched').then(value => {
+      if (value === null) {
+        console.log('No Value, Setting New');
+        AsyncStorage.setItem('alreadyLaunched', 'true');
+        setIsFirstLaunch(true);
+      } else {
+        console.log('Value Found');
+        setIsFirstLaunch(false);
+      }
+    });
+  }, []);
 
-  // if (isFirstLaunch === null) {
-  //   return null;
-  // } else if (isFirstLaunch === true) {
-  //   return (
-  //     <Stack.Navigator
-  //       initialRouteName="Onboarding"
-  //       screenOptions={{headerShown: false}}>
-  //       <Stack.Screen name="Drawer" component={UnAuthDrawer} />
-  //       <Stack.Screen name="Onboarding" component={Onboarding} />
-  //       <Stack.Screen name="CustomerDrawer" component={CustomerDrawer} />
-  //       <Stack.Screen name="Notifications" component={Notifications} />
-  //       <Stack.Screen name="CustomerProfile" component={CustomerProfile} />
-  //       <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
-  //       <Stack.Screen
-  //         name="EditVehicleDetails"
-  //         component={EditVehicleDetails}
-  //       />
-  //       <Stack.Screen name="AddVehicle" component={AddVehicle} />
-  //       <Stack.Screen name="ContainerDetails" component={ContainerDetails} />
-  //       <Stack.Screen name="EditContainer" component={EditContainer} />
-  //       <Stack.Screen name="AddContainer" component={AddContainer} />
-  //       <Stack.Screen name="StickyNotes" component={StickyNotes} />
-  //       <Stack.Screen name="AdminDrawer" component={AdminDrawer} />
-  //       <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} />
-  //       <Stack.Screen name="EditShipment" component={EditShipment} />
-  //       <Stack.Screen
-  //         name="AdminVehicleDetails"
-  //         component={AdminVehicleDetails}
-  //       />
-  //       <Stack.Screen name="EditAdminVehicle" component={EditAdminVehicle} />
-  //       <Stack.Screen
-  //         name="CreateNotifications"
-  //         component={CreateNotifications}
-  //       />
-  //       <Stack.Screen name="ViewAllImages" component={ViewAllImages} />
-  //     </Stack.Navigator>
-  //   );
-  // } else {
-  //   return <UnAuthDrawer />;
-  // }
-  return (
-    <Stack.Navigator
-      initialRouteName="Drawer"
-      screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Drawer" component={UnAuthDrawer} />
-      <Stack.Screen name="Onboarding" component={Onboarding} />
-      <Stack.Screen name="CustomerDrawer" component={CustomerDrawer} />
-      <Stack.Screen name="Notifications" component={Notifications} />
-      <Stack.Screen name="CustomerProfile" component={CustomerProfile} />
-      <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
-      <Stack.Screen name="EditVehicleDetails" component={EditVehicleDetails} />
-      <Stack.Screen name="AddVehicle" component={AddVehicle} />
-      <Stack.Screen name="ContainerDetails" component={ContainerDetails} />
-      <Stack.Screen name="EditContainer" component={EditContainer} />
-      <Stack.Screen name="AddContainer" component={AddContainer} />
-      <Stack.Screen name="StickyNotes" component={StickyNotes} />
-      <Stack.Screen name="AdminDrawer" component={AdminDrawer} />
-      <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} />
-      <Stack.Screen name="EditShipment" component={EditShipment} />
-      <Stack.Screen
-        name="AdminVehicleDetails"
-        component={AdminVehicleDetails}
-      />
-      <Stack.Screen name="EditAdminVehicle" component={EditAdminVehicle} />
-      <Stack.Screen
-        name="CreateNotifications"
-        component={CreateNotifications}
-      />
-      <Stack.Screen name="ViewAllImages" component={ViewAllImages} />
-    </Stack.Navigator>
-  );
+  if (isFirstLaunch === null) {
+    // render a loading screen if the launch status hasn't been determined yet
+    return null;
+  } else {
+    return (
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName={isFirstLaunch ? 'Onboarding' : 'Drawer'}>
+        <Stack.Screen name="Onboarding" component={Onboarding} />
+        <Stack.Screen name="Drawer" component={UnAuthDrawer} />
+        <Stack.Screen name="CustomerDrawer" component={CustomerDrawer} />
+        <Stack.Screen name="Notifications" component={Notifications} />
+        <Stack.Screen name="CustomerProfile" component={CustomerProfile} />
+        <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
+        <Stack.Screen
+          name="EditVehicleDetails"
+          component={EditVehicleDetails}
+        />
+        <Stack.Screen name="AddVehicle" component={AddVehicle} />
+        <Stack.Screen name="ContainerDetails" component={ContainerDetails} />
+        <Stack.Screen name="EditContainer" component={EditContainer} />
+        <Stack.Screen name="AddContainer" component={AddContainer} />
+        <Stack.Screen name="StickyNotes" component={StickyNotes} />
+        <Stack.Screen name="AdminDrawer" component={AdminDrawer} />
+        <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} />
+        <Stack.Screen name="EditShipment" component={EditShipment} />
+        <Stack.Screen name="InvoiceDetails" component={InvoiceDetails} />
+        <Stack.Screen
+          name="AdminVehicleDetails"
+          component={AdminVehicleDetails}
+        />
+        <Stack.Screen name="EditAdminVehicle" component={EditAdminVehicle} />
+        <Stack.Screen
+          name="CreateNotifications"
+          component={CreateNotifications}
+        />
+        <Stack.Screen name="ViewAllImages" component={ViewAllImages} />
+      </Stack.Navigator>
+    );
+  }
 }
