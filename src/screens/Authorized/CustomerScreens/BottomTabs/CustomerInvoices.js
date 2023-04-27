@@ -75,8 +75,7 @@ export default function CustomerInvoices({navigation}) {
             width: SIZES.windowWidth,
             paddingHorizontal: 20,
           }}
-          // onPress={() => navigation.navigate('VehicleDetails', {Data: item})}
-        >
+          onPress={() => navigation.navigate('InvoiceDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
