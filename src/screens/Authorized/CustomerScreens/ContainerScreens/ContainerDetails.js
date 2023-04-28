@@ -291,7 +291,7 @@ export default function ContainerDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
@@ -304,7 +304,7 @@ export default function ContainerDetails({navigation, route}) {
                   justifyContent: 'space-between',
                   paddingHorizontal: 10,
                 }}>
-                <Text style={{color: COLORS.primary}}>
+                <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
                   Shipment Information
                 </Text>
 
@@ -350,7 +350,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.booking_number}
+                        {details.data.booking_number == null
+                          ? '-'
+                          : details.data.booking_number}
                       </Text>
                     </View>
                   </View>
@@ -369,7 +371,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.container_type}
+                        {details.data.container_type == null
+                          ? '-'
+                          : details.data.container_type}
                       </Text>
                     </View>
                   </View>
@@ -388,7 +392,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.container_size}
+                        {details.data.container_size == null
+                          ? '-'
+                          : details.data.container_size}
                       </Text>
                     </View>
                   </View>
@@ -407,7 +413,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.shipment_type}
+                        {details.data.shipment_type == null
+                          ? '-'
+                          : details.data.shipment_type}
                       </Text>
                     </View>
                   </View>
@@ -426,7 +434,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.customer_email}
+                        {details.data.customer_email == null
+                          ? '-'
+                          : details.data.customer_email}
                       </Text>
                     </View>
                   </View>
@@ -445,7 +455,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.customer_phone}
+                        {details.data.customer_phone == null
+                          ? '-'
+                          : details.data.customer_phone}
                       </Text>
                     </View>
                   </View>
@@ -464,7 +476,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.sale_date}
+                        {details.data.sale_date == null
+                          ? '-'
+                          : details.data.sale_date}
                       </Text>
                     </View>
                   </View>
@@ -483,7 +497,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.shipping_reference}
+                        {details.data.shipping_reference == null
+                          ? '-'
+                          : details.data.shipping_reference}
                       </Text>
                     </View>
                   </View>
@@ -502,7 +518,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.xtn_number}
+                        {details.data.xtn_number == null
+                          ? '-'
+                          : details.data.xtn_number}
                       </Text>
                     </View>
                   </View>
@@ -521,7 +539,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.oti_number}
+                        {details.data.oti_number == null
+                          ? '-'
+                          : details.data.oti_number}
                       </Text>
                     </View>
                   </View>
@@ -540,7 +560,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.shipper}
+                        {details.data.shipper == null
+                          ? '-'
+                          : details.data.shipper}
                       </Text>
                     </View>
                   </View>
@@ -559,7 +581,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.loading_terminal}
+                        {details.data.loading_terminal == null
+                          ? '-'
+                          : details.data.loading_terminal}
                       </Text>
                     </View>
                   </View>
@@ -578,7 +602,9 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.shipping_line}
+                        {details.data.shipping_line == null
+                          ? '-'
+                          : details.data.shipping_line}
                       </Text>
                     </View>
                   </View>
@@ -597,11 +623,13 @@ export default function ContainerDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.seal_number}
+                        {details.data.seal_number == null
+                          ? '-'
+                          : details.data.seal_number}
                       </Text>
                     </View>
                   </View>
-                  <LineDivider />
+                  {/* <LineDivider /> */}
                 </View>
               )}
             </View>
@@ -610,7 +638,7 @@ export default function ContainerDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
@@ -623,7 +651,9 @@ export default function ContainerDetails({navigation, route}) {
                   justifyContent: 'space-between',
                   paddingHorizontal: 10,
                 }}>
-                <Text style={{color: COLORS.primary}}>Vehicles</Text>
+                <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+                  Vehicles
+                </Text>
 
                 <TouchableOpacity
                   style={{
