@@ -292,7 +292,7 @@ export default function ShipmentDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
@@ -611,7 +611,7 @@ export default function ShipmentDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
