@@ -588,7 +588,7 @@ export default function VehicleDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
@@ -674,7 +674,9 @@ export default function VehicleDetails({navigation, route}) {
                           borderRadius: 3,
                         }}
                       />
-                      <Text>{details.data.null}</Text>
+                      <Text>
+                        {details.data.color == null ? '-' : details.data.color}
+                      </Text>
                     </View>
                   </View>
                   <LineDivider />
@@ -692,7 +694,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.vehicle_type}
+                        {details.data.vehicle_type == null
+                          ? '-'
+                          : details.data.vehicle_type}
                       </Text>
                     </View>
                   </View>
@@ -710,7 +714,9 @@ export default function VehicleDetails({navigation, route}) {
                       <Text style={{color: '#1F689E'}}>Lot#</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={{color: '#1F689E'}}>{details.data.lot}</Text>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.lot == null ? '-' : details.data.lot}
+                      </Text>
                     </View>
                   </View>
                   <LineDivider />
@@ -727,36 +733,40 @@ export default function VehicleDetails({navigation, route}) {
                       <Text style={{color: '#1F689E'}}>Keys</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
-                      <View
-                        style={{
-                          height: 22,
-                          width: 60,
-                          backgroundColor:
-                            details.data.key == 'YES' ? 'green' : 'red',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexDirection: 'row',
-                          borderRadius: 5,
-                        }}>
-                        <View style={{right: 3}}>
-                          {details.data.key == 'YES' ? (
-                            <AntDesign
-                              name="checkcircle"
-                              size={10}
-                              color={COLORS.white}
-                            />
-                          ) : (
-                            <Entypo
-                              name="circle-with-cross"
-                              size={10}
-                              color={COLORS.white}
-                            />
-                          )}
+                      {details.data.key !== null ? (
+                        <View
+                          style={{
+                            height: 22,
+                            width: 60,
+                            backgroundColor:
+                              details.data.key == 'YES' ? 'green' : 'red',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                            borderRadius: 5,
+                          }}>
+                          <View style={{right: 3}}>
+                            {details.data.key == 'YES' ? (
+                              <AntDesign
+                                name="checkcircle"
+                                size={10}
+                                color={COLORS.white}
+                              />
+                            ) : (
+                              <Entypo
+                                name="circle-with-cross"
+                                size={10}
+                                color={COLORS.white}
+                              />
+                            )}
+                          </View>
+                          <Text style={{color: COLORS.white, left: 3}}>
+                            {details.data.key}
+                          </Text>
                         </View>
-                        <Text style={{color: COLORS.white, left: 3}}>
-                          {details.data.key}
-                        </Text>
-                      </View>
+                      ) : (
+                        <Text>-</Text>
+                      )}
                     </View>
                   </View>
                   <LineDivider />
@@ -774,7 +784,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.auction}
+                        {details.data.auction == null
+                          ? '-'
+                          : details.data.auction}
                       </Text>
                     </View>
                   </View>
@@ -791,17 +803,21 @@ export default function VehicleDetails({navigation, route}) {
                     <View>
                       <Text style={{color: '#1F689E'}}>Buyer ID</Text>
                     </View>
-                    <View
-                      style={{
-                        height: 18,
-                        backgroundColor: COLORS.primary,
-                        paddingHorizontal: 10,
-                        borderRadius: 5,
-                      }}>
-                      <Text style={{color: 'white'}}>
-                        {details.data.buyer_id}
-                      </Text>
-                    </View>
+                    {details.data.buyer_id !== null ? (
+                      <View
+                        style={{
+                          height: 18,
+                          backgroundColor: COLORS.primary,
+                          paddingHorizontal: 10,
+                          borderRadius: 5,
+                        }}>
+                        <Text style={{color: 'white'}}>
+                          {details.data.buyer_id}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Text>-</Text>
+                    )}
                   </View>
                   <LineDivider />
 
@@ -817,10 +833,12 @@ export default function VehicleDetails({navigation, route}) {
                       <Text style={{color: '#1F689E'}}>Tow By</Text>
                     </View>
                     <View>
-                      <Text style={{color: '#1F689E'}}>{details.data.tow}</Text>
+                      <Text style={{color: '#1F689E'}}>
+                        {details.data.tow == null ? '-' : details.data.tow}
+                      </Text>
                     </View>
                   </View>
-                  <LineDivider />
+                  {/* <LineDivider /> */}
                 </View>
               )}
             </View>
@@ -828,7 +846,7 @@ export default function VehicleDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
@@ -887,7 +905,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.customer_name}
+                        {details.data.customer_name == null
+                          ? '-'
+                          : details.data.customer_name}
                       </Text>
                     </View>
                   </View>
@@ -906,7 +926,7 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.title}
+                        {details.data.title == null ? '-' : details.data.title}
                       </Text>
                     </View>
                   </View>
@@ -925,7 +945,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.title_state}
+                        {details.data.title_state == null
+                          ? '-'
+                          : details.data.title_state}
                       </Text>
                     </View>
                   </View>
@@ -944,7 +966,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.shipper_name}
+                        {details.data.shipper_name == null
+                          ? '-'
+                          : details.data.shipper_name}
                       </Text>
                     </View>
                   </View>
@@ -963,7 +987,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.status}
+                        {details.data.status == null
+                          ? '-'
+                          : details.data.status}
                       </Text>
                     </View>
                   </View>
@@ -982,7 +1008,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.pickup_date}
+                        {details.data.pickup_date == null
+                          ? '-'
+                          : details.data.pickup_date}
                       </Text>
                     </View>
                   </View>
@@ -1001,7 +1029,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.sale_date}
+                        {details.data.sale_date == null
+                          ? '-'
+                          : details.data.sale_date}
                       </Text>
                     </View>
                   </View>
@@ -1020,7 +1050,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.paid_date}
+                        {details.data.paid_date == null
+                          ? '-'
+                          : details.data.paid_date}
                       </Text>
                     </View>
                   </View>
@@ -1039,7 +1071,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.posted_date}
+                        {details.data.posted_date == null
+                          ? '-'
+                          : details.data.posted_date}
                       </Text>
                     </View>
                   </View>
@@ -1058,7 +1092,7 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.days}
+                        {details.data.days == null ? '-' : details.data.days}
                       </Text>
                     </View>
                   </View>
@@ -1077,7 +1111,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.delivered_date}
+                        {details.data.delivered_date == null
+                          ? '-'
+                          : details.data.delivered_date}
                       </Text>
                     </View>
                   </View>
@@ -1096,7 +1132,9 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.pickup_location}
+                        {details.data.pickup_location == null
+                          ? '-'
+                          : details.data.pickup_location}
                       </Text>
                     </View>
                   </View>
@@ -1115,7 +1153,7 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.site}
+                        {details.data.site == null ? '-' : details.data.site}
                       </Text>
                     </View>
                   </View>
@@ -1134,11 +1172,13 @@ export default function VehicleDetails({navigation, route}) {
                     </View>
                     <View>
                       <Text style={{color: '#1F689E'}}>
-                        {details.data.warehouse_storage}
+                        {details.data.warehouse_storage == null
+                          ? '-'
+                          : details.data.warehouse_storage}
                       </Text>
                     </View>
                   </View>
-                  <LineDivider />
+                  {/* <LineDivider /> */}
                 </View>
               )}
             </View>
