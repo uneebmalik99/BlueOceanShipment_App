@@ -602,7 +602,7 @@ export default function Login({navigation}) {
         {/* forgot password button */}
         <TouchableOpacity
           style={{alignItems: 'center', marginTop: 20}}
-          onPress={() => console.log('Forgot Password?')}>
+          onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={{color: 'grey', fontSize: 14}}>Forgot Password?</Text>
         </TouchableOpacity>
       </Animated.ScrollView>
