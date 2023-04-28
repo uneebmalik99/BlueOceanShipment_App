@@ -329,7 +329,7 @@ export default function CustomerDashboard({navigation}) {
           <View style={{marginRight: 10}}>
             <HorizontalTab
               title={'All Customers'}
-              OnPress={() => console.log('All Customers')}
+              OnPress={() => navigation.navigate('AllCustomers')}
               Number={
                 dashboardData != null && dashboardData.data.TotalCustomers
               }
@@ -338,14 +338,14 @@ export default function CustomerDashboard({navigation}) {
           <View style={{marginRight: 10}}>
             <HorizontalTab
               title={'All Vehicles'}
-              OnPress={() => console.log('All Vehicles')}
+              OnPress={() => navigation.navigate('AllVehicles')}
               Number={dashboardData != null && dashboardData.data.TotalVehicles}
             />
           </View>
           <View style={{marginRight: 10}}>
             <HorizontalTab
               title={'Shipments'}
-              OnPress={() => console.log('Shipments')}
+              OnPress={() => navigation.navigate('AllShipments')}
               Number={
                 dashboardData != null && dashboardData.data.completed_total
               }
@@ -354,7 +354,7 @@ export default function CustomerDashboard({navigation}) {
           <View style={{marginRight: 10}}>
             <HorizontalTab
               title={'Invoices'}
-              OnPress={() => console.log('Invoices')}
+              OnPress={() => navigation.navigate('AllInvoices')}
             />
           </View>
         </ScrollView>
