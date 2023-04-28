@@ -24,6 +24,12 @@ import CustomerInvoices from '../screens/Authorized/CustomerScreens/BottomTabs/C
 import Notifications from '../screens/Authorized/CustomerScreens/Notifications/Notifications';
 import CustomerDashboard from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerDashboard';
 import ContactUS from '../screens/UnauthorizedScreens/LoginDrawerScreens/ContactUs';
+import Watchlist from '../screens/Authorized/CustomerScreens/CustomerDrawer/Watchlist';
+import TermsAndConditions from '../screens/Authorized/CustomerScreens/CustomerDrawer/TermsAndConditions';
+import FAQs from '../screens/Authorized/CustomerScreens/CustomerDrawer/FAQs';
+import AboutUs from '../screens/Authorized/CustomerScreens/CustomerDrawer/AboutUs';
+import Settings from '../screens/Authorized/CustomerScreens/CustomerDrawer/Settings';
+import Contact from '../screens/Authorized/CustomerScreens/CustomerDrawer/Contact';
 
 const DrawerNav = createDrawerNavigator();
 
@@ -207,7 +213,7 @@ export default function CustomerDrawer() {
             </View>
 
             <View style={{marginTop: 10, alignItems: 'center'}}>
-              <Text style={{color: COLORS.primary}}>
+              <Text style={{color: COLORS.primary, fontSize: 10}}>
                 Developed By The Revolution Technologies
               </Text>
             </View>
@@ -329,7 +335,7 @@ export default function CustomerDrawer() {
       />
       <DrawerNav.Screen
         name="Watchlist"
-        component={RateTopTabs}
+        component={Watchlist}
         options={{
           drawerIcon: ({color}) => (
             <Image
@@ -362,7 +368,7 @@ export default function CustomerDrawer() {
 
       <DrawerNav.Screen
         name="Terms and Conditions"
-        component={ContainerTracking}
+        component={TermsAndConditions}
         options={{
           drawerIcon: ({color}) => (
             <Image
@@ -378,7 +384,7 @@ export default function CustomerDrawer() {
       />
       <DrawerNav.Screen
         name="FAQs / Turotials"
-        component={ContainerTracking}
+        component={FAQs}
         options={{
           drawerIcon: ({color}) => (
             <Image
@@ -394,7 +400,7 @@ export default function CustomerDrawer() {
       />
       <DrawerNav.Screen
         name="About Us"
-        component={ContainerTracking}
+        component={AboutUs}
         options={{
           drawerIcon: ({color}) => (
             <Image
@@ -410,7 +416,7 @@ export default function CustomerDrawer() {
       />
       <DrawerNav.Screen
         name="Contact Us"
-        component={ContainerTracking}
+        component={Contact}
         options={{
           drawerIcon: ({color}) => (
             <Image
@@ -426,7 +432,7 @@ export default function CustomerDrawer() {
       />
       <DrawerNav.Screen
         name="Settings"
-        component={ContainerTracking}
+        component={Settings}
         options={{
           drawerIcon: ({color}) => (
             <Image
