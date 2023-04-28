@@ -22,6 +22,11 @@ import ViewAllImages from '../screens/Authorized/CustomerScreens/VehicleScreens/
 import Onboarding from '../screens/UnauthorizedScreens/OnBoarding/Onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import InvoiceDetails from '../screens/Authorized/CustomerScreens/Invoices/InvoiceDetails';
+import Customer from '../screens/Authorized/CustomerScreens/CustomerDrawer/Customer';
+import CustomerVehicles from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerVehicle';
+import CustomerContainer from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerContainer';
+import CustomerInvoices from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerInvoices';
+import ForgotPassword from '../screens/UnauthorizedScreens/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -79,6 +84,11 @@ export default function MainStack() {
           component={CreateNotifications}
         />
         <Stack.Screen name="ViewAllImages" component={ViewAllImages} />
+        <Stack.Screen name="AllCustomers" component={Customer} />
+        <Stack.Screen name="AllVehicles" component={CustomerVehicles} />
+        <Stack.Screen name="AllShipments" component={CustomerContainer} />
+        <Stack.Screen name="AllInvoices" component={CustomerInvoices} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       </Stack.Navigator>
     );
   }
