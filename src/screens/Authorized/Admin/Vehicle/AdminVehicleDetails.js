@@ -588,7 +588,7 @@ export default function AdminVehicleDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
@@ -605,25 +605,48 @@ export default function AdminVehicleDetails({navigation, route}) {
                   Vehicle Information
                 </Text>
 
-                <TouchableOpacity
-                  style={{
-                    borderRadius: 15,
-                  }}
-                  onPress={() => setShowMore(!showMore)}>
-                  {showMore == true ? (
-                    <AntDesign
-                      name="upcircle"
-                      size={20}
-                      color={COLORS.primary}
-                    />
-                  ) : (
-                    <AntDesign
-                      name="downcircle"
-                      size={20}
-                      color={COLORS.primary}
-                    />
-                  )}
-                </TouchableOpacity>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <TouchableOpacity
+                    style={{
+                      height: 23,
+                      width: 110,
+                      backgroundColor: '#F98C27',
+                      borderRadius: 8,
+                      right: 15,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => console.log('Quick Edit')}>
+                    <View style={{right: 5}}>
+                      <MaterialCommunity
+                        name="pencil"
+                        color={COLORS.white}
+                        size={13}
+                      />
+                    </View>
+                    <Text style={{left: 5, color: 'white'}}>Quick Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      borderRadius: 15,
+                    }}
+                    onPress={() => setShowMore(!showMore)}>
+                    {showMore == true ? (
+                      <AntDesign
+                        name="upcircle"
+                        size={20}
+                        color={COLORS.primary}
+                      />
+                    ) : (
+                      <AntDesign
+                        name="downcircle"
+                        size={20}
+                        color={COLORS.primary}
+                      />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
 
               {showMore == true && (
@@ -828,7 +851,7 @@ export default function AdminVehicleDetails({navigation, route}) {
               style={{
                 width: '100%',
                 paddingVertical: 15,
-                backgroundColor: '#D9D9D9',
+                backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
