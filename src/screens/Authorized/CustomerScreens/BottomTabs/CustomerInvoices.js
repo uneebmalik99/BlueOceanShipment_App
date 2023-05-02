@@ -14,6 +14,7 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function CustomerInvoices({navigation}) {
   const [allInvoices, setAllInvoices] = useState(null);
@@ -149,8 +150,12 @@ export default function CustomerInvoices({navigation}) {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <TouchableOpacity style={{}} onPress={() => navigation.openDrawer()}>
-            <MaterialCommunity name="menu" size={25} color={COLORS.white} />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IonIcons
+              name="arrow-back-circle-sharp"
+              size={25}
+              color={COLORS.white}
+            />
           </TouchableOpacity>
 
           <View>
