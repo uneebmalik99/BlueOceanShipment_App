@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Animated,
-  Video,
+  Image,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -134,6 +134,7 @@ export default function Login({navigation}) {
         .then(response => response.json())
         .then(responseJson => {
           if (responseJson.status == 'Success') {
+            // console.log('User Image ' + responseJson.data.data.user_image);
             if (isFirstTimeLogin) {
               storeLoginCredentials();
             }
@@ -154,7 +155,7 @@ export default function Login({navigation}) {
                 console.log('Data Saved Succefully');
               })
               .catch(error => {
-                console.log('Error Saving Data');
+                console.log('Error Saving Data' + error);
               });
 
             console.log('Login Success');
@@ -163,7 +164,9 @@ export default function Login({navigation}) {
             passwordRef.current.clear();
             setEmail('');
             setPassword('');
-            navigation.navigate('CustomerDrawer');
+            navigation.navigate('CustomerDrawer', {
+              userImage: responseJson.data.data.user_image,
+            });
           } else {
             console.log('Login Error');
           }
@@ -312,6 +315,22 @@ export default function Login({navigation}) {
       <View
         style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
         <AppBackground />
+      </View>
+
+      <View
+        style={{
+          position: 'absolute',
+          zIndex: 999,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          top: '13%',
+        }}>
+        <Image
+          source={require('../../assets/images/blueOcean.png')}
+          resizeMode="contain"
+          style={{height: 50, width: 200, tintColor: 'white'}}
+        />
       </View>
 
       {/* first circle at at left corner */}
