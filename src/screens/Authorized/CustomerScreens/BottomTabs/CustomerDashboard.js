@@ -11,7 +11,13 @@ import {
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {COLORS, SIZES, SVGBackground, TEXT} from '../../../../constants/theme';
+import {
+  COLORS,
+  IMAGE_URL,
+  SIZES,
+  SVGBackground,
+  TEXT,
+} from '../../../../constants/theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Community from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,12 +27,21 @@ import {Easing} from 'react-native-reanimated';
 import AppBackground from '../../../../components/AppBackground';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function CustomerDashboard({navigation}) {
+export default function CustomerDashboard({navigation, route}) {
+  // const {userImage} = route.params;
+  // console.log('User Image is ', userImage);
+  // const {params} = route.params;
+  // console.log('Params in Dash: ' + route.params.userImage);
   const OpacityValue = useRef(new Animated.Value(0)).current;
   const [userName, serUserName] = useState(null);
   const [dashboardData, setDashboardData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [userPhoto, setUserPhoto] = useState(null);
+
+  useEffect(() => {
+    setUserPhoto(route.params.userImage);
+  }, []);
 
   const _onRefresh = () => {
     setRefreshing(true);
@@ -179,6 +194,20 @@ export default function CustomerDashboard({navigation}) {
         />
       </View>
 
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: '14%',
+          right: 20,
+          zIndex: 999,
+        }}
+        onPress={() => console.log('Whatsapp')}>
+        <Image
+          source={require('../../../../assets/icons/whatsapp3.gif')}
+          style={{height: 60, width: 60}}
+        />
+      </TouchableOpacity>
+
       {/* view for drawer and profile button */}
       <View
         style={{
@@ -235,11 +264,33 @@ export default function CustomerDashboard({navigation}) {
               borderColor: COLORS.white,
             }}
             onPress={() => navigation.navigate('CustomerProfile')}>
-            <Image
-              source={require('../../../../assets/images/model.jpg')}
-              resizeMode="contain"
-              style={{height: 40, width: 40, borderRadius: 25}}
-            />
+            {userPhoto === null ? (
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 25,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('../../../../assets/icons/avatar2.png')}
+                  resizeMode="contain"
+                  style={{
+                    height: 30,
+                    width: 30,
+                    borderRadius: 25,
+                    tintColor: 'white',
+                  }}
+                />
+              </View>
+            ) : (
+              <Image
+                source={{uri: IMAGE_URL + userPhoto}}
+                resizeMode="contain"
+                style={{height: 40, width: 40, borderRadius: 25}}
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>
