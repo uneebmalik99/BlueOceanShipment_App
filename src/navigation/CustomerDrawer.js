@@ -33,7 +33,10 @@ import Contact from '../screens/Authorized/CustomerScreens/CustomerDrawer/Contac
 
 const DrawerNav = createDrawerNavigator();
 
-export default function CustomerDrawer() {
+export default function CustomerDrawer({route}) {
+  const {userImage} = route.params;
+  console.log('User Image in Drawer: ', route.params.userImage);
+  // console.log('params', route.params);
   const [languageID, setLanguageID] = useState(0);
   return (
     <DrawerNav.Navigator
@@ -223,6 +226,7 @@ export default function CustomerDrawer() {
       <DrawerNav.Screen
         name="Dashboard"
         component={CustomerBottomTabs}
+        initialParams={{userImage: route.params.userImage}}
         options={{
           drawerIcon: ({color}) => (
             <Image
