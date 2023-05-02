@@ -23,6 +23,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-element-dropdown';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function CustomerContainer({navigation}) {
   // pull to refresh states
@@ -391,8 +392,12 @@ export default function CustomerContainer({navigation}) {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <TouchableOpacity style={{}} onPress={() => navigation.openDrawer()}>
-            <MaterialCommunity name="menu" size={25} color={COLORS.white} />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IonIcons
+              name="arrow-back-circle-sharp"
+              size={25}
+              color={COLORS.white}
+            />
           </TouchableOpacity>
 
           <View>

@@ -196,7 +196,7 @@ export default function AllShipments({navigation}) {
             paddingHorizontal: 20,
           }}
           onPress={() =>
-            navigation.navigate('ContainerDetails', {
+            navigation.navigate('ShipmentDetails', {
               ID: item.id,
               IMAGES: item.loading_image,
             })
@@ -278,7 +278,7 @@ export default function AllShipments({navigation}) {
             marginTop: 10,
           }}
           onPress={() =>
-            navigation.navigate('ContainerDetails', {
+            navigation.navigate('ShipmentDetails', {
               ID: item.id,
               IMAGES: item.loading_image,
             })
