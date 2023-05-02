@@ -9,6 +9,7 @@ import {SvgXml} from 'react-native-svg';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -17,7 +18,7 @@ const MyTabs = ({navigation}) => {
     <View style={{flex: 1}}>
       <View
         style={{
-          height: '6%',
+          height: '7%',
           backgroundColor: COLORS.primary,
           justifyContent: 'center',
           paddingHorizontal: 20,
@@ -29,8 +30,12 @@ const MyTabs = ({navigation}) => {
             justifyContent: 'space-between',
             paddingTop: '5%',
           }}>
-          <TouchableOpacity style={{}} onPress={() => navigation.openDrawer()}>
-            <MaterialCommunity name="menu" size={25} color={COLORS.white} />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IonIcons
+              name="arrow-back-circle-sharp"
+              size={25}
+              color={COLORS.white}
+            />
           </TouchableOpacity>
 
           <View>
