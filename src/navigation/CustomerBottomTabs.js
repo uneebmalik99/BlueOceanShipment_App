@@ -12,7 +12,9 @@ import CustomerVehicle from '../screens/Authorized/CustomerScreens/BottomTabs/Cu
 import CustomerInvoice from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerInvoices';
 
 const Tab = AnimatedTabBarNavigator();
-export default function CustomerBottomTabs() {
+export default function CustomerBottomTabs({route}) {
+  // const {params} = route.params;
+  console.log('In Bottom Tabs: ' + JSON.stringify(route.params.userImage));
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -57,7 +59,11 @@ export default function CustomerBottomTabs() {
         // whenActiveShow: 'both',
         // whenInactiveShow: 'both',
       }}>
-      <Tab.Screen name="Home" component={CustomerDashboard} />
+      <Tab.Screen
+        name="Home"
+        component={CustomerDashboard}
+        initialParams={{userImage: route.params.userImage}}
+      />
       <Tab.Screen name="Vehicle" component={CustomerVehicle} />
       <Tab.Screen name="Shipment" component={CustomerContainer} />
       <Tab.Screen name="Invoice" component={CustomerInvoice} />
