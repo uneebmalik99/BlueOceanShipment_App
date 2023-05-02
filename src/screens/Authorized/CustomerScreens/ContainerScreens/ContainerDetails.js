@@ -30,7 +30,7 @@ export default function ContainerDetails({navigation, route}) {
     return (
       <View
         style={{
-          height: 1,
+          height: 0.5,
           backgroundColor: 'grey',
           width: '100%',
           marginTop: 5,
@@ -234,10 +234,41 @@ export default function ContainerDetails({navigation, route}) {
         </View>
       )}
 
-      <VehicleHeader
-        HeaderTitle={'Shipment Details'}
-        GoBack={() => navigation.goBack()}
-      />
+      <View
+        style={{
+          width: SIZES.windowWidth,
+          height: SIZES.windowHeight / 14,
+          backgroundColor: 'rgba(29, 119, 231, 0.81)',
+          position: 'absolute',
+          // borderBottomLeftRadius: 30,
+          // borderBottomRightRadius: 30,
+          justifyContent: 'space-between',
+          paddingHorizontal: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <IonIcons
+            name="arrow-back-circle-sharp"
+            size={25}
+            color={COLORS.white}
+          />
+        </TouchableOpacity>
+
+        <View>
+          <Text style={{color: COLORS.white, fontSize: 18}}>
+            Shipment Details
+          </Text>
+        </View>
+
+        <TouchableOpacity onPress={() => console.log('Share')}>
+          <MaterialCommunity
+            name="share-variant"
+            size={25}
+            color={COLORS.white}
+          />
+        </TouchableOpacity>
+      </View>
 
       {details != null ? (
         <View style={{flex: 1}}>
@@ -294,7 +325,7 @@ export default function ContainerDetails({navigation, route}) {
                 backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
-                borderRadius: 10,
+                borderRadius: 5,
                 marginTop: 20,
               }}>
               <View
@@ -641,7 +672,7 @@ export default function ContainerDetails({navigation, route}) {
                 backgroundColor: 'rgba(217,217,217, 0.22)',
                 borderWidth: 1,
                 borderColor: COLORS.primary,
-                borderRadius: 10,
+                borderRadius: 5,
                 marginTop: 20,
               }}>
               <View
