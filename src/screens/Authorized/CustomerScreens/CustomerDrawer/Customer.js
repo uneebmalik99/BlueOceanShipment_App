@@ -9,35 +9,18 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBackground from '../../../../components/AppBackground';
-import {SIZES, COLORS, SVGBackground} from '../../../../constants/theme';
+import {
+  SIZES,
+  COLORS,
+  SVGBackground,
+  IMAGE_URL,
+} from '../../../../constants/theme';
 import {SvgXml} from 'react-native-svg';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const CustomerData = [
-  {
-    id: 1,
-    name: 'Jennifer Lawerance',
-    cover: require('../../../../assets/images/model.jpg'),
-  },
-  {
-    id: 2,
-    name: 'Jennifer Lawerance',
-    cover: require('../../../../assets/images/model.jpg'),
-  },
-  {
-    id: 3,
-    name: 'Jennifer Lawerance',
-    cover: require('../../../../assets/images/model.jpg'),
-  },
-  {
-    id: 4,
-    name: 'Jennifer Lawerance',
-    cover: require('../../../../assets/images/model.jpg'),
-  },
-];
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function Customer({navigation}) {
   const [allCustomers, setAllCustomers] = useState(null);
@@ -114,11 +97,24 @@ export default function Customer({navigation}) {
                 alignItems: 'center',
               }}>
               <View>
-                <Image
-                  source={require('../../../../assets/images/model.jpg')}
-                  resizeMode="contain"
-                  style={{height: 50, width: 50, borderRadius: 25}}
-                />
+                {item.user_image === null ? (
+                  <Image
+                    source={require('../../../../assets/icons/avatar2.png')}
+                    resizeMode="contain"
+                    style={{
+                      height: 50,
+                      width: 50,
+                      borderRadius: 25,
+                      tintColor: 'white',
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: IMAGE_URL + item.user_image}}
+                    resizeMode="contain"
+                    style={{height: 50, width: 50, borderRadius: 25}}
+                  />
+                )}
               </View>
               <View style={{paddingLeft: 20}}>
                 <Text style={{fontSize: 16, color: COLORS.white}}>
@@ -157,8 +153,12 @@ export default function Customer({navigation}) {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <TouchableOpacity style={{}} onPress={() => navigation.openDrawer()}>
-            <MaterialCommunity name="menu" size={25} color={COLORS.white} />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IonIcons
+              name="arrow-back-circle-sharp"
+              size={25}
+              color={COLORS.white}
+            />
           </TouchableOpacity>
 
           <View>
