@@ -6,10 +6,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Rate() {
   const [shippingRates, setShippingRates] = useState(null);
-
+  const [shippingLength, setShippingLength] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setShippingRates(null);
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
           console.log('Token retrieved from AsyncStorage:', token);
@@ -32,6 +33,8 @@ export default function Rate() {
               setShippingRates(data);
               console.log('Shipping Prices successfully');
               console.log(data.message);
+              const dataLength = data.data.shippment_rate;
+              setShippingLength(dataLength.length);
               // console.log(data.data.shippment_rate);
               // setRefreshing(false);
             } else {
@@ -167,6 +170,15 @@ export default function Rate() {
           </View>
         )}
       </View>
+
+      {shippingLength !== null &&
+        shippingRates !== null &&
+        shippingLength === 0 && (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text>No Data Found</Text>
+          </View>
+        )}
     </View>
   );
 }

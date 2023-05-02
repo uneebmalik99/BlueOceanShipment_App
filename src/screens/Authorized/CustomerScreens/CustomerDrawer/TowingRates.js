@@ -6,10 +6,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TowingRates() {
   const [towingRates, setTowingRates] = useState(null);
+  const [towingLength, setTowingLength] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setTowingRates(null);
         const token = await AsyncStorage.getItem('token');
         if (token !== null) {
           console.log('Token retrieved from AsyncStorage:', token);
@@ -32,6 +34,8 @@ export default function TowingRates() {
               setTowingRates(data);
               console.log('Towing Prices successfully');
               console.log(data.message);
+              const dataLength = data.data.master_towing;
+              setTowingLength(dataLength.length);
             } else {
               console.log('Error fetching towing prices');
             }
@@ -50,7 +54,7 @@ export default function TowingRates() {
   return (
     <View style={{flex: 1, backgroundColor: '#C3E7F8'}}>
       <View style={{alignItems: 'center', marginTop: 25}}>
-        {towingRates != null &&
+        {towingRates !== null ? (
           towingRates.data.master_towing.map(item => {
             return (
               <View
@@ -140,8 +144,19 @@ export default function TowingRates() {
                 </View>
               </View>
             );
-          })}
+          })
+        ) : (
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <Text>No Data Found</Text>
+          </View>
+        )}
       </View>
+
+      {towingLength !== null && towingRates !== null && towingLength === 0 && (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text>No Data Found</Text>
+        </View>
+      )}
     </View>
   );
 }
