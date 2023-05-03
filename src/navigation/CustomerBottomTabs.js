@@ -14,7 +14,7 @@ import CustomerInvoice from '../screens/Authorized/CustomerScreens/BottomTabs/Cu
 const Tab = AnimatedTabBarNavigator();
 export default function CustomerBottomTabs({route}) {
   // const {params} = route.params;
-  console.log('In Bottom Tabs: ' + JSON.stringify(route.params.userImage));
+  // console.log('In Bottom Tabs: ' + JSON.stringify(route.params.userImage));
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
