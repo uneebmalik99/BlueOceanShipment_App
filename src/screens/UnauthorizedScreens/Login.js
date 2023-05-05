@@ -295,7 +295,9 @@ export default function Login({navigation}) {
             passwordRef.current.clear();
             setEmail('');
             setPassword('');
-            navigation.navigate('CustomerDrawer');
+            navigation.navigate('CustomerDrawer', {
+              userImage: responseJson.data.data.user_image,
+            });
           } else {
             console.log('Login Error');
             setIsLoading(false);
