@@ -29,10 +29,13 @@ export default function CustomerVehicles({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  // console.log(currentPage);
 
   // data from api saving in this state
-  const [vehicle, setVehicles] = useState(null);
+  const [vehicle, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
@@ -56,14 +59,71 @@ export default function CustomerVehicles({navigation}) {
   ];
 
   const _onRefresh = () => {
+    setVehicles([]); // set initial value to empty array
+    console.log('Refreshing, so removing previous data');
     setRefreshing(true);
     setIsRefreshing(!isRefreshing);
   };
 
+  const LoadMore = async () => {
+    setCurrentPage(prevPage => prevPage + 1);
+    setLoadingMore(true);
+    if (loadingMore === true) {
+      NextData();
+    }
+  };
+
+  const NextData = async () => {
+    setSearchedVehicle(null);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token !== null) {
+        console.log('Token retrieved from AsyncStorage:', token);
+        try {
+          const response = await fetch(
+            `https://app.ecsapshipping.com/api/auth/vehicle/all/vehicles?page=${currentPage}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+              },
+            },
+          );
+
+          console.log('Fetching Vehicle...');
+          const data = await response.json();
+          if (data.status == 'Success') {
+            setVehicles([...vehicle, ...data.data]);
+            setLoading(false);
+            setLoadingMore(false);
+            console.log('Vehicle fetched successfully');
+
+            console.log(data.message);
+            setRefreshing(false);
+          } else {
+            console.log('Error fetching vehicle');
+            setLoading(false);
+          }
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
+        }
+      }
+    } catch (error) {
+      console.warn('Error while retrieving token from AsyncStorage:', error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      setVehicles(null);
-      setLoading(true);
+      setVehicles([]);
+      if (loadingMore == true) {
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
       setSearchedVehicle(null);
       try {
         const token = await AsyncStorage.getItem('token');
@@ -71,7 +131,7 @@ export default function CustomerVehicles({navigation}) {
           console.log('Token retrieved from AsyncStorage:', token);
           try {
             const response = await fetch(
-              'https://app.ecsapshipping.com/api/auth/vehicle/all/vehicles',
+              `https://app.ecsapshipping.com/api/auth/vehicle/all/vehicles`,
               {
                 method: 'GET',
                 headers: {
@@ -83,28 +143,29 @@ export default function CustomerVehicles({navigation}) {
 
             console.log('Fetching Vehicle...');
             const data = await response.json();
-
             if (data.status == 'Success') {
-              setVehicles(data);
+              setVehicles(data.data);
               setLoading(false);
+              setLoadingMore(false);
               console.log('Vehicle fetched successfully');
 
-              // console.log(JSON.stringify(data));
               console.log(data.message);
-              // data.data.map(item => console.log(item.warehouse_image));
               setRefreshing(false);
             } else {
               console.log('Error fetching vehicle');
               setLoading(false);
+              setRefreshing(false);
             }
           } catch (error) {
             console.error(error);
             setLoading(false);
+            setRefreshing(false);
           }
         }
       } catch (error) {
         console.warn('Error while retrieving token from AsyncStorage:', error);
         setLoading(false);
+        setRefreshing(false);
       }
     };
 
@@ -166,6 +227,16 @@ export default function CustomerVehicles({navigation}) {
         console.warn('Error while retrieving token from AsyncStorage:', error);
       }
     }
+  };
+
+  const renderFooter = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        {loadingMore == true && (
+          <ActivityIndicator color={COLORS.primary} size={'small'} />
+        )}
+      </View>
+    );
   };
 
   function InsideText({Text1, Text2}) {
@@ -715,28 +786,46 @@ export default function CustomerVehicles({navigation}) {
         )}
 
         {vehicle != null && isGridView == false && (
-          <FlatList
-            data={vehicle.data}
-            keyExtractor={item => item.id}
-            contentContainerStyle={{
-              paddingBottom: '30%',
-              paddingTop: 10,
-            }}
-            renderItem={renderVehicle}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={_onRefresh}
-                colors={['#1B7ADE']}
-              />
-            }
-          />
+          <View>
+            <FlatList
+              data={vehicle}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{
+                paddingBottom: '40%',
+                paddingTop: 10,
+              }}
+              renderItem={renderVehicle}
+              showsVerticalScrollIndicator={false}
+              onEndReachedThreshold={0.5}
+              onEndReached={LoadMore}
+              ListFooterComponent={renderFooter}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={_onRefresh}
+                  colors={['#1B7ADE']}
+                />
+              }
+            />
+
+            {/* <TouchableOpacity
+              style={{
+                height: 30,
+                width: 200,
+                backgroundColor: 'red',
+                position: 'absolute',
+              }}
+              onPress={LoadMore}>
+              <Text style={{fontSize: 16, color: 'black', alignSelf: 'center'}}>
+                Load More
+              </Text>
+            </TouchableOpacity> */}
+          </View>
         )}
 
         {vehicle != null && isGridView == true && (
           <FlatList
-            data={vehicle.data}
+            data={vehicle}
             numColumns={2}
             keyExtractor={item => item.id}
             contentContainerStyle={{
@@ -745,6 +834,9 @@ export default function CustomerVehicles({navigation}) {
             }}
             renderItem={renderGridVehicle}
             showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={LoadMore}
+            ListFooterComponent={renderFooter}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -757,7 +849,15 @@ export default function CustomerVehicles({navigation}) {
 
         {loading == true && (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
           </View>
         )}
