@@ -218,6 +218,7 @@ export default function ShipmentDetails({navigation, route}) {
             pagingEnabled
             showsHorizontalScrollIndicator={false}
           />
+
           <TouchableOpacity
             style={{position: 'absolute', bottom: 10, right: 10}}
             onPress={() =>
@@ -763,6 +764,26 @@ export default function ShipmentDetails({navigation, route}) {
                   <Text style={{color: 'white'}}>Dock Reciept</Text>
                 </TouchableOpacity>
               </View>
+            </View>
+
+            {/* edit shipment details button */}
+            <View style={{marginTop: 10, alignItems: 'center'}}>
+              <TouchableOpacity
+                style={{
+                  height: 30,
+                  width: 400,
+                  backgroundColor: 'orange',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() =>
+                  navigation.navigate('EditShipment', {
+                    ID: details.data.id,
+                    Details: details,
+                  })
+                }>
+                <Text style={{color: 'black'}}>Edit Details</Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
 
