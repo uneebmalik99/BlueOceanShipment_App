@@ -29,10 +29,12 @@ export default function CustomerContainer({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // data from api saving in this state
-  const [shipment, setShipment] = useState(null);
+  const [shipment, setShipment] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
@@ -59,9 +61,121 @@ export default function CustomerContainer({navigation}) {
   ];
 
   const _onRefresh = () => {
+    setShipment([]); // set initial value to empty array
+    console.log('Refreshing, so removing previous data');
     setRefreshing(true);
     setIsRefreshing(!isRefreshing);
   };
+
+  const LoadMore = async () => {
+    setCurrentPage(prevPage => prevPage + 1);
+    setLoadingMore(true);
+    if (loadingMore === true) {
+      NextData();
+    }
+  };
+
+  const renderFooter = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        {loadingMore == true && (
+          <ActivityIndicator color={COLORS.primary} size={'small'} />
+        )}
+      </View>
+    );
+  };
+
+  const NextData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token !== null) {
+        console.log('Token retrieved from AsyncStorage:', token);
+        try {
+          const response = await fetch(
+            `https://app.ecsapshipping.com/api/auth/shipment/all/shipments?page=${currentPage}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+              },
+            },
+          );
+
+          console.log('Fetching shippment...');
+          const data = await response.json();
+
+          if (data.status == 'Success') {
+            setShipment([...shipment, ...data.data]);
+            console.log('Shippment fetched successfully');
+            setLoading(false);
+            setLoadingMore(false);
+            console.log(data.message);
+            setRefreshing(false);
+          } else {
+            console.log('Error fetching shippment');
+            setLoading(false);
+          }
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
+        }
+      }
+    } catch (error) {
+      console.warn('Error while retrieving token from AsyncStorage:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setShipment([]);
+      setLoading(true);
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            const response = await fetch(
+              'https://app.ecsapshipping.com/api/auth/shipment/all/shipments',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + token,
+                },
+              },
+            );
+
+            console.log('Fetching shippment...');
+            const data = await response.json();
+
+            if (data.status == 'Success') {
+              setShipment(data.data);
+              console.log('Shippment fetched successfully');
+              setLoading(false);
+              console.log(data.message);
+              setRefreshing(false);
+            } else {
+              console.log('Error fetching shippment');
+              setLoading(false);
+              setRefreshing(false);
+            }
+          } catch (error) {
+            console.error(error);
+            setLoading(false);
+            setRefreshing(false);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+        setLoading(false);
+        setRefreshing(false);
+      }
+    };
+
+    fetchData();
+  }, [isRefreshing, viewAll]);
 
   // shipment search api
   const Search = async () => {
@@ -118,53 +232,6 @@ export default function CustomerContainer({navigation}) {
       }
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setShipment(null);
-      setLoading(true);
-      try {
-        const token = await AsyncStorage.getItem('token');
-        if (token !== null) {
-          console.log('Token retrieved from AsyncStorage:', token);
-          try {
-            const response = await fetch(
-              'https://app.ecsapshipping.com/api/auth/shipment/all/shipments',
-              {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer ' + token,
-                },
-              },
-            );
-
-            console.log('Fetching shippment...');
-            const data = await response.json();
-
-            if (data.status == 'Success') {
-              setShipment(data);
-              console.log('Shippment fetched successfully');
-              setLoading(false);
-              console.log(data.message);
-              setRefreshing(false);
-            } else {
-              console.log('Error fetching shippment');
-              setLoading(false);
-            }
-          } catch (error) {
-            console.error(error);
-            setLoading(false);
-          }
-        }
-      } catch (error) {
-        console.warn('Error while retrieving token from AsyncStorage:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [isRefreshing, viewAll]);
 
   function InsideText({Text1, Text2}) {
     return (
@@ -740,7 +807,7 @@ export default function CustomerContainer({navigation}) {
 
         {shipment != null && isGridView == false && (
           <FlatList
-            data={shipment.data}
+            data={shipment}
             keyExtractor={item => item.id}
             contentContainerStyle={{
               paddingBottom: '30%',
@@ -748,6 +815,9 @@ export default function CustomerContainer({navigation}) {
             }}
             renderItem={renderContainer}
             showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={LoadMore}
+            ListFooterComponent={renderFooter}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -760,7 +830,7 @@ export default function CustomerContainer({navigation}) {
 
         {shipment != null && isGridView == true && (
           <FlatList
-            data={shipment.data}
+            data={shipment}
             numColumns={2}
             keyExtractor={item => item.id}
             contentContainerStyle={{
@@ -769,6 +839,9 @@ export default function CustomerContainer({navigation}) {
             }}
             renderItem={renderGridContainer}
             showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={LoadMore}
+            ListFooterComponent={renderFooter}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -781,7 +854,15 @@ export default function CustomerContainer({navigation}) {
 
         {loading == true && (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
           </View>
         )}
