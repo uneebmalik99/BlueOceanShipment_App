@@ -648,7 +648,12 @@ export default function AdminVehicleDetails({navigation, route}) {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
-                    onPress={() => console.log('Quick Edit')}>
+                    onPress={() =>
+                      navigation.navigate('EditAdminVehicle', {
+                        ID: details.data.id,
+                        Details: details,
+                      })
+                    }>
                     <View style={{right: 5}}>
                       <MaterialCommunity
                         name="pencil"
