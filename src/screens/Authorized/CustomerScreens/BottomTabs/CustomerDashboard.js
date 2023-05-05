@@ -131,7 +131,7 @@ export default function CustomerDashboard({navigation, route}) {
     return true;
   };
 
-  const HorizontalTab = ({title, OnPress, Number}) => {
+  const HorizontalTab = ({title, OnPress, Number, Icon}) => {
     return (
       <TouchableOpacity
         style={{
@@ -163,11 +163,11 @@ export default function CustomerDashboard({navigation, route}) {
               backgroundColor: COLORS.pickedup,
             }}>
             <Image
-              source={require('../../../../assets/icons/pickedup.png')}
+              source={Icon}
               resizeMode="contain"
               style={{
-                height: 30,
-                width: 30,
+                height: 25,
+                width: 25,
               }}
             />
           </View>
@@ -193,7 +193,6 @@ export default function CustomerDashboard({navigation, route}) {
           height={SIZES.windowHeight / 4.5}
         />
       </View>
-
       <TouchableOpacity
         style={{
           position: 'absolute',
@@ -204,6 +203,7 @@ export default function CustomerDashboard({navigation, route}) {
         onPress={() => console.log('Whatsapp')}>
         <Image
           source={require('../../../../assets/icons/whatsapp3.gif')}
+          resizeMode="contain"
           style={{height: 60, width: 60}}
         />
       </TouchableOpacity>
@@ -381,6 +381,7 @@ export default function CustomerDashboard({navigation, route}) {
             <HorizontalTab
               title={'All Customers'}
               OnPress={() => navigation.navigate('AllCustomers')}
+              Icon={require('../../../../assets/icons/customer.png')}
               Number={
                 dashboardData != null && dashboardData.data.TotalCustomers
               }
@@ -390,6 +391,7 @@ export default function CustomerDashboard({navigation, route}) {
             <HorizontalTab
               title={'All Vehicles'}
               OnPress={() => navigation.navigate('AllVehicles')}
+              Icon={require('../../../../assets/icons/pickedup.png')}
               Number={dashboardData != null && dashboardData.data.TotalVehicles}
             />
           </View>
@@ -397,6 +399,7 @@ export default function CustomerDashboard({navigation, route}) {
             <HorizontalTab
               title={'Shipments'}
               OnPress={() => navigation.navigate('AllShipments')}
+              Icon={require('../../../../assets/icons/container.png')}
               Number={
                 dashboardData != null && dashboardData.data.completed_total
               }
@@ -405,6 +408,7 @@ export default function CustomerDashboard({navigation, route}) {
           <View style={{marginRight: 10}}>
             <HorizontalTab
               title={'Invoices'}
+              Icon={require('../../../../assets/icons/invoice.png')}
               OnPress={() => navigation.navigate('AllInvoices')}
             />
           </View>
