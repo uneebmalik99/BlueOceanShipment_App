@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -29,7 +30,8 @@ export default function CustomerVehicles({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [newDataLength, setNewDataLength] = useState(10);
   // console.log(currentPage);
 
   // data from api saving in this state
@@ -63,17 +65,22 @@ export default function CustomerVehicles({navigation}) {
     console.log('Refreshing, so removing previous data');
     setRefreshing(true);
     setIsRefreshing(!isRefreshing);
+    setCurrentPage(2);
+    setNewDataLength(5);
   };
 
   const LoadMore = async () => {
-    setCurrentPage(prevPage => prevPage + 1);
+    // setCurrentPage(prevPage => prevPage + 1);
     setLoadingMore(true);
-    if (loadingMore === true) {
-      NextData();
+    if (newDataLength !== 0) {
+      if (loadingMore === true) {
+        NextData();
+      }
     }
   };
 
   const NextData = async () => {
+    console.log('Page: ' + currentPage);
     setSearchedVehicle(null);
     try {
       const token = await AsyncStorage.getItem('token');
@@ -97,22 +104,31 @@ export default function CustomerVehicles({navigation}) {
             setVehicles([...vehicle, ...data.data]);
             setLoading(false);
             setLoadingMore(false);
+
             console.log('Vehicle fetched successfully');
+            setCurrentPage(prevPage => prevPage + 1);
+
+            const dataLength = data.data;
+            console.log('Data Length: ' + dataLength.length);
+            setNewDataLength(dataLength.length);
 
             console.log(data.message);
             setRefreshing(false);
           } else {
             console.log('Error fetching vehicle');
             setLoading(false);
+            setRefreshing(false);
           }
         } catch (error) {
           console.error(error);
           setLoading(false);
+          setRefreshing(false);
         }
       }
     } catch (error) {
       console.warn('Error while retrieving token from AsyncStorage:', error);
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -145,9 +161,16 @@ export default function CustomerVehicles({navigation}) {
             const data = await response.json();
             if (data.status == 'Success') {
               setVehicles(data.data);
+
               setLoading(false);
               setLoadingMore(false);
+
               console.log('Vehicle fetched successfully');
+
+              ToastAndroid.show(
+                'Vehicles fetched successfully',
+                ToastAndroid.SHORT,
+              );
 
               console.log(data.message);
               setRefreshing(false);
@@ -230,13 +253,26 @@ export default function CustomerVehicles({navigation}) {
   };
 
   const renderFooter = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
-        {loadingMore == true && (
-          <ActivityIndicator color={COLORS.primary} size={'small'} />
-        )}
-      </View>
-    );
+    if (newDataLength === 0) {
+      return (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 5,
+          }}>
+          <Text style={{fontSize: 14, color: 'black'}}>No More Data</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{alignItems: 'center', marginTop: 5}}>
+          {loadingMore == true && (
+            <ActivityIndicator color={COLORS.primary} size={'small'} />
+          )}
+        </View>
+      );
+    }
   };
 
   function InsideText({Text1, Text2}) {
