@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   BackHandler,
+  Linking,
+  Platform,
 } from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -72,6 +74,26 @@ export default function CustomerDashboard({navigation, route}) {
       easing: Easing.ease,
     }).start();
   }, []);
+
+  // function to redirect to the whatsapp app
+  const openWhatsApp = () => {
+    let phoneNumber = '+923037235334'; // Replace with your phone number
+    let message = 'Hello, this is a test message!'; // Replace with your message
+
+    if (Platform.OS === 'android') {
+      phoneNumber = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
+    } else {
+      phoneNumber = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
+    }
+
+    Linking.openURL(phoneNumber)
+      .then(data => {
+        console.log('WhatsApp Opened');
+      })
+      .catch(() => {
+        alert('Make sure WhatsApp is installed on your device');
+      });
+  };
 
   // useEffect for fetching dashboard data from api
   useEffect(() => {
@@ -200,7 +222,7 @@ export default function CustomerDashboard({navigation, route}) {
           right: 20,
           zIndex: 999,
         }}
-        onPress={() => console.log('Whatsapp')}>
+        onPress={openWhatsApp}>
         <Image
           source={require('../../../../assets/icons/whatsapp3.gif')}
           resizeMode="contain"
