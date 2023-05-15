@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -23,15 +24,20 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-element-dropdown';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function AllVehicle({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [newDataLength, setNewDataLength] = useState(10);
+  // console.log(currentPage);
 
   // data from api saving in this state
-  const [vehicle, setVehicles] = useState(null);
+  const [vehicle, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
@@ -55,14 +61,85 @@ export default function AllVehicle({navigation}) {
   ];
 
   const _onRefresh = () => {
+    setVehicles([]); // set initial value to empty array
+    console.log('Refreshing, so removing previous data');
     setRefreshing(true);
     setIsRefreshing(!isRefreshing);
+    setCurrentPage(2);
+    setNewDataLength(5);
+  };
+
+  const LoadMore = async () => {
+    // setCurrentPage(prevPage => prevPage + 1);
+    setLoadingMore(true);
+    if (newDataLength !== 0) {
+      if (loadingMore === true) {
+        NextData();
+      }
+    }
+  };
+
+  const NextData = async () => {
+    console.log('Page: ' + currentPage);
+    setSearchedVehicle(null);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token !== null) {
+        console.log('Token retrieved from AsyncStorage:', token);
+        try {
+          const response = await fetch(
+            `https://app.ecsapshipping.com/api/auth/vehicle/all/vehicles?page=${currentPage}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+              },
+            },
+          );
+
+          console.log('Fetching Vehicle...');
+          const data = await response.json();
+          if (data.status == 'Success') {
+            setVehicles([...vehicle, ...data.data]);
+            setLoading(false);
+            setLoadingMore(false);
+
+            console.log('Vehicle fetched successfully');
+            setCurrentPage(prevPage => prevPage + 1);
+
+            const dataLength = data.data;
+            console.log('Data Length: ' + dataLength.length);
+            setNewDataLength(dataLength.length);
+
+            console.log(data.message);
+            setRefreshing(false);
+          } else {
+            console.log('Error fetching vehicle');
+            setLoading(false);
+            setRefreshing(false);
+          }
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
+          setRefreshing(false);
+        }
+      }
+    } catch (error) {
+      console.warn('Error while retrieving token from AsyncStorage:', error);
+      setLoading(false);
+      setRefreshing(false);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      setVehicles(null);
-      setLoading(true);
+      setVehicles([]);
+      if (loadingMore == true) {
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
       setSearchedVehicle(null);
       try {
         const token = await AsyncStorage.getItem('token');
@@ -70,7 +147,7 @@ export default function AllVehicle({navigation}) {
           console.log('Token retrieved from AsyncStorage:', token);
           try {
             const response = await fetch(
-              'https://app.ecsapshipping.com/api/auth/vehicle/all/vehicles',
+              `https://app.ecsapshipping.com/api/auth/vehicle/all/vehicles`,
               {
                 method: 'GET',
                 headers: {
@@ -82,26 +159,36 @@ export default function AllVehicle({navigation}) {
 
             console.log('Fetching Vehicle...');
             const data = await response.json();
-
             if (data.status == 'Success') {
-              setVehicles(data);
+              setVehicles(data.data);
+
               setLoading(false);
+              setLoadingMore(false);
+
               console.log('Vehicle fetched successfully');
 
-              // console.log(JSON.stringify(data));
+              ToastAndroid.show(
+                'Vehicles fetched successfully',
+                ToastAndroid.SHORT,
+              );
+
               console.log(data.message);
-              // data.data.map(item => console.log(item.warehouse_image));
               setRefreshing(false);
             } else {
               console.log('Error fetching vehicle');
               setLoading(false);
+              setRefreshing(false);
             }
           } catch (error) {
             console.error(error);
+            setLoading(false);
+            setRefreshing(false);
           }
         }
       } catch (error) {
         console.warn('Error while retrieving token from AsyncStorage:', error);
+        setLoading(false);
+        setRefreshing(false);
       }
     };
 
@@ -165,10 +252,33 @@ export default function AllVehicle({navigation}) {
     }
   };
 
+  const renderFooter = () => {
+    if (newDataLength === 0) {
+      return (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 5,
+          }}>
+          <Text style={{fontSize: 14, color: 'black'}}>No More Data</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{alignItems: 'center', marginTop: 5}}>
+          {loadingMore == true && (
+            <ActivityIndicator color={COLORS.primary} size={'small'} />
+          )}
+        </View>
+      );
+    }
+  };
+
   function InsideText({Text1, Text2}) {
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <View style={{width: '36%'}}>
+        <View style={{width: '38%'}}>
           <Text style={{color: COLORS.white, fontSize: 14}}>{Text1}</Text>
         </View>
 
@@ -198,9 +308,7 @@ export default function AllVehicle({navigation}) {
             marginTop: 10,
             paddingHorizontal: 20,
           }}
-          onPress={() =>
-            navigation.navigate('AdminVehicleDetails', {ID: item.id})
-          }>
+          onPress={() => navigation.navigate('VehicleDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -276,7 +384,7 @@ export default function AllVehicle({navigation}) {
             marginTop: 10,
             // paddingHorizontal: 10,
           }}
-          onPress={() => navigation.navigate('VehicleDetails', {Data: item})}>
+          onPress={() => navigation.navigate('VehicleDetails', {ID: item.id})}>
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
@@ -622,7 +730,7 @@ export default function AllVehicle({navigation}) {
                 paddingHorizontal: 20,
               }}
               onPress={() =>
-                navigation.navigate('AdminVehicleDetails', {
+                navigation.navigate('VehicleDetails', {
                   ID: searchedVehicle.data[0].id,
                 })
               }>
@@ -710,36 +818,57 @@ export default function AllVehicle({navigation}) {
         )}
 
         {vehicle != null && isGridView == false && (
-          <FlatList
-            data={vehicle.data}
-            keyExtractor={item => item.id}
-            contentContainerStyle={{
-              paddingBottom: '30%',
-              paddingTop: 10,
-            }}
-            renderItem={renderVehicle}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={_onRefresh}
-                colors={['#1B7ADE']}
-              />
-            }
-          />
+          <View>
+            <FlatList
+              data={vehicle}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{
+                paddingBottom: '20%',
+                paddingTop: 10,
+              }}
+              renderItem={renderVehicle}
+              showsVerticalScrollIndicator={false}
+              onEndReachedThreshold={0.5}
+              onEndReached={LoadMore}
+              ListFooterComponent={renderFooter}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={_onRefresh}
+                  colors={['#1B7ADE']}
+                />
+              }
+            />
+
+            {/* <TouchableOpacity
+              style={{
+                height: 30,
+                width: 200,
+                backgroundColor: 'red',
+                position: 'absolute',
+              }}
+              onPress={LoadMore}>
+              <Text style={{fontSize: 16, color: 'black', alignSelf: 'center'}}>
+                Load More
+              </Text>
+            </TouchableOpacity> */}
+          </View>
         )}
 
         {vehicle != null && isGridView == true && (
           <FlatList
-            data={vehicle.data}
+            data={vehicle}
             numColumns={2}
             keyExtractor={item => item.id}
             contentContainerStyle={{
-              paddingBottom: '30%',
+              paddingBottom: '10%',
               paddingTop: 10,
             }}
             renderItem={renderGridVehicle}
             showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={LoadMore}
+            ListFooterComponent={renderFooter}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -752,7 +881,15 @@ export default function AllVehicle({navigation}) {
 
         {loading == true && (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
           </View>
         )}
