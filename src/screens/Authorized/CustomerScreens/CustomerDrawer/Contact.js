@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SvgXml} from 'react-native-svg';
@@ -83,6 +84,59 @@ function ContactItems({ItemText, IconName, IconColor}) {
   );
 }
 
+// function to redirect to the whatsapp app
+const openWhatsApp = () => {
+  let phoneNumber = '+923037235334'; // Replace with your phone number
+  let message = 'Hello, this is a test message!'; // Replace with your message
+
+  if (Platform.OS === 'android') {
+    phoneNumber = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
+  } else {
+    phoneNumber = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
+  }
+
+  Linking.openURL(phoneNumber)
+    .then(data => {
+      console.log('WhatsApp Opened', data);
+    })
+    .catch(() => {
+      alert('Make sure WhatsApp is installed on your device');
+    });
+};
+
+// function to redirect to the email app
+const openEmail = () => {
+  let email = 'aamir104512@gmail.com'; // Will replace with user email
+  let subject = 'Test Email'; // Will replace with user subject
+  let body = 'This is the test email from my app.'; // Will replace with user body
+
+  let url = `mailto:${email}?subject=${subject}&body=${body}`;
+
+  Linking.openURL(url)
+    .then(data => {
+      console.log('Email Opened', data);
+    })
+    .catch(() => {
+      alert('Make sure email app is installed on your device');
+    });
+};
+
+// function to redirect to the sms app
+const openTextMessage = () => {
+  let phoneNumber = '+923037235334'; // Replace with user phone number
+  let body = 'Hello, this is a test message!'; // Replace with user message
+
+  let url = `sms:${phoneNumber}?body=${body}`;
+
+  Linking.openURL(url)
+    .then(data => {
+      console.log('Text Message Opened', data);
+    })
+    .catch(() => {
+      alert('Make sure text message app is installed on your device');
+    });
+};
+
 export default function Contact({navigation}) {
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
@@ -146,15 +200,15 @@ export default function Contact({navigation}) {
           }}>
           <ContactButtons
             IconName={require('../../../../assets/icons/whatsapp.png')}
-            OnPress={() => console.log('Whatsapp Pressed')}
+            OnPress={openWhatsApp}
           />
           <ContactButtons
             IconName={require('../../../../assets/icons/email.png')}
-            OnPress={() => console.log('Email Pressed')}
+            OnPress={openEmail}
           />
           <ContactButtons
             IconName={require('../../../../assets/icons/message.png')}
-            OnPress={() => console.log('Message Pressed')}
+            OnPress={openTextMessage}
           />
         </View>
 
