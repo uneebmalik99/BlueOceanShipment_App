@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -29,12 +30,17 @@ export default function CustomerContainer({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [newDataLength, setNewDataLength] = useState(10);
+  // console.log(newDataLength);
 
   // data from api saving in this state
   const [shipment, setShipment] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  // let TotalShipments = shipment;
+  // console.log('Length of Total Shipments: ' + TotalShipments.length);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
@@ -65,27 +71,45 @@ export default function CustomerContainer({navigation}) {
     console.log('Refreshing, so removing previous data');
     setRefreshing(true);
     setIsRefreshing(!isRefreshing);
+    setCurrentPage(2);
+    setNewDataLength(5);
   };
 
   const LoadMore = async () => {
-    setCurrentPage(prevPage => prevPage + 1);
+    // setCurrentPage(prevPage => prevPage + 1);
     setLoadingMore(true);
-    if (loadingMore === true) {
-      NextData();
+    if (newDataLength !== 0) {
+      if (loadingMore === true) {
+        NextData();
+      }
     }
   };
 
   const renderFooter = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
-        {loadingMore == true && (
-          <ActivityIndicator color={COLORS.primary} size={'small'} />
-        )}
-      </View>
-    );
+    if (newDataLength === 0) {
+      return (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 5,
+          }}>
+          <Text style={{fontSize: 14, color: 'black'}}>No More Data</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{alignItems: 'center', marginTop: 5}}>
+          {loadingMore == true && (
+            <ActivityIndicator color={COLORS.primary} size={'small'} />
+          )}
+        </View>
+      );
+    }
   };
 
   const NextData = async () => {
+    console.log('Page: ' + currentPage);
     try {
       const token = await AsyncStorage.getItem('token');
       if (token !== null) {
@@ -108,22 +132,34 @@ export default function CustomerContainer({navigation}) {
           if (data.status == 'Success') {
             setShipment([...shipment, ...data.data]);
             console.log('Shippment fetched successfully');
+
+            setCurrentPage(prevPage => prevPage + 1);
+
+            const dataLength = data.data;
+            console.log('Data Length: ' + dataLength.length);
+            setNewDataLength(dataLength.length);
+
             setLoading(false);
             setLoadingMore(false);
             console.log(data.message);
+
             setRefreshing(false);
           } else {
             console.log('Error fetching shippment');
             setLoading(false);
+            setRefreshing(false);
           }
         } catch (error) {
           console.error(error);
           setLoading(false);
+          setLoadingMore(false);
+          setRefreshing(false);
         }
       }
     } catch (error) {
       console.warn('Error while retrieving token from AsyncStorage:', error);
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -153,6 +189,12 @@ export default function CustomerContainer({navigation}) {
             if (data.status == 'Success') {
               setShipment(data.data);
               console.log('Shippment fetched successfully');
+
+              ToastAndroid.show(
+                'Shippments fetched successfully',
+                ToastAndroid.SHORT,
+              );
+
               setLoading(false);
               console.log(data.message);
               setRefreshing(false);
