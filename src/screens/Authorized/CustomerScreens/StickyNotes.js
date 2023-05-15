@@ -6,6 +6,7 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../components/AppBackground';
@@ -78,17 +79,21 @@ export default function StickyNotes({navigation}) {
             if (data.status == 'Success') {
               setAllNotes(data);
               setLoading(false);
+              ToastAndroid.show('Notes Fetched', ToastAndroid.SHORT);
               console.log('Notes fetched successfully');
             } else {
               console.log('Error fetching shippment');
+              ToastAndroid.show('Error Fetching Notes', ToastAndroid.SHORT);
               setLoading(false);
             }
           } catch (error) {
             setLoading(false);
+            ToastAndroid.show('Error Fetching Notes', ToastAndroid.SHORT);
             console.error(error);
           }
         }
       } catch (error) {
+        ToastAndroid.show('Error Fetching Notes', ToastAndroid.SHORT);
         console.warn('Error while retrieving token from AsyncStorage:', error);
       }
     };
@@ -121,19 +126,23 @@ export default function StickyNotes({navigation}) {
           .then(responseJson => {
             if (responseJson.status == 'Success') {
               console.log('Success');
-              alert('Note Added Successfully');
+              ToastAndroid.show('Note Added Successfully', ToastAndroid.SHORT);
+              // alert('Note Added Successfully');
               setIsUpdated(!isUpdated);
               setModalVisible(false);
             } else {
+              ToastAndroid.show('Failed to Add Notes', ToastAndroid.SHORT);
               console.log('UnSuccess ', responseJson);
             }
           })
           .catch(error => {
             alert(error);
+            ToastAndroid.show('Failed to Add Notes', ToastAndroid.SHORT);
             console.warn(error);
           });
       }
     } catch (error) {
+      ToastAndroid.show('Failed to Add Notes', ToastAndroid.SHORT);
       console.warn('Error while retrieving token from AsyncStorage:', error);
     }
   };
@@ -160,12 +169,15 @@ export default function StickyNotes({navigation}) {
         if (data.status == 'Success') {
           console.log('Success');
           setIsUpdated(!isUpdated);
-          alert('Note Deleted Successfully');
+          ToastAndroid.show('Note Deleted Successfully', ToastAndroid.SHORT);
+          // alert('Note Deleted Successfully');
         } else {
+          ToastAndroid.show('Failed to Delete Notes', ToastAndroid.SHORT);
           console.log('UnSuccess ', data);
         }
       }
     } catch (error) {
+      ToastAndroid.show('Failed to Delete Notes', ToastAndroid.SHORT);
       console.warn('Error while retrieving token from AsyncStorage:', error);
     }
   };
