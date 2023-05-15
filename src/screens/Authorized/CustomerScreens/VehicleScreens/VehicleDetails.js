@@ -17,6 +17,7 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import {useIsFocused} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Share from 'react-native-share';
 
 export default function VehicleDetails({navigation, route}) {
   //data coming from vehicle screens
@@ -31,6 +32,24 @@ export default function VehicleDetails({navigation, route}) {
   const [totalPickupImages, setTotalPickup] = useState(null);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
+
+  const openShare = async () => {
+    const options = {
+      message:
+        'Incididunt consectetur consequat non Lorem sint aliquip excepteur officia commodo mollit excepteur cillum.',
+      url: 'https://www.google.com/',
+      email: 'aamir104512@gmail.com',
+      subject: 'Share Test Email',
+      body: 'Reprehenderit culpa et proident mollit Lorem eiusmod ut elit quis ad. Culpa nostrud eiusmod consequat minim labore laborum incididunt voluptate reprehenderit. Mollit reprehenderit anim esse consequat consectetur nostrud esse dolor consectetur consectetur. Ut nostrud enim ad aliqua pariatur consectetur ipsum ullamco dolor reprehenderit. Magna anim deserunt et labore eu ipsum. Sint tempor consequat quis culpa consectetur.',
+      recipient: '923037235334',
+    };
+    try {
+      const shareResponse = await Share.open(options);
+      console.log(shareResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const ViewDetails = async () => {
@@ -95,6 +114,22 @@ export default function VehicleDetails({navigation, route}) {
     }
   }
 
+  function VehicleColors() {
+    if (details.data.color === 'GRAY') {
+      return 'gray';
+    } else if (details.data.color === 'BLACK') {
+      return 'black';
+    } else if (details.data.color === 'RED') {
+      return 'red';
+    } else if (details.data.color === 'BLUE') {
+      return 'blue';
+    } else if (details.data.color === 'WHITE') {
+      return 'white';
+    } else {
+      return 'yellow';
+    }
+  }
+
   function ContactItems({ItemText}) {
     return (
       <View
@@ -154,7 +189,7 @@ export default function VehicleDetails({navigation, route}) {
       <View
         style={{
           height: 0.5,
-          backgroundColor: 'grey',
+          backgroundColor: '#EDE6E9',
           width: '100%',
           marginTop: 5,
         }}
@@ -503,7 +538,7 @@ export default function VehicleDetails({navigation, route}) {
           </Text>
         </View>
 
-        <TouchableOpacity onPress={() => console.log('Share')}>
+        <TouchableOpacity onPress={openShare}>
           <MaterialCommunity
             name="share-variant"
             size={25}
@@ -697,15 +732,18 @@ export default function VehicleDetails({navigation, route}) {
                       <Text style={{color: '#1F689E'}}>Color</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
-                      <View
-                        style={{
-                          height: 18,
-                          width: 30,
-                          backgroundColor: 'red',
-                          borderRadius: 3,
-                        }}
-                      />
-                      <Text>
+                      {details.data.color !== null && (
+                        <View
+                          style={{
+                            height: 14,
+                            width: 30,
+                            backgroundColor: VehicleColors(),
+                            borderRadius: 3,
+                            right: 5,
+                          }}
+                        />
+                      )}
+                      <Text style={{color: '#1F689E'}}>
                         {details.data.color == null ? '-' : details.data.color}
                       </Text>
                     </View>
