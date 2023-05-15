@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AppBackground from '../../../../components/AppBackground';
@@ -23,21 +24,30 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-element-dropdown';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 export default function AllShipments({navigation}) {
   // pull to refresh states
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [newDataLength, setNewDataLength] = useState(10);
+  // console.log(newDataLength);
 
   // data from api saving in this state
-  const [shipment, setShipment] = useState(null);
+  const [shipment, setShipment] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  // let TotalShipments = shipment;
+  // console.log('Length of Total Shipments: ' + TotalShipments.length);
 
   // grid view toggle state
   const [isGridView, setIsGridView] = useState(false);
 
   // for searching shipment
   const [containerNo, setContainerNo] = useState('');
+  // console.log(containerNo);
   const [searchLoader, setSearchLoader] = useState(false);
   const [searchedShipment, setSearchedShipment] = useState(null);
   const [viewAll, setViewAll] = useState(false);
@@ -45,6 +55,8 @@ export default function AllShipments({navigation}) {
   //   fot shipments type dropdown
   const [shipmentFocus, setShipmentFocus] = useState(false);
   const [shipmentType, setShipmentType] = useState(null);
+
+  const [recording, setRecording] = useState(false);
 
   var asset_url = 'https://app.ecsapshipping.com/public/';
 
@@ -55,9 +67,157 @@ export default function AllShipments({navigation}) {
   ];
 
   const _onRefresh = () => {
+    setShipment([]); // set initial value to empty array
+    console.log('Refreshing, so removing previous data');
     setRefreshing(true);
     setIsRefreshing(!isRefreshing);
+    setCurrentPage(2);
+    setNewDataLength(5);
   };
+
+  const LoadMore = async () => {
+    // setCurrentPage(prevPage => prevPage + 1);
+    setLoadingMore(true);
+    if (newDataLength !== 0) {
+      if (loadingMore === true) {
+        NextData();
+      }
+    }
+  };
+
+  const renderFooter = () => {
+    if (newDataLength === 0) {
+      return (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 5,
+          }}>
+          <Text style={{fontSize: 14, color: 'black'}}>No More Data</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{alignItems: 'center', marginTop: 5}}>
+          {loadingMore == true && (
+            <ActivityIndicator color={COLORS.primary} size={'small'} />
+          )}
+        </View>
+      );
+    }
+  };
+
+  const NextData = async () => {
+    console.log('Page: ' + currentPage);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token !== null) {
+        console.log('Token retrieved from AsyncStorage:', token);
+        try {
+          const response = await fetch(
+            `https://app.ecsapshipping.com/api/auth/shipment/all/shipments?page=${currentPage}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+              },
+            },
+          );
+
+          console.log('Fetching shippment...');
+          const data = await response.json();
+
+          if (data.status == 'Success') {
+            setShipment([...shipment, ...data.data]);
+            console.log('Shippment fetched successfully');
+
+            setCurrentPage(prevPage => prevPage + 1);
+
+            const dataLength = data.data;
+            console.log('Data Length: ' + dataLength.length);
+            setNewDataLength(dataLength.length);
+
+            setLoading(false);
+            setLoadingMore(false);
+            console.log(data.message);
+
+            setRefreshing(false);
+          } else {
+            console.log('Error fetching shippment');
+            setLoading(false);
+            setRefreshing(false);
+          }
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
+          setLoadingMore(false);
+          setRefreshing(false);
+        }
+      }
+    } catch (error) {
+      console.warn('Error while retrieving token from AsyncStorage:', error);
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setShipment([]);
+      setLoading(true);
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token !== null) {
+          console.log('Token retrieved from AsyncStorage:', token);
+          try {
+            const response = await fetch(
+              'https://app.ecsapshipping.com/api/auth/shipment/all/shipments',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + token,
+                },
+              },
+            );
+
+            console.log('Fetching shippment...');
+            const data = await response.json();
+
+            if (data.status == 'Success') {
+              setShipment(data.data);
+              console.log('Shippment fetched successfully');
+
+              ToastAndroid.show(
+                'Shippments fetched successfully',
+                ToastAndroid.SHORT,
+              );
+
+              setLoading(false);
+              console.log(data.message);
+              setRefreshing(false);
+            } else {
+              console.log('Error fetching shippment');
+              setLoading(false);
+              setRefreshing(false);
+            }
+          } catch (error) {
+            console.error(error);
+            setLoading(false);
+            setRefreshing(false);
+          }
+        }
+      } catch (error) {
+        console.warn('Error while retrieving token from AsyncStorage:', error);
+        setLoading(false);
+        setRefreshing(false);
+      }
+    };
+
+    fetchData();
+  }, [isRefreshing, viewAll]);
 
   // shipment search api
   const Search = async () => {
@@ -115,53 +275,6 @@ export default function AllShipments({navigation}) {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setShipment(null);
-      setLoading(true);
-      try {
-        const token = await AsyncStorage.getItem('token');
-        if (token !== null) {
-          console.log('Token retrieved from AsyncStorage:', token);
-          try {
-            const response = await fetch(
-              'https://app.ecsapshipping.com/api/auth/shipment/all/shipments',
-              {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer ' + token,
-                },
-              },
-            );
-
-            console.log('Fetching shippment...');
-            const data = await response.json();
-
-            if (data.status == 'Success') {
-              setShipment(data);
-              console.log('Shippment fetched successfully');
-              setLoading(false);
-              console.log(data.message);
-              setRefreshing(false);
-            } else {
-              console.log('Error fetching shippment');
-              setLoading(false);
-            }
-          } catch (error) {
-            console.error(error);
-            setLoading(false);
-          }
-        }
-      } catch (error) {
-        console.warn('Error while retrieving token from AsyncStorage:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [isRefreshing, viewAll]);
-
   function InsideText({Text1, Text2}) {
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -196,7 +309,7 @@ export default function AllShipments({navigation}) {
             paddingHorizontal: 20,
           }}
           onPress={() =>
-            navigation.navigate('ShipmentDetails', {
+            navigation.navigate('ContainerDetails', {
               ID: item.id,
               IMAGES: item.loading_image,
             })
@@ -278,7 +391,7 @@ export default function AllShipments({navigation}) {
             marginTop: 10,
           }}
           onPress={() =>
-            navigation.navigate('ShipmentDetails', {
+            navigation.navigate('ContainerDetails', {
               ID: item.id,
               IMAGES: item.loading_image,
             })
@@ -412,7 +525,7 @@ export default function AllShipments({navigation}) {
           <View
             style={{
               height: SIZES.windowHeight / 18,
-              width: SIZES.windowWidth / 1.36,
+              width: SIZES.windowWidth / 1.7,
               backgroundColor: COLORS.white,
               borderRadius: 10,
               alignItems: 'center',
@@ -427,6 +540,32 @@ export default function AllShipments({navigation}) {
               value={containerNo}
               onChangeText={text => setContainerNo(text)}
             />
+          </View>
+
+          {/* microphone button view */}
+          <View
+            style={{
+              shadowColor: COLORS.black,
+              elevation: 10,
+              height: SIZES.windowHeight / 18,
+              width: SIZES.windowWidth / 7.5,
+              backgroundColor: COLORS.white,
+              borderRadius: 10,
+            }}>
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+              }}
+              // onPress={}
+            >
+              <MaterialCommunity
+                name="microphone"
+                size={20}
+                color={recording ? COLORS.primary : COLORS.black}
+              />
+            </TouchableOpacity>
           </View>
 
           {/* search button view */}
@@ -613,7 +752,7 @@ export default function AllShipments({navigation}) {
                 paddingHorizontal: 20,
               }}
               onPress={() =>
-                navigation.navigate('ShipmentDetails', {
+                navigation.navigate('ContainerDetails', {
                   ID: searchedShipment.data[0].id,
                 })
               }>
@@ -706,14 +845,17 @@ export default function AllShipments({navigation}) {
 
         {shipment != null && isGridView == false && (
           <FlatList
-            data={shipment.data}
+            data={shipment}
             keyExtractor={item => item.id}
             contentContainerStyle={{
-              paddingBottom: '30%',
+              paddingBottom: '10%',
               paddingTop: 10,
             }}
             renderItem={renderContainer}
             showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={LoadMore}
+            ListFooterComponent={renderFooter}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -726,15 +868,18 @@ export default function AllShipments({navigation}) {
 
         {shipment != null && isGridView == true && (
           <FlatList
-            data={shipment.data}
+            data={shipment}
             numColumns={2}
             keyExtractor={item => item.id}
             contentContainerStyle={{
-              paddingBottom: '30%',
+              paddingBottom: '10%',
               paddingTop: 10,
             }}
             renderItem={renderGridContainer}
             showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={LoadMore}
+            ListFooterComponent={renderFooter}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -747,7 +892,15 @@ export default function AllShipments({navigation}) {
 
         {loading == true && (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <ActivityIndicator size={'large'} color={COLORS.primary} />
           </View>
         )}

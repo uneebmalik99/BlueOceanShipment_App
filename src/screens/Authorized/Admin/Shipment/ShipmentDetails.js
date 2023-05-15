@@ -16,6 +16,7 @@ import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import {useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Share from 'react-native-share';
 
 export default function ShipmentDetails({navigation, route}) {
   //data coming from vehicle screens
@@ -31,12 +32,31 @@ export default function ShipmentDetails({navigation, route}) {
       <View
         style={{
           height: 0.5,
-          backgroundColor: 'grey',
+          backgroundColor: '#EDE6E9',
           width: '100%',
           marginTop: 5,
         }}
       />
     );
+  };
+
+  // function to open share
+  const openShare = async () => {
+    const options = {
+      message:
+        'Incididunt consectetur consequat non Lorem sint aliquip excepteur officia commodo mollit excepteur cillum.',
+      url: 'https://www.google.com/',
+      email: 'aamir104512@gmail.com',
+      subject: 'Share Test Email',
+      body: 'Reprehenderit culpa et proident mollit Lorem eiusmod ut elit quis ad. Culpa nostrud eiusmod consequat minim labore laborum incididunt voluptate reprehenderit. Mollit reprehenderit anim esse consequat consectetur nostrud esse dolor consectetur consectetur. Ut nostrud enim ad aliqua pariatur consectetur ipsum ullamco dolor reprehenderit. Magna anim deserunt et labore eu ipsum. Sint tempor consequat quis culpa consectetur.',
+      recipient: '923037235334',
+    };
+    try {
+      const shareResponse = await Share.open(options);
+      console.log(shareResponse);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -262,7 +282,7 @@ export default function ShipmentDetails({navigation, route}) {
           </Text>
         </View>
 
-        <TouchableOpacity onPress={() => console.log('Share')}>
+        <TouchableOpacity onPress={openShare}>
           <MaterialCommunity
             name="share-variant"
             size={25}
