@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -159,6 +160,7 @@ export default function Login({navigation}) {
               });
 
             console.log('Login Success');
+            ToastAndroid.show('Login Success', ToastAndroid.SHORT);
             setIsLoading(false);
             emailRef.current.clear();
             passwordRef.current.clear();
@@ -168,11 +170,13 @@ export default function Login({navigation}) {
               userImage: responseJson.data.data.user_image,
             });
           } else {
+            ToastAndroid.show('Login Error', ToastAndroid.SHORT);
             console.log('Login Error');
           }
         })
         .catch(error => {
           setIsLoading(false);
+          ToastAndroid.show('Login Error', ToastAndroid.SHORT);
           alert('Error while login' + error);
           console.warn(error);
         });
@@ -286,10 +290,11 @@ export default function Login({navigation}) {
                 console.log('Data Saved Succefully');
               })
               .catch(error => {
-                console.log('Error Saving Data');
+                console.log('Error Saving Data', error);
               });
 
             console.log('Login Success');
+            ToastAndroid.show('Login Success', ToastAndroid.SHORT);
             setIsLoading(false);
             emailRef.current.clear();
             passwordRef.current.clear();
@@ -299,12 +304,14 @@ export default function Login({navigation}) {
               userImage: responseJson.data.data.user_image,
             });
           } else {
+            ToastAndroid.show('Login Error', ToastAndroid.SHORT);
             console.log('Login Error');
             setIsLoading(false);
             alert('Login Error');
           }
         })
         .catch(error => {
+          ToastAndroid.show('Login Error', ToastAndroid.SHORT);
           setIsLoading(false);
           alert('Error while login' + error);
           console.warn(error);
