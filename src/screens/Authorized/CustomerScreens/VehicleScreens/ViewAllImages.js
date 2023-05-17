@@ -11,14 +11,17 @@ import {SIZES, COLORS, IMAGE_URL} from '../../../../constants/theme';
 import VehicleHeader from '../../../../components/VehicleHeader';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 export default function ViewAllImages({navigation, route}) {
   const {AllImages} = route.params;
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState(null);
   const [loadingStates, setLoadingStates] = useState(AllImages.map(() => true));
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const handleImagePress = uri => {
+  const handleImagePress = (uri, index) => {
+    setSelectedImageIndex(index);
     setSelectedImageUri(uri);
     toggleModal();
   };
@@ -54,7 +57,7 @@ export default function ViewAllImages({navigation, route}) {
         />
         <TouchableOpacity
           style={{position: 'absolute', bottom: 20, right: 10}}
-          onPress={() => handleImagePress(IMAGE_URL + item.name)}>
+          onPress={() => handleImagePress(IMAGE_URL + item.name, index)}>
           <MaterialCommunity
             name="image-filter-center-focus"
             size={25}
@@ -87,13 +90,15 @@ export default function ViewAllImages({navigation, route}) {
             style={{position: 'absolute', zIndex: 999, left: 10, top: 10}}>
             <Entypo name="cross" size={25} color="red" />
           </TouchableOpacity>
-          {selectedImageUri != null && (
-            <Image
-              source={{uri: selectedImageUri}}
-              resizeMode="contain"
-              style={{flex: 1}}
-            />
-          )}
+          {/* {selectedImageUri != null && ( */}
+          <ImageViewer
+            imageUrls={AllImages.map(item => ({url: IMAGE_URL + item.name}))}
+            index={selectedImageIndex}
+            enableSwipeDown={true}
+            onSwipeDown={toggleModal}
+            style={{flex: 1}}
+          />
+          {/* )} */}
         </View>
       </Modal>
     </View>
