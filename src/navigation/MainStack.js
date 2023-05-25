@@ -27,6 +27,7 @@ import CustomerVehicles from '../screens/Authorized/CustomerScreens/BottomTabs/C
 import CustomerContainer from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerContainer';
 import CustomerInvoices from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerInvoices';
 import ForgotPassword from '../screens/UnauthorizedScreens/ForgotPassword';
+import Login from '../screens/UnauthorizedScreens/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,7 @@ export default function MainStack() {
         screenOptions={{headerShown: false}}
         initialRouteName={isFirstLaunch ? 'Onboarding' : 'Drawer'}>
         <Stack.Screen name="Onboarding" component={Onboarding} />
+        <Stack.Screen name="LoginScreen" component={Login} />
         <Stack.Screen name="Drawer" component={UnAuthDrawer} />
         <Stack.Screen name="CustomerDrawer" component={CustomerDrawer} />
         <Stack.Screen name="Notifications" component={Notifications} />

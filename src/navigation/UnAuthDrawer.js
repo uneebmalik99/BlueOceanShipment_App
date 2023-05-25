@@ -10,6 +10,7 @@ import ContactUs from '../screens/UnauthorizedScreens/LoginDrawerScreens/Contact
 import OurServices from '../screens/UnauthorizedScreens/LoginDrawerScreens/OurServices';
 import VehicleSearch from '../screens/UnauthorizedScreens/LoginDrawerScreens/VehicleSearch';
 import ContainerSearch from '../screens/UnauthorizedScreens/LoginDrawerScreens/ContainerSearch';
+import Welcome from '../screens/UnauthorizedScreens/Welcome';
 import {COLORS, SIZES, TEXT} from '../constants/theme';
 
 const DrawerNav = createDrawerNavigator();
@@ -17,7 +18,7 @@ const DrawerNav = createDrawerNavigator();
 export default function UnAuthDrawer() {
   return (
     <DrawerNav.Navigator
-      initialRouteName="Login"
+      initialRouteName="Welcome"
       screenOptions={{headerShown: false}}
       drawerContent={({navigation}) => (
         <View style={{paddingLeft: 20}}>
@@ -110,6 +111,7 @@ export default function UnAuthDrawer() {
           </View>
         </View>
       )}>
+      <DrawerNav.Screen name="Welcome" component={Welcome} />
       <DrawerNav.Screen name="Login" component={Login} />
       <DrawerNav.Screen name="ContactUs" component={ContactUs} />
       <DrawerNav.Screen name="OurServices" component={OurServices} />
