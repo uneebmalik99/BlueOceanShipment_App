@@ -26,7 +26,9 @@ import Customer from '../screens/Authorized/CustomerScreens/CustomerDrawer/Custo
 import CustomerVehicles from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerVehicle';
 import CustomerContainer from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerContainer';
 import CustomerInvoices from '../screens/Authorized/CustomerScreens/BottomTabs/CustomerInvoices';
-import ForgotPassword from '../screens/UnauthorizedScreens/ForgotPassword';
+import ForgotPassword from '../screens/UnauthorizedScreens/Forgot Password/ForgotPassword';
+import RecoveryEmail from '../screens/UnauthorizedScreens/Forgot Password/RecoveryEmail';
+import RecoverPassword from '../screens/UnauthorizedScreens/Forgot Password/RecoverPassword';
 import Login from '../screens/UnauthorizedScreens/Login';
 
 const Stack = createNativeStackNavigator();
@@ -91,6 +93,8 @@ export default function MainStack() {
         <Stack.Screen name="AllShipments" component={CustomerContainer} />
         <Stack.Screen name="AllInvoices" component={CustomerInvoices} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="RecoveryEmail" component={RecoveryEmail} />
+        <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
       </Stack.Navigator>
     );
   }
